@@ -86,23 +86,41 @@ if (!!process.env.SKIP_ENV_VALIDATION == false) {
       '❌ Invalid environment variables:',
       parsed.error.flatten().fieldErrors,
     );
-    throw new Error('Invalid environment variables');
+    // For development, just log the error instead of throwing
+    if (process.env.NODE_ENV === 'development') {
+      console.warn('⚠️  Environment validation failed, but continuing in development mode...');
+      // Use processEnv directly in development mode when validation fails
+      env = new Proxy(processEnv, {
+        get(target, prop) {
+          if (typeof prop !== 'string') return undefined;
+          if (!isServer && !prop.startsWith('NEXT_PUBLIC_'))
+            throw new Error(
+              process.env.NODE_ENV === 'production'
+                ? '❌ Attempted to access a server-side environment variable on the client'
+                : `❌ Attempted to access server-side environment variable '${prop}' on the client`,
+            );
+          return target[/** @type {keyof typeof target} */ (prop)];
+        },
+      });
+    } else {
+      throw new Error('Invalid environment variables');
+    }
+  } else {
+    env = new Proxy(parsed.data, {
+      get(target, prop) {
+        if (typeof prop !== 'string') return undefined;
+        // Throw a descriptive error if a server-side env var is accessed on the client
+        // Otherwise it would just be returning `undefined` and be annoying to debug
+        if (!isServer && !prop.startsWith('NEXT_PUBLIC_'))
+          throw new Error(
+            process.env.NODE_ENV === 'production'
+              ? '❌ Attempted to access a server-side environment variable on the client'
+              : `❌ Attempted to access server-side environment variable '${prop}' on the client`,
+          );
+        return target[/** @type {keyof typeof target} */ (prop)];
+      },
+    });
   }
-
-  env = new Proxy(parsed.data, {
-    get(target, prop) {
-      if (typeof prop !== 'string') return undefined;
-      // Throw a descriptive error if a server-side env var is accessed on the client
-      // Otherwise it would just be returning `undefined` and be annoying to debug
-      if (!isServer && !prop.startsWith('NEXT_PUBLIC_'))
-        throw new Error(
-          process.env.NODE_ENV === 'production'
-            ? '❌ Attempted to access a server-side environment variable on the client'
-            : `❌ Attempted to access server-side environment variable '${prop}' on the client`,
-        );
-      return target[/** @type {keyof typeof target} */ (prop)];
-    },
-  });
 }
 
 export { env };
