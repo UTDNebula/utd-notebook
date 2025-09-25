@@ -1,4 +1,9 @@
 import type { Metadata } from 'next';
+import DemoCardClient from '@src/components/DemoCardClient';
+
+const Page = () => {
+  return <DemoCardClient />;
+};
 
 export const metadata: Metadata = {
   alternates: {
@@ -6,8 +11,4 @@ export const metadata: Metadata = {
   },
 };
 
-const Home = () => {
-  return 'UTD Notebook';
-};
-
-export default Home;
+export default Page;
