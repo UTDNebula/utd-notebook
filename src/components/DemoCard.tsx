@@ -1,7 +1,7 @@
 'use client';
 
 import React from 'react';
-import { Card, CardContent, Typography, Button, IconButton } from '@mui/material';
+import { Card, CardContent, Typography, Button} from '@mui/material';
 import ChatIcon from '@mui/icons-material/Chat';
 
 type Props = {
