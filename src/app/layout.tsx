@@ -6,6 +6,8 @@ import { type Metadata } from 'next';
 
 import { GoogleAnalytics } from '@next/third-parties/google';
 
+import Footer from './footer';
+
 const inter = Inter({
   subsets: ['latin'],
   variable: '--font-inter',
@@ -55,7 +57,9 @@ export default function RootLayout({
         {process.env.NEXT_PUBLIC_VERCEL_ENV === 'production' && (
           <GoogleAnalytics gaId="G-" />
         )}
+        <Footer />
       </body>
     </html>
   );
+  
 }
