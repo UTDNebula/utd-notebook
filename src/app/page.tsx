@@ -1,4 +1,5 @@
 import type { Metadata } from 'next';
+import FileCardGrid from "./FileCard";
 
 export const metadata: Metadata = {
   alternates: {
@@ -7,7 +8,7 @@ export const metadata: Metadata = {
 };
 
 const Home = () => {
-  return 'UTD Notebook';
+  return <FileCardGrid />;
 };
 
 export default Home;
