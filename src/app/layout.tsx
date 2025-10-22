@@ -1,10 +1,12 @@
-import '@src/styles/globals.css';
+import '../styles/globals.css';
 
 import { Bai_Jamjuree, Inter } from 'next/font/google';
 
 import { type Metadata } from 'next';
 
 import { GoogleAnalytics } from '@next/third-parties/google';
+import ThemeProvider from './providers/ThemeProvider';
+import Navbar from '@src/components/Navbar';
 
 const inter = Inter({
   subsets: ['latin'],
@@ -51,7 +53,10 @@ export default function RootLayout({
   return (
     <html lang="en">
       <body className={`bg-white dark:bg-black ${inter.variable} font-main ${baiJamjuree.variable} text-haiti dark:text-white`}>
-        {children}
+        <ThemeProvider>
+          <Navbar />
+          {children}
+        </ThemeProvider>
         {process.env.NEXT_PUBLIC_VERCEL_ENV === 'production' && (
           <GoogleAnalytics gaId="G-" />
         )}
