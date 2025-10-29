@@ -1,12 +1,14 @@
 import '../styles/globals.css';
 
+import { ThemeProvider } from '@mui/material/styles';
+import { AppRouterCacheProvider } from '@mui/material-nextjs/v15-appRouter';
 import { Bai_Jamjuree, Inter } from 'next/font/google';
-
 import { type Metadata } from 'next';
-
 import { GoogleAnalytics } from '@next/third-parties/google';
 import ThemeProvider from './providers/ThemeProvider';
 import Navbar from '@src/components/Navbar';
+
+import theme from '@src/utils/theme';
 
 const inter = Inter({
   subsets: ['latin'],
@@ -25,12 +27,10 @@ export const metadata: Metadata = {
     template: '%s - UTD NOTEBOOK',
     default: 'UTD NOTEBOOK',
   },
-  description:
-    '',
+  description: '',
   openGraph: {
     title: 'UTD Notebook',
-    description:
-      '',
+    description: '',
     type: 'website',
   },
   twitter: {
@@ -58,7 +58,7 @@ export default function RootLayout({
           {children}
         </ThemeProvider>
         {process.env.NEXT_PUBLIC_VERCEL_ENV === 'production' && (
-          <GoogleAnalytics gaId="G-" />
+          <GoogleAnalytics gaId="G-3NDS0P32CZ" />
         )}
       </body>
     </html>
