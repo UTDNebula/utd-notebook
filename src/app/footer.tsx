@@ -5,7 +5,7 @@ const baiJamjuree = Bai_Jamjuree({ subsets: ['latin'], weight: '700' });
 
 export default function Footer() {
   return (
-    <footer className="flex w-full flex-col gap-10 rounded-t-3xl border-none bg-orange-400 py-4 text-center">
+    <footer className="flex w-full flex-col gap-10 border-none py-4 text-center">
       <div className="mb-2 flex flex-row items-center justify-center gap-4">
         <NebulaLogo className="h-14 w-14" />
         <div
@@ -17,14 +17,14 @@ export default function Footer() {
       <div className="mb-2 ml-20 flex flex-row items-center justify-center gap-30">
         <a
           href=""
-          className="text-decoration-underline cursor-pointer text-2xl font-bold text-white"
+          className="text-decoration-underline text-1xl cursor-pointer font-bold text-white"
         >
           About Us
         </a>
 
         <a
           href="https://github.com/UTDNebula/utd-notebook"
-          className="text-decoration-underline cursor-pointer text-2xl font-bold text-white"
+          className="text-decoration-underline text-1xl cursor-pointer font-bold text-white"
           target="_blank"
           rel="noopener noreferrer"
         >
@@ -33,7 +33,7 @@ export default function Footer() {
 
         <a
           href="https://www.utdnebula.com/contact"
-          className="text-decoration-underline cursor-pointer text-2xl font-bold text-white"
+          className="text-decoration-underline text-1xl cursor-pointer font-bold text-white"
           target="_blank"
           rel="noopener noreferrer"
         >
