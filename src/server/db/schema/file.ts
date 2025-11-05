@@ -1,8 +1,5 @@
 import { relations, sql } from 'drizzle-orm';
-import {
-  pgTable,
-  text,
-} from 'drizzle-orm/pg-core';
+import { pgTable, text } from 'drizzle-orm/pg-core';
 import { user } from './user';
 import { section } from './section';
 
