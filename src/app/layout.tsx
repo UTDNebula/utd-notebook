@@ -1,6 +1,6 @@
 import '../styles/globals.css';
 
-import { ThemeProvider } from '@mui/material/styles';
+import { ThemeProvider as MUIThemeProvider } from '@mui/material/styles';
 import { AppRouterCacheProvider } from '@mui/material-nextjs/v15-appRouter';
 import { Bai_Jamjuree, Inter } from 'next/font/google';
 import { type Metadata } from 'next';
@@ -54,8 +54,12 @@ export default function RootLayout({
     <html lang="en">
       <body className={`bg-white dark:bg-black ${inter.variable} font-main ${baiJamjuree.variable} text-haiti dark:text-white`}>
         <ThemeProvider>
-          <Navbar />
-          {children}
+          <AppRouterCacheProvider>
+            <MUIThemeProvider theme={theme}>
+              <Navbar />
+              {children}
+            </MUIThemeProvider>
+          </AppRouterCacheProvider>
         </ThemeProvider>
         {process.env.NEXT_PUBLIC_VERCEL_ENV === 'production' && (
           <GoogleAnalytics gaId="G-3NDS0P32CZ" />
