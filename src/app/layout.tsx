@@ -7,8 +7,10 @@ import { type Metadata } from 'next';
 import { GoogleAnalytics } from '@next/third-parties/google';
 import ThemeProvider from './providers/ThemeProvider';
 import Navbar from '@src/components/Navbar';
+import Link from 'next/link';
 
 import theme from '@src/utils/theme';
+import { ToastProvider } from '@src/components/toast/ToastProvider';
 
 const inter = Inter({
   subsets: ['latin'],
@@ -57,9 +59,22 @@ export default function RootLayout({
           <Navbar />
           {children}
         </ThemeProvider>
+      <body
+        className={`bg-white dark:bg-black ${inter.variable} font-main ${baiJamjuree.variable} text-haiti dark:text-white`}
+      >
+        <AppRouterCacheProvider>
+          <ThemeProvider theme={theme}>
+            <ToastProvider>{children}</ToastProvider>
+          </ThemeProvider>
+        </AppRouterCacheProvider>
         {process.env.NEXT_PUBLIC_VERCEL_ENV === 'production' && (
           <GoogleAnalytics gaId="G-3NDS0P32CZ" />
         )}
+        <nav>
+          <Link href="/profile" className="px-3 py-1 hover:underline">
+            Profile
+          </Link>
+        </nav>
       </body>
     </html>
   );

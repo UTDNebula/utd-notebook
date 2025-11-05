@@ -1,4 +1,5 @@
 import type { Metadata } from 'next';
+import NavBar from '@components/NavBar';
 
 export const metadata: Metadata = {
   alternates: {
@@ -7,7 +8,11 @@ export const metadata: Metadata = {
 };
 
 const Home = () => {
-  return 'UTD Notebook';
+  return (
+    <>
+      <NavBar />
+    </>
+  );
 };
 
 export default Home;
