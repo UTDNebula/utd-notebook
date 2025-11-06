@@ -1,8 +1,5 @@
 import { relations, sql } from 'drizzle-orm';
-import {
-  pgTable,
-  text,
-} from 'drizzle-orm/pg-core';
+import { pgTable, text } from 'drizzle-orm/pg-core';
 import { user } from './user';
 import { section } from './section';
 
@@ -18,12 +15,6 @@ export const file = pgTable('file', {
 });
 
 export const fileRelations = relations(file, ({ one }) => ({
-  author: one(user, {
-    fields: [file.authorId],
-    references: [user.id],
-  }),
-  section: one(section, {
-    fields: [file.sectionId],
-    references: [section.id],
-  }),
+  author: one(user),
+  section: one(section),
 }));
