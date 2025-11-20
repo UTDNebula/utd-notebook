@@ -1,41 +1,103 @@
-import React from 'react';
+'use client';
+
+import React, { useState } from 'react';
 import Link from 'next/link';
 import Image from 'next/image';
-import { IconButton, Tooltip } from '@mui/material';
+import { IconButton } from '@mui/material';
+import {
+  InfoOutlined as InfoIcon,
+  HelpOutline as HelpIcon,
+  Share as ShareIcon,
+  AccountCircle as AccountCircleIcon,
+} from '@mui/icons-material';
 
 export default function NavBar() {
+  const [searchQuery, setSearchQuery] = useState('');
+
+  const handleSearch = (e: React.FormEvent) => {
+    e.preventDefault();
+    console.log('Searching for:', searchQuery);
+  };
+
   return (
-    <>
-      <div className="bg-darken relative flex flex-wrap items-center gap-x-2 gap-y-0 overflow-hidden border-b-1 px-4 py-1 sm:flex-nowrap md:gap-x-4 md:px-8 md:py-1 lg:gap-x-8 lg:px-16">
+    <nav className="relative flex items-center gap-4 overflow-hidden px-4 py-3 md:px-8 lg:px-16" style={{
+      background: 'linear-gradient(to right, #C1C3FF, #DEBCF2, #FFC6C1)'
+    }}>
+
+      {/* Logo */}
+      <Link
+        href="/"
+        className="font-display flex flex-shrink-0 items-center gap-2 text-lg font-bold md:text-xl"
+      >
         <Image
-          src={'/background.png'}
-          alt="background"
-          className="-z-10 object-cover"
-          fill
+          src="/icon-white.svg"
+          alt="UTD Notebook Logo"
+          width={32}
+          height={32}
+          className="h-8 w-8"
         />
+        UTD NOTEBOOK
+      </Link>
 
-        <Link
-          href="/"
-          className="font-display flex items-center gap-2 text-lg font-medium md:text-xl md:font-bold"
+      {/* Search Bar */}
+      <form
+        onSubmit={handleSearch}
+        className="flex max-w-2xl flex-1 items-center gap-2"
+      >
+        <input
+          type="text"
+          value={searchQuery}
+          onChange={(e) => setSearchQuery(e.target.value)}
+          placeholder="ex. GOVT 2306"
+          className="flex-1 rounded-lg border-2 border-white bg-white px-4 py-2 transition-all focus:border-cornflower-500 focus:outline-none"
+          style={{ color: '#6B7280' }}
+        />
+        <button
+          type="submit"
+          className="rounded-lg px-6 py-2 font-semibold text-white transition-colors"
+          style={{ backgroundColor: '#573DFF' }}
+          onMouseEnter={(e) => e.currentTarget.style.backgroundColor = '#4532CC'}
+          onMouseLeave={(e) => e.currentTarget.style.backgroundColor = '#573DFF'}
         >
-          UTD Notebook
-        </Link>
+          Search
+        </button>
+      </form>
 
-        <div className="ml-auto flex items-center gap-x-2 md:gap-x-4">
-          <Tooltip title="Profile">
-            <IconButton size="medium" href="/profile">
-              <div className="relative size-10 flex-shrink-0 md:size-12">
-                <Image
-                  src="/icon-white.svg"
-                  alt="profile picture"
-                  fill
-                  className="rounded-full border-2 border-white object-cover"
-                />
-              </div>
-            </IconButton>
-          </Tooltip>
-        </div>
+      {/* Right Side Icons */}
+      <div className="ml-auto flex items-center gap-2">
+        <IconButton
+          size="medium"
+          sx={{ color: '#ffffff', '&:hover': { backgroundColor: 'rgba(255, 255, 255, 0.1)' } }}
+          aria-label="Info"
+        >
+          <InfoIcon />
+        </IconButton>
+
+        <IconButton
+          size="medium"
+          sx={{ color: '#ffffff', '&:hover': { backgroundColor: 'rgba(255, 255, 255, 0.1)' } }}
+          aria-label="Help"
+        >
+          <HelpIcon />
+        </IconButton>
+
+        <IconButton
+          size="medium"
+          sx={{ color: '#ffffff', '&:hover': { backgroundColor: 'rgba(255, 255, 255, 0.1)' } }}
+          aria-label="Share"
+        >
+          <ShareIcon />
+        </IconButton>
+
+        <IconButton
+          size="large"
+          sx={{ color: '#ffffff', '&:hover': { backgroundColor: 'rgba(255, 255, 255, 0.1)' } }}
+          aria-label="Profile"
+          href="/profile"
+        >
+          <AccountCircleIcon fontSize="large" />
+        </IconButton>
       </div>
-    </>
+    </nav>
   );
 }

@@ -5,10 +5,10 @@ import { AppRouterCacheProvider } from '@mui/material-nextjs/v15-appRouter';
 import { Bai_Jamjuree, Inter } from 'next/font/google';
 import { type Metadata } from 'next';
 import { GoogleAnalytics } from '@next/third-parties/google';
-import Link from 'next/link';
 
 import theme from '@src/utils/theme';
 import { ToastProvider } from '@src/components/toast/ToastProvider';
+import NavBar from '@src/components/NavBar';
 
 const inter = Inter({
   subsets: ['latin'],
@@ -57,17 +57,15 @@ export default function RootLayout({
       >
         <AppRouterCacheProvider>
           <ThemeProvider theme={theme}>
-            <ToastProvider>{children}</ToastProvider>
+            <ToastProvider>
+              <NavBar />
+              {children}
+            </ToastProvider>
           </ThemeProvider>
         </AppRouterCacheProvider>
         {process.env.NEXT_PUBLIC_VERCEL_ENV === 'production' && (
           <GoogleAnalytics gaId="G-3NDS0P32CZ" />
         )}
-        <nav>
-          <Link href="/profile" className="px-3 py-1 hover:underline">
-            Profile
-          </Link>
-        </nav>
       </body>
     </html>
   );

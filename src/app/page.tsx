@@ -1,5 +1,4 @@
 import type { Metadata } from 'next';
-import NavBar from '@components/NavBar';
 
 export const metadata: Metadata = {
   alternates: {
@@ -9,9 +8,9 @@ export const metadata: Metadata = {
 
 const Home = () => {
   return (
-    <>
-      <NavBar />
-    </>
+    <div className="p-8">
+      {/* Page content goes here */}
+    </div>
   );
 };
 
