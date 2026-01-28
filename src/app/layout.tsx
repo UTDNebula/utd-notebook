@@ -1,4 +1,4 @@
-import '@src/styles/globals.css';
+import '../styles/globals.css';
 
 import { AppRouterCacheProvider } from '@mui/material-nextjs/v15-appRouter';
 import { ThemeProvider } from '@mui/material/styles';
@@ -66,11 +66,6 @@ export default function RootLayout({
         {process.env.NEXT_PUBLIC_VERCEL_ENV === 'production' && (
           <GoogleAnalytics gaId="G-3NDS0P32CZ" />
         )}
-        <nav>
-          <Link href="/profile" className="px-3 py-1 hover:underline">
-            Profile
-          </Link>
-        </nav>
       </body>
     </html>
   );
