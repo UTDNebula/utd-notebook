@@ -1,5 +1,8 @@
 'use client';
 
+
+
+
 import React, {
   createContext,
   useCallback,
@@ -11,6 +14,8 @@ import React, {
 
 // toast types (style variants)
 type ToastVariant = 'success' | 'error' | 'info' | 'warning';
+type ToastOptions = Omit<Toast, 'id' | 'message' | 'variant'>;
+
 
 // structure for each toast item
 export type Toast = {
@@ -82,10 +87,12 @@ export function ToastProvider({ children }: { children: React.ReactNode }) {
   );
 
   // quick helpers for each variant (success, error, etc.)
-  const factory =
+  const factory = useCallback(
     (variant: ToastVariant) =>
-    (message: string, opts?: Omit<Toast, 'id' | 'message' | 'variant'>) =>
-      show({ message, variant, ...opts });
+      (message: string, opts?: ToastOptions) =>
+        show({ message, variant, ...opts }),
+    [show]
+  );
 
   // memoized context value
   const value = useMemo<ToastContextValue>(
@@ -97,7 +104,7 @@ export function ToastProvider({ children }: { children: React.ReactNode }) {
       info: factory('info'),
       warning: factory('warning'),
     }),
-    [show, dismiss],
+    [show, dismiss, factory],
   );
 
   return (
