@@ -1,9 +1,9 @@
-import { z } from 'zod';
-import { createTRPCRouter, protectedProcedure, publicProcedure } from '../trpc';
 import { eq, sql } from 'drizzle-orm';
-
+import { z } from 'zod';
 import { insertUserMetadata } from '@src/server/db/models';
-import { userMetadata, user as users } from '@src/server/db/schema/user';
+import { user as users } from '@src/server/db/schema/auth';
+import { userMetadata } from '@src/server/db/schema/user';
+import { createTRPCRouter, protectedProcedure, publicProcedure } from '../trpc';
 
 const byIdSchema = z.object({ id: z.string().uuid() });
 
@@ -19,7 +19,6 @@ export const userMetadataRouter = createTRPCRouter({
     const { id } = input;
     const userMetadata = await ctx.db.query.userMetadata.findFirst({
       where: (userMetadata) => eq(userMetadata.id, id),
-      with: { clubs: true },
     });
 
     return userMetadata;

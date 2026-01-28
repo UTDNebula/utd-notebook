@@ -1,5 +1,5 @@
-import { type z } from 'zod';
 import { createInsertSchema, createSelectSchema } from 'drizzle-zod';
+import { type z } from 'zod';
 import { userMetadata } from './schema/user';
 
 // Schema types for userMetadata

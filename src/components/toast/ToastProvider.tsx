@@ -1,4 +1,5 @@
 'use client';
+
 import React, {
   createContext,
   useCallback,
@@ -126,7 +127,7 @@ function ToastViewport({
 }) {
   return (
     <div
-      className="pointer-events-none fixed top-4 right-4 z-[1000] flex max-w-md flex-col gap-3"
+      className="pointer-events-none fixed top-4 right-4 z-1000 flex max-w-md flex-col gap-3"
       aria-live="polite"
       role="region"
       aria-label="Notifications"

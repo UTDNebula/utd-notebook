@@ -1,14 +1,14 @@
 import { relations, sql } from 'drizzle-orm';
 import {
-  pgTable,
-  pgEnum,
-  smallint,
+  index,
   integer,
-  varchar,
+  pgEnum,
+  pgTable,
+  smallint,
   text,
   timestamp,
   uniqueIndex,
-  index,
+  varchar,
 } from 'drizzle-orm/pg-core';
 import { file } from './file';
 
@@ -22,27 +22,20 @@ export const section = pgTable(
       .primaryKey(),
 
     // "CS" or "CE", short and indexable
-    prefix: varchar('prefix', { length: 4 })
-      .notNull(),
+    prefix: varchar('prefix', { length: 4 }).notNull(),
 
     // Course number like 1200
-    number: varchar('number', { length: 4 })
-      .notNull(),
+    number: varchar('number', { length: 4 }).notNull(),
 
     // Section code like "001"
-    sectionCode: varchar('section_code', { length: 3 })
-      .notNull(),
+    sectionCode: varchar('section_code', { length: 3 }).notNull(),
 
     // Semester split into term + year for better filtering
-    term: termEnum('term')
-      .notNull(),
-    year: smallint('year')
-      .notNull(),
+    term: termEnum('term').notNull(),
+    year: smallint('year').notNull(),
 
     professor: text('professor'),
-    numberOfNotes: integer('number_of_notes')
-      .notNull()
-      .default(0),
+    numberOfNotes: integer('number_of_notes').notNull().default(0),
 
     // Not required, but good practice usually
     createdAt: timestamp('created_at', { withTimezone: true })
@@ -52,12 +45,18 @@ export const section = pgTable(
       .notNull()
       .defaultNow(),
   },
-  (t) => ([
-    uniqueIndex('section_unique_idx').on(t.prefix, t.number, t.sectionCode, t.term, t.year),
+  (t) => [
+    uniqueIndex('section_unique_idx').on(
+      t.prefix,
+      t.number,
+      t.sectionCode,
+      t.term,
+      t.year,
+    ),
     index('section_by_course_idx').on(t.prefix, t.number),
     index('section_by_professor_idx').on(t.professor),
     index('section_by_semester_idx').on(t.term, t.year),
-  ]),
+  ],
 );
 
 export const sectionRelations = relations(section, ({ many }) => ({

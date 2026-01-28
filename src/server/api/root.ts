@@ -1,6 +1,6 @@
 import { createCallerFactory, createTRPCRouter } from '@src/server/api/trpc';
-import { userMetadataRouter } from './routers/userMetadata';
 import { storageRouter } from './routers/storage';
+import { userMetadataRouter } from './routers/userMetadata';
 
 /**
  * This is the primary router for your server.

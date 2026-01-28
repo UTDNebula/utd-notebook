@@ -1,9 +1,9 @@
 // Minimal table so API can insert a report.
 
 import { sql } from 'drizzle-orm';
-import { pgTable, text, varchar, timestamp } from 'drizzle-orm/pg-core';
-import { user } from './user';
+import { pgTable, text, timestamp, varchar } from 'drizzle-orm/pg-core';
 import { file } from './file';
+import { userMetadata } from './user';
 
 export const report = pgTable('report', {
   id: text('id')
@@ -12,7 +12,7 @@ export const report = pgTable('report', {
 
   userId: text('user_id')
     .notNull()
-    .references(() => user.id),
+    .references(() => userMetadata.id),
 
   fileId: text('file_id')
     .notNull()

@@ -1,14 +1,14 @@
 import '@src/styles/globals.css';
 
-import { ThemeProvider } from '@mui/material/styles';
 import { AppRouterCacheProvider } from '@mui/material-nextjs/v15-appRouter';
-import { Bai_Jamjuree, Inter } from 'next/font/google';
-import { type Metadata } from 'next';
+import { ThemeProvider } from '@mui/material/styles';
 import { GoogleAnalytics } from '@next/third-parties/google';
+import { type Metadata } from 'next';
+import { Bai_Jamjuree, Inter } from 'next/font/google';
 
-import theme from '@src/utils/theme';
+import { AuthProvider } from './AuthProvider';
 import { ToastProvider } from '@src/components/toast/ToastProvider';
-import NavBar from '@src/components/NavBar';
+import theme from '@src/utils/theme';
 
 const inter = Inter({
   subsets: ['latin'],
@@ -55,14 +55,13 @@ export default function RootLayout({
       <body
         className={`bg-white dark:bg-black ${inter.variable} font-main ${baiJamjuree.variable} text-haiti dark:text-white`}
       >
-        <AppRouterCacheProvider>
-          <ThemeProvider theme={theme}>
-            <ToastProvider>
-              <NavBar />
-              {children}
-            </ToastProvider>
-          </ThemeProvider>
-        </AppRouterCacheProvider>
+        <AuthProvider>
+          <AppRouterCacheProvider>
+            <ThemeProvider theme={theme}>
+              <ToastProvider>{children}</ToastProvider>
+            </ThemeProvider>
+          </AppRouterCacheProvider>
+        </AuthProvider>
         {process.env.NEXT_PUBLIC_VERCEL_ENV === 'production' && (
           <GoogleAnalytics gaId="G-3NDS0P32CZ" />
         )}
