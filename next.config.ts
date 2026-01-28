@@ -11,6 +11,7 @@ import type { NextConfig } from 'next';
 
 /** @type {import("next").NextConfig} */
 const config: NextConfig = {
+  outputFileTracingRoot: __dirname,
   images: {
     remotePatterns: [
       {

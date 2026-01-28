@@ -14,6 +14,7 @@ import {
   Person as PersonIcon,
   Settings as SettingsIcon,
   Logout as LogoutIcon,
+  AccountCircle as AccountCircleIcon,
 } from '@mui/icons-material';
 
 export default function ProfileDropdown() {
@@ -47,21 +48,13 @@ export default function ProfileDropdown() {
     <>
       <IconButton
         onClick={handleClick}
-        size="small"
-        sx={{ ml: 2 }}
+        size="large"
+        sx={{ color: '#ffffff', '&:hover': { backgroundColor: 'rgba(255, 255, 255, 0.1)' } }}
         aria-controls={open ? 'profile-menu' : undefined}
         aria-haspopup="true"
         aria-expanded={open ? 'true' : undefined}
       >
-        <Avatar
-          sx={{
-            width: 40,
-            height: 40,
-            bgcolor: 'primary.main',
-          }}
-        >
-          U
-        </Avatar>
+        <AccountCircleIcon fontSize="large" />
       </IconButton>
 
       <Menu

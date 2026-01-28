@@ -58,3 +58,13 @@ export const auth = betterAuth({
     },
   },
 });
+
+/**
+ * Wrapper to get the session from Better Auth on the server.
+ */
+export async function getServerAuthSession() {
+  const { headers } = await import('next/headers');
+  return await auth.api.getSession({
+    headers: await headers(),
+  });
+}
