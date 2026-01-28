@@ -1,6 +1,7 @@
 'use client';
 
 import React, { useState } from 'react';
+import { useRouter } from 'next/navigation';
 import {
   Avatar,
   IconButton,
@@ -18,6 +19,7 @@ import {
 } from '@mui/icons-material';
 
 export default function ProfileDropdown() {
+  const router = useRouter();
   const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
   const open = Boolean(anchorEl);
 
@@ -30,7 +32,7 @@ export default function ProfileDropdown() {
   };
 
   const handleProfile = () => {
-    console.log('Navigate to Profile');
+    router.push('/profile');
     handleClose();
   };
 
