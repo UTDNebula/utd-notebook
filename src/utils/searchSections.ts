@@ -371,14 +371,14 @@ function searchProfessors(
 
       let tokenScore = 0;
       if (words.length >= 2) {
-        const [w1, ...restWords] = words;
+        const [w1 = '', ...restWords] = words;
         const w2 = restWords.join(' ');
         if (first.startsWith(w1) && last.startsWith(w2)) tokenScore -= 30;
         else if (first.includes(w1) && last.includes(w2)) tokenScore -= 24;
         else if (first.startsWith(w2) && last.startsWith(w1)) tokenScore -= 20;
         else if (first.includes(w2) && last.includes(w1)) tokenScore -= 16;
       } else if (words.length === 1) {
-        const [word] = words;
+        const [word = ''] = words;
         if (first.startsWith(word) || last.startsWith(word)) tokenScore -= 18;
         else if (first.includes(word) || last.includes(word)) tokenScore -= 10;
       }
