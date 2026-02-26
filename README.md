@@ -11,6 +11,16 @@ DM Shriram for more details.
 Currently, we're tracking all issues via GitHub Issues. If you would like to work on an issue, please comment on the issue and we will assign it to you.
 If you see anything that you think could be improved, please create an issue and we will look into it.
 
+### Tech Stack
+
+- **Frontend:** Next.js, React, TypeScript, Tailwind CSS  
+- **API Layer:** tRPC  
+- **Validation & Serialization:** Zod, SuperJSON  
+- **Authentication:** NextAuth, BetterAuth  
+- **State Management:** Zustand  
+- **Database:** PostgreSQL (Neon)  
+- **ORM:** Drizzle ORM  
+
 ### Getting Started
 
 Please make sure you have at least [NodeJS v21.1.0](https://nodejs.org/en) or greater installed before continuing.
@@ -65,10 +75,3 @@ git checkout -b feature/<feature-name>
 When you are ready to merge your branch into the `develop` branch, please create a pull request and request a review from the Jupiter Dev Team.
 Please include details about what issue you are addressing with the pull request, what changes you made, and any other relevant information.
 
-### Tech Stack
-
-- Frontend: Next.js, React, Typescript, Tailwind CSS
-- Validation & Serialization: Zod, SuperJSON
-- Authentication: NextAuth ,BetterAuth
-- State Management: Zustand, SuperJSON
-- Database: PostgreSQL, Neon Database, Drizzle ORM
