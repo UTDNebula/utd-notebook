@@ -64,3 +64,11 @@ git checkout -b feature/<feature-name>
 
 When you are ready to merge your branch into the `develop` branch, please create a pull request and request a review from the Jupiter Dev Team.
 Please include details about what issue you are addressing with the pull request, what changes you made, and any other relevant information.
+
+### Tech Stack
+
+Frontend: Next.js, React, Typescript, Tailwind CSS
+Validation & Serialization: Zod, SuperJSON
+Authentication: NextAuth ,BetterAuth
+State Management: Zustand, SuperJSON
+Database: PostgreSQL, Neon Database, Drizzle ORM
