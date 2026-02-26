@@ -67,8 +67,8 @@ Please include details about what issue you are addressing with the pull request
 
 ### Tech Stack
 
-Frontend: Next.js, React, Typescript, Tailwind CSS
-Validation & Serialization: Zod, SuperJSON
-Authentication: NextAuth ,BetterAuth
-State Management: Zustand, SuperJSON
-Database: PostgreSQL, Neon Database, Drizzle ORM
+- Frontend: Next.js, React, Typescript, Tailwind CSS
+- Validation & Serialization: Zod, SuperJSON
+- Authentication: NextAuth ,BetterAuth
+- State Management: Zustand, SuperJSON
+- Database: PostgreSQL, Neon Database, Drizzle ORM
