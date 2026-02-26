@@ -14,12 +14,10 @@ If you see anything that you think could be improved, please create an issue and
 ### Tech Stack
 
 - **Frontend:** Next.js, React, TypeScript, Tailwind CSS  
-- **API Layer:** tRPC  
 - **Validation & Serialization:** Zod, SuperJSON  
 - **Authentication:** NextAuth, BetterAuth  
 - **State Management:** Zustand  
-- **Database:** PostgreSQL (Neon)  
-- **ORM:** Drizzle ORM  
+- **Database:** PostgreSQL (Neon), Drizzle ORM
 
 ### Getting Started
 
