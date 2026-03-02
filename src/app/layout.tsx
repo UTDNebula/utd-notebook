@@ -23,12 +23,10 @@ export const metadata: Metadata = {
     template: '%s - UTD NOTEBOOK',
     default: 'UTD NOTEBOOK',
   },
-  description:
-    '',
+  description: '',
   openGraph: {
     title: 'UTD Notebook',
-    description:
-      '',
+    description: '',
     type: 'website',
   },
   twitter: {
@@ -50,7 +48,9 @@ export default function RootLayout({
 }) {
   return (
     <html lang="en">
-      <body className={`bg-white dark:bg-black ${inter.variable} font-main ${baiJamjuree.variable} text-haiti dark:text-white`}>
+      <body
+        className={`bg-white dark:bg-black ${inter.variable} font-main ${baiJamjuree.variable} text-haiti dark:text-white`}
+      >
         {children}
         {process.env.NEXT_PUBLIC_VERCEL_ENV === 'production' && (
           <GoogleAnalytics gaId="G-" />
