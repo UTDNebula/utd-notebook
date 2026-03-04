@@ -1,8 +1,11 @@
 'use client';
 
+import SearchIcon from '@mui/icons-material/Search';
 import {
   Autocomplete,
   TextField,
+  InputAdornment,
+	CircularProgress,
 } from '@mui/material';
 
 import useDebounce from '@utils/useDebounce';
@@ -18,7 +21,7 @@ export const FileSearchBar = () => {
 
   const debouncedInput = useDebounce(input, 300);
 
-  const { data } = useQuery(
+  const { data, isFetching } = useQuery(
     trpc.file.byName.queryOptions(
       { name: debouncedInput},
       {
@@ -31,6 +34,8 @@ export const FileSearchBar = () => {
 	return (
 		<Autocomplete
 			freeSolo
+			autoHighlight
+			disableClearable
 			inputValue={input}
 			options={input === '' ? [] : (data ?? [])}
 			filterOptions={(o) => o}
@@ -44,6 +49,25 @@ export const FileSearchBar = () => {
 			onInputChange={(e, value) => {
 				setInput(value);
 			}}
+			renderInput={(params) => (
+				<TextField
+					{...params}
+					slotProps={{
+						input: {
+							...params.InputProps,
+							endAdornment: (
+								<InputAdornment position="end">
+									{params.InputProps.endAdornment}
+									{isFetching ? <CircularProgress color="inherit" size={24} /> : <SearchIcon />}
+								</InputAdornment>
+							),
+							type: 'search',
+							className: params.InputProps.className,
+						},
+					}}
+					placeholder="Search for files"
+				/>  
+			)}
 			getOptionLabel={(option) => {
 				return typeof option === 'string' ? option : option.name;
 			}}
