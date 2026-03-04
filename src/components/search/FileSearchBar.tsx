@@ -6,6 +6,7 @@ import {
   TextField,
   InputAdornment,
 	CircularProgress,
+  Typography
 } from '@mui/material';
 
 import useDebounce from '@utils/useDebounce';
@@ -25,7 +26,7 @@ export const FileSearchBar = () => {
     trpc.file.byName.queryOptions(
       { name: debouncedInput},
       {
-          enabled: !!debouncedInput, // only call backend if there's non-empty string
+          enabled: !!debouncedInput,
           placeholderData: keepPreviousData,
       }
 		)
@@ -68,6 +69,19 @@ export const FileSearchBar = () => {
 					placeholder="Search for files"
 				/>  
 			)}
+			renderOption={(props, option) => {
+				const { key, ...otherProps } = props;
+				return (
+					<li key={key} {...otherProps}>
+						<Typography variant="body1">
+							{option.name}
+						</Typography>
+						<Typography variant="body2" sx={{ pl: 1, opacity: .70}}>
+							{option.section ? option.section.prefix : ''} {option.section ? option.section.number : ''}
+						</Typography>
+					</li>
+				);
+			}}
 			getOptionLabel={(option) => {
 				return typeof option === 'string' ? option : option.name;
 			}}
