@@ -6,6 +6,7 @@ import { SelectUserMetadata } from '@src/server/db/models';
 import { api } from '@src/trpc/server';
 import DeleteAccount from './forms/DeleteAccount';
 import UserInfo from './forms/UserInfo';
+import Username from './forms/Username';
 import SettingsHeader from './SettingsHeader';
 
 async function SettingsForm({
@@ -39,6 +40,7 @@ async function SettingsForm({
         </Alert>
       )}
       <SettingsHeader user={user} />
+      {userData && <Username user={userData} />}
       {userData && <UserInfo user={userData} />}
       <DeleteAccount />
     </div>

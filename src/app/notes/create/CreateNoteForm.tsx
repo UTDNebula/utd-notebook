@@ -88,57 +88,63 @@ const FileForm = () => {
         heading="Create New Note"
         description="Upload a new note here to help future students."
       >
-        <div className="flex flex-col gap-4">
-          <form.AppField name="file">
-            {(field) => (
-              <FormFile
-                label="File"
-                value={field.state.value}
-                onBlur={field.handleBlur}
-                onChange={(e) => {
-                  const file = e.target.files?.[0] ?? null;
-                  field.handleChange(file);
-                }}
-                helperText={
-                  !field.state.meta.isValid
-                    ? field.state.meta.errors
-                        .map((err) => err?.message)
-                        .join('. ') + '.'
-                    : undefined
-                }
-              />
-            )}
-          </form.AppField>
-          <form.AppField name="name">
-            {(field) => <field.TextField label="Name" className="w-full" />}
-          </form.AppField>
-          <form.AppField name="description">
-            {(field) => (
-              <field.TextField
-                label="Description"
-                multiline
-                minRows={4}
-                helperText={
-                  <span>
-                    We support{' '}
-                    <a
-                      href="https://www.markdownguide.org/basic-syntax/"
-                      rel="noreferrer"
-                      target="_blank"
-                      className="text-royal dark:text-cornflower-300 underline"
-                    >
-                      Markdown
-                    </a>
-                    !
-                  </span>
-                }
-                className="w-full"
-              />
-            )}
-          </form.AppField>
-          <form.AppField name="section">
-            {(field) => <field.TextField label="Section" className="w-full" />}
-          </form.AppField>
+        <div className="flex flex-col gap-6 lg:flex-row">
+          <div className="w-full lg:w-5/12">
+            <form.AppField name="file">
+              {(field) => (
+                <FormFile
+                  label="File"
+                  value={field.state.value}
+                  onBlur={field.handleBlur}
+                  onChange={(e) => {
+                    const file = e.target.files?.[0] ?? null;
+                    field.handleChange(file);
+                  }}
+                  helperText={
+                    !field.state.meta.isValid
+                      ? field.state.meta.errors
+                          .map((err) => err?.message)
+                          .join('. ') + '.'
+                      : undefined
+                  }
+                />
+              )}
+            </form.AppField>
+          </div>
+          <div className="flex flex-col gap-4 w-full lg:w-7/12">
+            <form.AppField name="name">
+              {(field) => <field.TextField label="Name" className="w-full" />}
+            </form.AppField>
+            <form.AppField name="description">
+              {(field) => (
+                <field.TextField
+                  label="Description"
+                  multiline
+                  minRows={4}
+                  helperText={
+                    <span>
+                      We support{' '}
+                      <a
+                        href="https://www.markdownguide.org/basic-syntax/"
+                        rel="noreferrer"
+                        target="_blank"
+                        className="text-royal dark:text-cornflower-300 underline"
+                      >
+                        Markdown
+                      </a>
+                      !
+                    </span>
+                  }
+                  className="w-full"
+                />
+              )}
+            </form.AppField>
+            <form.AppField name="section">
+              {(field) => (
+                <field.TextField label="Section" className="w-full" />
+              )}
+            </form.AppField>
+          </div>
         </div>
         <div className="flex flex-wrap justify-end items-center gap-2">
           <form.AppForm>

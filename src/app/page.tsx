@@ -45,7 +45,7 @@ const Home = () => {
               UTD NOTEBOOK
             </h1>
 
-            <p className="mb-10 text-white text-base md:text-lg text-shadow-[0_0_4px_rgb(0_0_0_/_0.4)]">
+            <p className="mb-10 text-center text-white text-base md:text-lg text-shadow-[0_0_4px_rgb(0_0_0_/_0.4)]">
               Share and access course notes. By students, for students.
             </p>
 
