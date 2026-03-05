@@ -105,7 +105,7 @@ const FileForm = () => {
                       ? field.state.meta.errors
                           .map((err) => err?.message)
                           .join('. ') + '.'
-                      : undefined
+                      : "Max file size 5MB"
                   }
                 />
               )}
