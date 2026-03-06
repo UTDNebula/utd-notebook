@@ -7,6 +7,8 @@ import Link from 'next/link';
 import { useMemo, useState } from 'react';
 import { BaseCard } from '@src/components/common/BaseCard';
 import type { SelectFile } from '@src/server/db/models';
+import { authClient } from '@src/utils/auth-client';
+import NoteDeleteButton from './NoteDeleteButton';
 
 type FileCardProps = {
   file: SelectFile;
@@ -24,6 +26,9 @@ const formatUpdatedAt = (updatedAt: SelectFile['updatedAt']) => {
 };
 
 export default function FileCard({ file }: FileCardProps) {
+  const { data: session } = authClient.useSession();
+  const isAuthor = session?.user?.id === file.authorId;
+
   const thumbnailUrl = file.publicUrl;
 
   const files = useMemo<FileData[]>(
@@ -63,14 +68,14 @@ export default function FileCard({ file }: FileCardProps) {
     hasStartedFetching && !thumbData && thumbnails.length === 0 && !isLoading;
 
   return (
-    <BaseCard variant="interactive" className="h-full">
+    <BaseCard variant="interactive" className="flex h-full flex-col">
       <Link
         href={file.publicUrl}
         target="_blank"
         rel="noreferrer"
-        className="flex h-full flex-col gap-3 p-4"
+        className="flex grow flex-col"
       >
-        <div className="overflow-hidden rounded-md border border-neutral-200 bg-slate-50 shadow-sm dark:border-neutral-700 dark:bg-neutral-800">
+        <div className="overflow-hidden rounded-t-lg border-b border-neutral-200 bg-slate-50 dark:border-neutral-700 dark:bg-neutral-800">
           {thumbData ? (
             <div className="relative aspect-[3/4] w-full">
               <Image
@@ -93,7 +98,7 @@ export default function FileCard({ file }: FileCardProps) {
           )}
         </div>
 
-        <div className="flex items-start justify-between gap-3">
+        <div className="flex flex-col gap-2 p-4">
           <div className="min-w-0">
             <h3
               className="line-clamp-1 text-lg font-semibold"
@@ -105,18 +110,24 @@ export default function FileCard({ file }: FileCardProps) {
               Uploaded by {file.authorId}
             </p>
           </div>
-        </div>
 
-        {file.description && (
-          <p className="line-clamp-2 text-sm text-slate-800 dark:text-slate-200">
-            {file.description}
-          </p>
-        )}
+          {file.description && (
+            <p className="line-clamp-2 text-sm text-slate-800 dark:text-slate-200">
+              {file.description}
+            </p>
+          )}
 
-        <div className="mt-auto text-xs text-slate-600 dark:text-slate-400">
-          Updated {formatUpdatedAt(file.updatedAt)}
+          <div className="mt-auto text-xs text-slate-600 dark:text-slate-400">
+            Updated {formatUpdatedAt(file.updatedAt)}
+          </div>
         </div>
       </Link>
+
+      {isAuthor && (
+        <div className="m-4 mt-0 flex flex-row space-x-2">
+          <NoteDeleteButton fileId={file.id} />
+        </div>
+      )}
     </BaseCard>
   );
 }
