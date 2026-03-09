@@ -59,7 +59,7 @@ const Home = () => {
                       <SearchIcon className="text-royal dark:text-cornflower-300" />
                     </InputAdornment>
                   ),
-                  className: 'rounded-full bg-white dark:bg-neutral-800',
+                  className: 'rounded-full bg-white dark:bg-neutral-700',
                 },
               }}
               className="w-full max-w-xs md:max-w-sm lg:max-w-md"

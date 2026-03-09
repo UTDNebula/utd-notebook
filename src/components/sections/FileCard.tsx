@@ -70,7 +70,7 @@ export default function FileCard({ file }: FileCardProps) {
         rel="noreferrer"
         className="flex h-full flex-col gap-3 p-4"
       >
-        <div className="overflow-hidden rounded-md border border-neutral-200 bg-slate-50 shadow-sm dark:border-neutral-700 dark:bg-neutral-800">
+        <div className="overflow-hidden rounded-md border border-neutral-200 bg-white shadow-sm dark:border-neutral-600 dark:bg-neutral-700">
           {thumbData ? (
             <div className="relative aspect-[3/4] w-full">
               <Image
