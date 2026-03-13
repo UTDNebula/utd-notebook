@@ -173,6 +173,7 @@ const NoteForm = ({ mode = 'create', file: existingFile }: NoteFormProps) => {
                 {(field) => (
                   <field.TextField
                     label="Name"
+                    placeholder="Example: CS1200 Midterm Notes"
                     maxLength={100}
                     className="w-full"
                   />
