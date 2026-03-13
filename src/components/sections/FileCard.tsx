@@ -11,7 +11,13 @@ import { authClient } from '@src/utils/auth-client';
 import NoteEditButton from './NoteEditButton';
 
 type FileCardProps = {
-  file: SelectFile;
+  file: SelectFile & {
+    author?: {
+      username?: string | null;
+      firstName?: string | null;
+      lastName?: string | null;
+    };
+  };
 };
 
 const formatUpdatedAt = (updatedAt: SelectFile['updatedAt']) => {
@@ -107,7 +113,11 @@ export default function FileCard({ file }: FileCardProps) {
               {file.name}
             </h3>
             <p className="text-xs font-medium text-slate-600 dark:text-slate-400">
-              Uploaded by {file.authorId}
+              Uploaded by{' '}
+              {file.author
+                ? `${file.author.firstName ?? ''} ${file.author.lastName ?? ''}`.trim() ||
+                  file.author.username
+                : 'Unknown'}
             </p>
           </div>
 
