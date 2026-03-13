@@ -11,7 +11,12 @@ import { authClient } from '@src/utils/auth-client';
 import NoteEditButton from './NoteEditButton';
 
 type FileCardProps = {
-  file: SelectFile;
+  file: SelectFile & {
+    author?: {
+      username?: string | null;
+      name?: string | null;
+    };
+  };
 };
 
 const formatUpdatedAt = (updatedAt: SelectFile['updatedAt']) => {
@@ -39,25 +44,6 @@ export default function FileCard({ file }: FileCardProps) {
   const { thumbnails, isLoading } = useThumbnails(files);
   const thumbData = thumbnails[0]?.thumbData;
 
-  /*
-    !isLoading does not mean thumbData is not null.
-    Even with no errors and isLoading false, it can take a few rerenders
-    for thumbData to be populated.
-
-    On mount, isLoading is false and thumbData is null.
-    So we do not want to show "Unable to preview" immediately.
-
-    We wait until the first real fetch begins, indicated by isLoading
-    turning true at least once. After that, if loading has finished and we
-    still have no thumbnail data, we can treat it as a preview failure.
-
-    We store that "has started fetching at least once" flag in state,
-    because it affects rendering.
-
-    useThumbnails.error has always been null in testing,
-    so we are not relying on it for error handling here.
-  */
-
   const [hasStartedFetching, setHasStartedFetching] = useState(false);
 
   if (isLoading && !hasStartedFetching) {
@@ -66,6 +52,13 @@ export default function FileCard({ file }: FileCardProps) {
 
   const showPreviewError =
     hasStartedFetching && !thumbData && thumbnails.length === 0 && !isLoading;
+
+  /**
+   * Display order:
+   * username → full name → authorId
+   */
+  const authorDisplay =
+    file.author?.username ?? file.author?.name ?? file.authorId;
 
   return (
     <BaseCard variant="interactive" className="flex h-full flex-col">
@@ -106,8 +99,9 @@ export default function FileCard({ file }: FileCardProps) {
             >
               {file.name}
             </h3>
+
             <p className="text-xs font-medium text-slate-600 dark:text-slate-400">
-              Uploaded by {file.authorId}
+              Uploaded by {authorDisplay}
             </p>
           </div>
 
