@@ -6,15 +6,17 @@ import Image from 'next/image';
 import Link from 'next/link';
 import { useMemo, useState } from 'react';
 import { BaseCard } from '@src/components/common/BaseCard';
-import type { SelectFile } from '@src/server/db/models';
+import type { SelectFileWithUserMetadata } from '@src/server/db/models';
 import { authClient } from '@src/utils/auth-client';
 import NoteEditButton from './NoteEditButton';
 
 type FileCardProps = {
-  file: SelectFile;
+  file: SelectFileWithUserMetadata;
 };
 
-const formatUpdatedAt = (updatedAt: SelectFile['updatedAt']) => {
+const formatUpdatedAt = (
+  updatedAt: SelectFileWithUserMetadata['updatedAt'],
+) => {
   const date =
     updatedAt instanceof Date ? updatedAt : new Date(updatedAt ?? Date.now());
 
