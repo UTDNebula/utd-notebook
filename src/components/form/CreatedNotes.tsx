@@ -2,10 +2,10 @@
 
 import Panel from '@src/components/common/Panel';
 import FilesGrid from '@src/components/sections/FilesGrid';
-import type { SelectFile } from '@src/server/db/models';
+import type { SelectFileWithAuthorPreview } from '@src/server/db/models';
 
 type CreatedNotesProps = {
-  createdNotes: SelectFile[];
+  createdNotes: SelectFileWithAuthorPreview[];
 };
 
 export default function CreatedNotes({ createdNotes }: CreatedNotesProps) {
