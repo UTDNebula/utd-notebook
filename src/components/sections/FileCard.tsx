@@ -6,6 +6,7 @@ import Image from 'next/image';
 import Link from 'next/link';
 import { useMemo, useState } from 'react';
 import { BaseCard } from '@src/components/common/BaseCard';
+import SaveButton from '@src/components/sections/SaveButton';
 import type { SelectFile } from '@src/server/db/models';
 
 type FileCardProps = {
@@ -64,59 +65,64 @@ export default function FileCard({ file }: FileCardProps) {
 
   return (
     <BaseCard variant="interactive" className="h-full">
-      <Link
-        href={file.publicUrl}
-        target="_blank"
-        rel="noreferrer"
-        className="flex h-full flex-col gap-3 p-4"
-      >
-        <div className="overflow-hidden rounded-md border border-neutral-200 bg-slate-50 shadow-sm dark:border-neutral-700 dark:bg-neutral-800">
-          {thumbData ? (
-            <div className="relative aspect-[3/4] w-full">
-              <Image
-                src={thumbData}
-                alt={`${file.name} preview`}
-                fill
-                sizes="(min-width: 1024px) 320px, (min-width: 640px) 50vw, 100vw"
-                className="object-cover"
-                unoptimized
-              />
-            </div>
-          ) : showPreviewError ? (
-            <div className="flex aspect-[3/4] w-full items-center justify-center text-xs font-medium text-slate-600 dark:text-slate-400">
-              Unable to preview
-            </div>
-          ) : (
-            <div className="relative aspect-[3/4] w-full">
-              <Skeleton variant="rounded" className="h-full w-full" />
-            </div>
-          )}
-        </div>
-
-        <div className="flex items-start justify-between gap-3">
-          <div className="min-w-0">
-            <h3
-              className="line-clamp-1 text-lg font-semibold"
-              title={file.name}
-            >
-              {file.name}
-            </h3>
-            <p className="text-xs font-medium text-slate-600 dark:text-slate-400">
-              Uploaded by {file.authorId}
-            </p>
+      <div className="flex h-full flex-col">
+        <Link
+          href={file.publicUrl}
+          target="_blank"
+          rel="noreferrer"
+          className="flex flex-1 flex-col gap-3 p-4 pb-0"
+        >
+          <div className="overflow-hidden rounded-md border border-neutral-200 bg-slate-50 shadow-sm dark:border-neutral-700 dark:bg-neutral-800">
+            {thumbData ? (
+              <div className="relative aspect-[3/4] w-full">
+                <Image
+                  src={thumbData}
+                  alt={`${file.name} preview`}
+                  fill
+                  sizes="(min-width: 1024px) 320px, (min-width: 640px) 50vw, 100vw"
+                  className="object-cover"
+                  unoptimized
+                />
+              </div>
+            ) : showPreviewError ? (
+              <div className="flex aspect-[3/4] w-full items-center justify-center text-xs font-medium text-slate-600 dark:text-slate-400">
+                Unable to preview
+              </div>
+            ) : (
+              <div className="relative aspect-[3/4] w-full">
+                <Skeleton variant="rounded" className="h-full w-full" />
+              </div>
+            )}
           </div>
-        </div>
 
-        {file.description && (
-          <p className="line-clamp-2 text-sm text-slate-800 dark:text-slate-200">
-            {file.description}
-          </p>
-        )}
+          <div className="flex items-start justify-between gap-3">
+            <div className="min-w-0">
+              <h3
+                className="line-clamp-1 text-lg font-semibold"
+                title={file.name}
+              >
+                {file.name}
+              </h3>
+              <p className="text-xs font-medium text-slate-600 dark:text-slate-400">
+                Uploaded by {file.authorId}
+              </p>
+            </div>
+          </div>
 
-        <div className="mt-auto text-xs text-slate-600 dark:text-slate-400">
-          Updated {formatUpdatedAt(file.updatedAt)}
+          {file.description && (
+            <p className="line-clamp-2 text-sm text-slate-800 dark:text-slate-200">
+              {file.description}
+            </p>
+          )}
+        </Link>
+
+        <div className="mt-auto flex items-center justify-between px-4 pb-4 pt-3">
+          <span className="text-xs text-slate-600 dark:text-slate-400">
+            Updated {formatUpdatedAt(file.updatedAt)}
+          </span>
+          <SaveButton fileId={file.id} />
         </div>
-      </Link>
+      </div>
     </BaseCard>
   );
 }
