@@ -87,10 +87,10 @@ export type SectionWithFilesWithUserMetadata = z.infer<
 >;
 
 export const selectFileWithAuthorPreview = selectFile.extend({
-  author: z.object({
-    username: z.string().nullable(),
-    firstName: z.string(),
-    lastName: z.string(),
+  author: selectUserMetadata.pick({
+    username: true,
+    firstName: true,
+    lastName: true,
   }),
 });
 

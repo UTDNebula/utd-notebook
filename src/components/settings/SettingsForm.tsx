@@ -4,10 +4,7 @@ import Alert from '@mui/material/Alert';
 import CreatedNotes from '@src/components/form/CreatedNotes';
 import { auth } from '@src/server/auth';
 import { SelectUserMetadata } from '@src/server/db/models';
-import type {
-  SelectFileWithAuthorPreview,
-  SelectFileWithUserMetadata,
-} from '@src/server/db/models';
+import type { SelectFileWithAuthorPreview } from '@src/server/db/models';
 import { api } from '@src/trpc/server';
 import DeleteAccount from './forms/DeleteAccount';
 import UserInfo from './forms/UserInfo';
