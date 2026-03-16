@@ -42,6 +42,7 @@ export default function FileCard({ file }: FileCardProps) {
   const thumbData = thumbnails[0]?.thumbData;
 
   /*
+    !isLoading does not mean thumbData is not null.
     Even with no errors and isLoading false, it can take a few rerenders
     for thumbData to be populated.
 
