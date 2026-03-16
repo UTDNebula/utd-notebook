@@ -53,7 +53,7 @@ export const insertFileWithUserMetadata = insertFile.extend({
   author: selectUserMetadata,
 });
 export const selectFileWithUserMetadata = selectFile.extend({
-  author: selectUserMetadata.partial(),
+  author: selectUserMetadata,
 });
 
 export type InsertFileWithUserMetadata = z.infer<
