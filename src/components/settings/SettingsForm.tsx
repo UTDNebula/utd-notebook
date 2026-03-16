@@ -19,7 +19,7 @@ async function SettingsForm({
   const user = session.user;
 
   let userData: SelectUserMetadata | undefined = undefined;
-  let createdNotes = [] as SelectFileWithAuthorPreview[];
+  let createdNotes: SelectFileWithAuthorPreview[] = [];
   await Promise.allSettled([
     api.userMetadata.byId({ id: user.id }),
     api.file.byAuthor({ authorId: user.id }),
