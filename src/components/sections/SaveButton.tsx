@@ -81,7 +81,9 @@ export default function SaveButton({ fileId }: SaveButtonProps) {
     e.stopPropagation();
 
     if (!session?.user) {
-      router.push('/auth');
+      router.push(
+        `/auth?callbackUrl=${encodeURIComponent(window.location.href)}`,
+      );
       return;
     }
 
