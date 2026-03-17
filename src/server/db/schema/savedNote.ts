@@ -1,4 +1,4 @@
-import { relations, sql } from 'drizzle-orm';
+import { relations } from 'drizzle-orm';
 import {
   boolean,
   pgTable,
@@ -23,9 +23,7 @@ export const userMetadataToNotes = pgTable(
 
     saved: boolean('saved').notNull().default(true),
 
-    savedAt: timestamp('saved_at', { mode: 'date' })
-      .notNull()
-      .default(sql`now()`),
+    savedAt: timestamp('saved_at').defaultNow().notNull(),
   },
   (t) => [primaryKey({ columns: [t.userId, t.fileId] })],
 );
