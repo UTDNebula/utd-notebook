@@ -212,7 +212,7 @@ const NoteForm = ({ mode = 'create', file: existingFile }: NoteFormProps) => {
                     <field.TextField
                       label="Section"
                       className="w-full"
-                      helperText="Example: CS 1200.001 Fall 2025"
+                      helperText=""
                     />
                   )}
                 </form.AppField>
