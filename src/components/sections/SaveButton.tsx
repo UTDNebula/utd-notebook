@@ -2,7 +2,7 @@
 
 import BookmarkIcon from '@mui/icons-material/Bookmark';
 import BookmarkBorderIcon from '@mui/icons-material/BookmarkBorder';
-import { IconButton } from '@mui/material';
+import { Button } from '@mui/material';
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import { useRouter } from 'next/navigation';
 import { setSnackbar } from '@src/components/global/Snackbar';
@@ -91,17 +91,14 @@ export default function SaveButton({ fileId }: SaveButtonProps) {
   };
 
   return (
-    <IconButton
+    <Button
+      variant="contained"
       size="small"
       onClick={handleClick}
-      aria-label={isSaved ? 'Unsave note' : 'Save note'}
-      className="text-slate-600 hover:text-primary-600 dark:text-slate-400 dark:hover:text-primary-400"
+      className="normal-case bg-white hover:bg-neutral-200 dark:bg-neutral-800 dark:hover:bg-neutral-700 text-haiti dark:text-white"
+      startIcon={isSaved ? <BookmarkIcon /> : <BookmarkBorderIcon />}
     >
-      {isSaved ? (
-        <BookmarkIcon fontSize="small" />
-      ) : (
-        <BookmarkBorderIcon fontSize="small" />
-      )}
-    </IconButton>
+      {isSaved ? 'Saved' : 'Save'}
+    </Button>
   );
 }
