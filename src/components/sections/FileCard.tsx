@@ -124,11 +124,12 @@ export default function FileCard({ file }: FileCardProps) {
         </div>
       </Link>
 
-      {isAuthor && (
-        <div className="m-4 mt-0 flex flex-row space-x-2">
-          <NoteEditButton fileId={file.id} />
+      <div className="m-4 mt-0 flex flex-row items-center space-x-2">
+        {isAuthor && <NoteEditButton fileId={file.id} />}
+        <div className="ml-auto">
+          <SaveButton fileId={file.id} />
         </div>
-      )}
+      </div>
     </BaseCard>
   );
 }
