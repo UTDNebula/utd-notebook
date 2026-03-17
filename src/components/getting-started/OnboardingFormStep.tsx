@@ -30,6 +30,7 @@ const OnboardingFormStep = withForm({
                   {(field) => (
                     <field.TextField
                       label="First Name"
+                      maxLength={100}
                       className="grow"
                       required
                     />
@@ -37,7 +38,11 @@ const OnboardingFormStep = withForm({
                 </form.AppField>
                 <form.AppField name="lastName">
                   {(field) => (
-                    <field.TextField label="Last Name" className="grow" />
+                    <field.TextField
+                      label="Last Name"
+                      maxLength={100}
+                      className="grow"
+                    />
                   )}
                 </form.AppField>
               </form.Question>
@@ -130,6 +135,7 @@ const OnboardingFormStep = withForm({
                       <field.TextField
                         label="UTD Email"
                         placeholder="abc123456@utdallas.edu"
+                        maxLength={100}
                         className="w-full"
                         required
                       />
