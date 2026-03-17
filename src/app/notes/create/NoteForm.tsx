@@ -173,7 +173,7 @@ const NoteForm = ({ mode = 'create', file: existingFile }: NoteFormProps) => {
                 {(field) => (
                   <field.TextField
                     label="Name"
-                    placeholder="Example: CS1200 Midterm Notes"
+                    placeholder="Example: Midterm Notes"
                     maxLength={100}
                     className="w-full"
                   />
@@ -212,7 +212,7 @@ const NoteForm = ({ mode = 'create', file: existingFile }: NoteFormProps) => {
                     <field.TextField
                       label="Section"
                       className="w-full"
-                      helperText=""
+                      helperText="Example: CS 1200.001 Fall 2025"
                     />
                   )}
                 </form.AppField>
