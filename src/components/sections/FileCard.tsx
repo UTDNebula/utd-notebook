@@ -114,10 +114,6 @@ export default function FileCard({ file }: FileCardProps) {
             >
               {file.name}
             </h3>
-
-            <p className="text-xs font-medium text-slate-600 dark:text-slate-400">
-              Uploaded by {authorDisplay}
-            </p>
           </div>
 
           {file.description && (
@@ -131,6 +127,20 @@ export default function FileCard({ file }: FileCardProps) {
           </div>
         </div>
       </Link>
+
+      <p className="px-4 pb-2 text-xs font-medium text-slate-600 dark:text-slate-400">
+        Uploaded by{' '}
+        {file.author?.username ? (
+          <Link
+            href={`/profile/${file.author.username}`}
+            className="underline hover:text-slate-900 dark:hover:text-slate-200"
+          >
+            {authorDisplay}
+          </Link>
+        ) : (
+          authorDisplay
+        )}
+      </p>
 
       {isAuthor && (
         <div className="m-4 mt-0 flex flex-row space-x-2">
