@@ -43,7 +43,7 @@ export default function SectionHeader({
       </div>
 
       {metaLabel && (
-        <BaseCard className="w-fit bg-white/85 dark:bg-neutral-900/85 backdrop-blur px-4 py-2">
+        <BaseCard className="w-fit px-4 py-2">
           <div className="flex items-center gap-2 text-sm font-semibold">
             <span className="h-2 w-2 rounded-full bg-royal dark:bg-cornflower-300" />
             <span>{metaLabel}</span>

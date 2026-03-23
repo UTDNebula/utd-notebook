@@ -9,6 +9,7 @@ import { BaseCard } from '@src/components/common/BaseCard';
 import SaveButton from '@src/components/sections/SaveButton';
 import type { SelectFile } from '@src/server/db/models';
 import { authClient } from '@src/utils/auth-client';
+import NoteDeleteButton from './NoteDeleteButton';
 import NoteEditButton from './NoteEditButton';
 
 type FileCardProps = {
@@ -76,7 +77,7 @@ export default function FileCard({ file }: FileCardProps) {
         rel="noreferrer"
         className="flex grow flex-col"
       >
-        <div className="overflow-hidden rounded-t-lg border-b border-neutral-200 bg-slate-50 dark:border-neutral-700 dark:bg-neutral-800">
+        <div className="overflow-hidden rounded-t-lg border-b border-neutral-200 bg-white dark:border-neutral-600 dark:bg-neutral-700">
           {thumbData ? (
             <div className="relative aspect-[3/4] w-full">
               <Image
@@ -126,6 +127,7 @@ export default function FileCard({ file }: FileCardProps) {
 
       <div className="m-4 mt-0 flex flex-row items-center space-x-2">
         {isAuthor && <NoteEditButton fileId={file.id} />}
+        {isAuthor && <NoteDeleteButton fileId={file.id} />}
         <SaveButton fileId={file.id} />
       </div>
     </BaseCard>

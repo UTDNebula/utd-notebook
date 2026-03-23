@@ -95,7 +95,7 @@ const OnboardingFormStep = withForm({
                         }}
                         value={field.state.value ?? null}
                         label="Graduation Date"
-                        className="[&>.MuiPickersInputBase-root]:bg-white dark:[&>.MuiPickersInputBase-root]:bg-neutral-900 w-64 grow"
+                        className="w-64 grow"
                         slotProps={{
                           actionBar: {
                             actions: ['accept'],

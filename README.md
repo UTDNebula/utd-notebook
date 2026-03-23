@@ -11,6 +11,14 @@ DM Shriram for more details.
 Currently, we're tracking all issues via GitHub Issues. If you would like to work on an issue, please comment on the issue and we will assign it to you.
 If you see anything that you think could be improved, please create an issue and we will look into it.
 
+### Tech Stack
+
+- **Frontend:** Next.js, React, TypeScript, Tailwind CSS
+- **Validation & Serialization:** Zod, SuperJSON
+- **Authentication:** BetterAuth
+- **State Management:** Zustand
+- **Database:** PostgreSQL (Neon), Drizzle ORM
+
 ### Getting Started
 
 Please make sure you have at least [NodeJS v21.1.0](https://nodejs.org/en) or greater installed before continuing.
@@ -32,17 +40,11 @@ Make sure you have a `.env` file in the root of the project. If you do not, copy
 
 #### Environment Variables
 
-This project uses [NextAuth](https://next-auth.js.org/) for authentication. NextAuth, with their built-in [providers](https://next-auth.js.org/providers/), makes it easy for users to use preexisting logins. Currently, we are using Discord and Google as OAuth Providers, so you will need to create a Client ID and Client Secret for [Google](https://next-auth.js.org/providers/google) and [Discord](https://next-auth.js.org/providers/discord) respectively (or remove the providers if you'd like).
+This project uses [BetterAuth](https://better-auth.com) for authentication. BetterAuth, with their built-in [providers](https://better-auth.com/docs/introduction), makes it easy for users to use preexisting logins. Currently, we are using Discord and Google as OAuth Providers, so you will need to create a Client ID and Client Secret for [Google](https://better-auth.com/docs/authentication/google) and [Discord](https://better-auth.com/docs/authentication/discord) respectively (or remove the providers if you'd like).
 
 Once you have your Client ID and Client Secrets, add them to your `.env` file.
 
 The `BETTER_AUTH_URL` variable should be set to `http://localhost:3000` for local development.
-The `BETTER_AUTH_SECRET` variable should be set to a random string of characters. You can generate one [here](https://randomkeygen.com/).
-or by running the following command in your terminal.
-
-```bash
-openssl rand -hex 32
-```
 
 UTD Notebook uses an ORM called [Drizzle](https://orm.drizzle.team/) to interact with the database. In order to connect to the database, you will need to add the `DATABASE_URL` variable to your `.env` file. Your project lead will give this to you upon request.
 
