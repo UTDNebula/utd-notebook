@@ -10,6 +10,7 @@ import {
   MenuItem,
   MenuList,
   Popover,
+  Tooltip,
   Typography,
 } from '@mui/material';
 import Link from 'next/link';
@@ -46,19 +47,21 @@ export const ProfileDropDown = ({ shadow = false }: Props) => {
 
   return (
     <>
-      <Avatar
-        alt={session?.user.name ?? undefined}
-        src={session?.user.image ?? undefined}
-        onClick={(e) => {
-          if (session !== null) {
-            setAnchorEl(open ? null : e.currentTarget);
-          } else {
-            setShowRegisterModal(true);
-          }
-        }}
-        component="button"
-        className={`cursor-pointer ${shadow ? 'drop-shadow-[0_0_4px_rgb(0_0_0_/_0.4)]' : ''}`}
-      />
+      <Tooltip title="Settings" enterDelay={0} arrow>
+        <Avatar
+          alt={session?.user.name ?? undefined}
+          src={session?.user.image ?? undefined}
+          onClick={(e) => {
+            if (session !== null) {
+              setAnchorEl(open ? null : e.currentTarget);
+            } else {
+              setShowRegisterModal(true);
+            }
+          }}
+          component="button"
+          className={`cursor-pointer ${shadow ? 'drop-shadow-[0_0_4px_rgb(0_0_0_/_0.4)]' : ''}`}
+        />
+      </Tooltip>
       {session && (
         <Popover
           open={open}

@@ -95,12 +95,20 @@ export default function UserInfo({ user }: UserInfoProps) {
             <div className="flex flex-wrap gap-6">
               <form.AppField name="firstName">
                 {(field) => (
-                  <field.TextField label="First Name" className="grow" />
+                  <field.TextField
+                    label="First Name"
+                    maxLength={100}
+                    className="grow"
+                  />
                 )}
               </form.AppField>
               <form.AppField name="lastName">
                 {(field) => (
-                  <field.TextField label="Last Name" className="grow" />
+                  <field.TextField
+                    label="Last Name"
+                    maxLength={100}
+                    className="grow"
+                  />
                 )}
               </form.AppField>
             </div>
@@ -150,7 +158,7 @@ export default function UserInfo({ user }: UserInfoProps) {
                         }}
                         value={field.state.value}
                         label="Graduation Date"
-                        className="[&>.MuiPickersInputBase-root]:bg-white dark:[&>.MuiPickersInputBase-root]:bg-neutral-900 w-64 grow"
+                        className="w-64 grow"
                         slotProps={{
                           actionBar: {
                             actions: ['accept'],
@@ -187,6 +195,7 @@ export default function UserInfo({ user }: UserInfoProps) {
                     <field.TextField
                       label="UTD Email"
                       placeholder="abc123456@utdallas.edu"
+                      maxLength={100}
                       className="w-full"
                     />
                   </div>

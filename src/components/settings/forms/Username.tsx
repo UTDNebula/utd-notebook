@@ -203,6 +203,7 @@ export default function Username({ user }: UsernameProps) {
             {(field) => (
               <field.TextField
                 label="Username"
+                maxLength={30}
                 className="w-full"
                 error={
                   !field.state.meta.isValid && !field.state.meta.isValidating
