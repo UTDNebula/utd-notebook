@@ -45,7 +45,7 @@ const Home = () => {
               UTD NOTEBOOK
             </h1>
 
-            <p className="mb-10 text-white text-base md:text-lg text-shadow-[0_0_4px_rgb(0_0_0_/_0.4)]">
+            <p className="mb-10 text-center text-white text-base md:text-lg text-shadow-[0_0_4px_rgb(0_0_0_/_0.4)]">
               Share and access course notes. By students, for students.
             </p>
 
@@ -59,7 +59,7 @@ const Home = () => {
                       <SearchIcon className="text-royal dark:text-cornflower-300" />
                     </InputAdornment>
                   ),
-                  className: 'rounded-full bg-white dark:bg-neutral-800',
+                  className: 'rounded-full bg-white dark:bg-neutral-700',
                 },
               }}
               className="w-full max-w-xs md:max-w-sm lg:max-w-md"

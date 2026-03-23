@@ -8,12 +8,12 @@ export function StyledTextField(props: StyledTextFieldProps) {
     <TextField
       size={props.size ?? (props.multiline ? 'medium' : 'small')}
       {...props}
-      className={`[&>.MuiInputBase-root]:bg-white dark:[&>.MuiInputBase-root]:bg-neutral-900 w-64 ${props.className}`}
+      className={`[&>.MuiInputBase-root]:bg-white dark:[&>.MuiInputBase-root]:bg-neutral-800 w-64 ${props.className}`}
     />
   );
 }
 
-type FormTextFieldFieldPropsBase = { label?: string };
+type FormTextFieldFieldPropsBase = { label?: string; maxLength?: number };
 
 type FormTextFieldFieldProps = Omit<
   TextFieldProps,
@@ -24,19 +24,33 @@ type FormTextFieldFieldProps = Omit<
 export default function FormTextField({
   label,
   helperText,
+  maxLength,
   ...props
 }: FormTextFieldFieldProps) {
   const field = useFieldContext<string>();
+  const currentLength = field.state.value?.length ?? 0;
+  const characterCount = maxLength
+    ? `${currentLength}/${maxLength} characters`
+    : '';
   const errorMessage = !field.state.meta.isValid
     ? field.state.meta.errors.map((err) => err?.message).join('. ') + '.'
     : undefined;
+
+  const displayHelperText =
+    [
+      errorMessage || (typeof helperText === 'string' ? helperText : ''),
+      characterCount,
+    ]
+      .filter(Boolean)
+      .join(' ') || undefined;
+
   return (
     <StyledTextField
       value={field.state.value}
       onBlur={field.handleBlur}
       onChange={(e) => field.handleChange(e.target.value)}
       error={!field.state.meta.isValid}
-      helperText={errorMessage ?? helperText}
+      helperText={displayHelperText}
       label={label}
       {...props}
     />
