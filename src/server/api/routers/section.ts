@@ -29,7 +29,13 @@ export const sectionRouter = createTRPCRouter({
   getSectionById: publicProcedure.input(byIdSchema).query(({ input, ctx }) =>
     ctx.db.query.section.findFirst({
       where: eq(section.id, input.id),
-      with: { files: true },
+      with: {
+        files: {
+          with: {
+            author: true,
+          },
+        },
+      },
     }),
   ),
 
@@ -43,7 +49,13 @@ export const sectionRouter = createTRPCRouter({
           eq(section.prefix, normalizedPrefix),
           eq(section.number, input.number),
         ),
-        with: { files: true },
+        with: {
+          files: {
+            with: {
+              author: true,
+            },
+          },
+        },
         orderBy: (sections, { desc }) => [
           desc(sections.year),
           desc(sections.term),
@@ -59,7 +71,13 @@ export const sectionRouter = createTRPCRouter({
           ilike(section.profFirst, input.profFirst),
           ilike(section.profLast, input.profLast),
         ),
-        with: { files: true },
+        with: {
+          files: {
+            with: {
+              author: true,
+            },
+          },
+        },
         orderBy: (sections, { desc }) => [
           desc(sections.year),
           desc(sections.term),
@@ -79,7 +97,13 @@ export const sectionRouter = createTRPCRouter({
           ilike(section.profFirst, input.profFirst),
           ilike(section.profLast, input.profLast),
         ),
-        with: { files: true },
+        with: {
+          files: {
+            with: {
+              author: true,
+            },
+          },
+        },
         orderBy: (sections, { desc }) => [
           desc(sections.year),
           desc(sections.term),

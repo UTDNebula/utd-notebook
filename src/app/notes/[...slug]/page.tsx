@@ -2,7 +2,7 @@ import EmptyStateCard from '@src/components/sections/EmptyStateCard';
 import FilesGrid from '@src/components/sections/FilesGrid';
 import LinkCard from '@src/components/sections/LinkCard';
 import SectionHeader from '@src/components/sections/SectionHeader';
-import type { SectionWithFiles } from '@src/server/db/models';
+import type { SectionWithFilesWithUserMetadata } from '@src/server/db/models';
 import { api } from '@src/trpc/server';
 import {
   noteQueryToDescription,
@@ -15,7 +15,9 @@ type NotesPageProps = {
   params: Promise<{ slug: string[] }>;
 };
 
-async function fetchSections(query: NoteQuery): Promise<SectionWithFiles[]> {
+async function fetchSections(
+  query: NoteQuery,
+): Promise<SectionWithFilesWithUserMetadata[]> {
   switch (query.type) {
     case 'course':
       return api.section.getNotesByCourse({
@@ -37,7 +39,7 @@ async function fetchSections(query: NoteQuery): Promise<SectionWithFiles[]> {
   }
 }
 
-function totalFileCount(sections: SectionWithFiles[]): number {
+function totalFileCount(sections: SectionWithFilesWithUserMetadata[]): number {
   return sections.reduce((sum, s) => sum + s.files.length, 0);
 }
 
@@ -63,7 +65,10 @@ function buildBreadcrumbs(query: NoteQuery) {
   return items;
 }
 
-function getProfessorLinks(sections: SectionWithFiles[], query: NoteQuery) {
+function getProfessorLinks(
+  sections: SectionWithFilesWithUserMetadata[],
+  query: NoteQuery,
+) {
   if (query.type !== 'course') return [];
 
   const profMap = new Map<string, { profFirst: string; profLast: string }>();
@@ -81,7 +86,10 @@ function getProfessorLinks(sections: SectionWithFiles[], query: NoteQuery) {
   }));
 }
 
-function getCourseLinks(sections: SectionWithFiles[], query: NoteQuery) {
+function getCourseLinks(
+  sections: SectionWithFilesWithUserMetadata[],
+  query: NoteQuery,
+) {
   if (query.type !== 'professor') return [];
 
   const courseMap = new Map<string, { prefix: string; number: string }>();

@@ -4,7 +4,7 @@ import Alert from '@mui/material/Alert';
 import CreatedNotes from '@src/components/form/CreatedNotes';
 import { auth } from '@src/server/auth';
 import { SelectUserMetadata } from '@src/server/db/models';
-import type { SelectFile } from '@src/server/db/models';
+import type { SelectFileWithAuthorPreview } from '@src/server/db/models';
 import { api } from '@src/trpc/server';
 import DeleteAccount from './forms/DeleteAccount';
 import UserInfo from './forms/UserInfo';
@@ -19,8 +19,7 @@ async function SettingsForm({
   const user = session.user;
 
   let userData: SelectUserMetadata | undefined = undefined;
-  let createdNotes: SelectFile[] = [];
-  // Concurrently run procedures
+  let createdNotes: SelectFileWithAuthorPreview[] = [];
   await Promise.allSettled([
     api.userMetadata.byId({ id: user.id }),
     api.file.byAuthor({ authorId: user.id }),
