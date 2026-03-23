@@ -1,8 +1,9 @@
 'use client';
 
 import DeleteIcon from '@mui/icons-material/Delete';
-import { Button } from '@mui/material';
+import { IconButton, Tooltip } from '@mui/material';
 import { useMutation } from '@tanstack/react-query';
+import type { MouseEvent } from 'react';
 import { useRouter } from 'next/navigation';
 import { useState } from 'react';
 import Confirmation from '@src/components/Confirmation';
@@ -14,17 +15,30 @@ export default function NoteDeleteButton({ fileId }: { fileId: string }) {
   const router = useRouter();
   const deleteMutation = useMutation(api.file.delete.mutationOptions());
 
+  const handleClick = (e: MouseEvent<HTMLButtonElement>) => {
+    e.preventDefault();
+    e.stopPropagation();
+    setOpen(true);
+  };
+
   return (
     <>
-      <Button
-        variant="contained"
-        size="small"
-        className="normal-case bg-white hover:bg-neutral-200 dark:bg-neutral-800 dark:hover:bg-neutral-700 text-haiti dark:text-white"
-        startIcon={<DeleteIcon />}
-        onClick={() => setOpen(true)}
-      >
-        Delete
-      </Button>
+      <Tooltip title="Delete Note">
+        <IconButton
+          size="small"
+          aria-label="Delete Note"
+          sx={{
+            backgroundColor: 'error.main',
+            color: 'common.white',
+            '&:hover': {
+              backgroundColor: 'error.dark',
+            },
+          }}
+          onClick={handleClick}
+        >
+          <DeleteIcon />
+        </IconButton>
+      </Tooltip>
       <Confirmation
         open={open}
         onClose={() => setOpen(false)}
