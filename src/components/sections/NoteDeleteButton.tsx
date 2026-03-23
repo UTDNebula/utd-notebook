@@ -3,8 +3,8 @@
 import DeleteIcon from '@mui/icons-material/Delete';
 import { IconButton, Tooltip } from '@mui/material';
 import { useMutation } from '@tanstack/react-query';
-import type { MouseEvent } from 'react';
 import { useRouter } from 'next/navigation';
+import type { MouseEvent } from 'react';
 import { useState } from 'react';
 import Confirmation from '@src/components/Confirmation';
 import { useTRPC } from '@src/trpc/react';
