@@ -7,16 +7,18 @@ import Link from 'next/link';
 import { useMemo, useState } from 'react';
 import { BaseCard } from '@src/components/common/BaseCard';
 import SaveButton from '@src/components/sections/SaveButton';
-import type { SelectFile } from '@src/server/db/models';
+import type { SelectFileWithAuthorPreview } from '@src/server/db/models';
 import { authClient } from '@src/utils/auth-client';
 import NoteDeleteButton from './NoteDeleteButton';
 import NoteEditButton from './NoteEditButton';
 
 type FileCardProps = {
-  file: SelectFile;
+  file: SelectFileWithAuthorPreview;
 };
 
-const formatUpdatedAt = (updatedAt: SelectFile['updatedAt']) => {
+const formatUpdatedAt = (
+  updatedAt: SelectFileWithAuthorPreview['updatedAt'],
+) => {
   const date =
     updatedAt instanceof Date ? updatedAt : new Date(updatedAt ?? Date.now());
 
@@ -69,6 +71,11 @@ export default function FileCard({ file }: FileCardProps) {
   const showPreviewError =
     hasStartedFetching && !thumbData && thumbnails.length === 0 && !isLoading;
 
+  const authorDisplay =
+    (file.author?.username ??
+      `${file.author?.firstName ?? ''} ${file.author?.lastName ?? ''}`.trim()) ||
+    file.authorId;
+
   return (
     <BaseCard variant="interactive" className="flex h-full flex-col">
       <Link
@@ -108,8 +115,9 @@ export default function FileCard({ file }: FileCardProps) {
             >
               {file.name}
             </h3>
+
             <p className="text-xs font-medium text-slate-600 dark:text-slate-400">
-              Uploaded by {file.authorId}
+              Uploaded by {authorDisplay}
             </p>
           </div>
 
