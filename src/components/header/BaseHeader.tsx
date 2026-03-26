@@ -137,9 +137,7 @@ export const BaseHeader = ({
 
   return (
     <BaseHeaderContext.Provider value={{ openCompactSearchBar }}>
-      <div
-        className={`${disableSticky ? '' : 'sticky top-0 z-50'}`}
-      >
+      <div className={`${disableSticky ? '' : 'sticky top-0 z-50'}`}>
         <div
           className={`relative min-h-17 flex w-full justify-between items-center gap-y-2 gap-x-2 md:gap-x-4 lg:gap-x-8 py-2 px-4 ${menu ? 'max-sm:pl-2' : ''} flex-wrap sm:flex-nowrap ${transparent ? '' : 'bg-lighten dark:bg-darken'} ${className}`}
         >
@@ -159,51 +157,51 @@ export const BaseHeader = ({
           {!openCompactSearchBar ? (
             <>
               <div className="grow basis-0 flex gap-x-2 sm:gap-x-8">
-              {menuVisibility && menu}
-              {logoVisibility && (
-                <Link
-                  href="/"
-                  className={`font-display flex gap-2 items-center select-none ${
-                    color?.startsWith('light') ? 'text-white' : 'text-haiti'
-                  } ${
-                    color === 'lightDark'
-                      ? 'dark:text-haiti'
-                      : color === 'darkLight'
-                        ? 'dark:text-white'
-                        : ''
-                  } ${shadow ? 'drop-shadow-[0_0_4px_rgb(0_0_0_/_0.4)]' : ''}`}
-                >
-                  {logoIconVisibility && (
-                    <div
-                      className={`flex flex-row items-center ${logoVisibility === true ? 'max-sm:hidden' : ''}`}
-                    >
-                      <UTDNotebookLogoStandalone
-                        className={`h-10 w-auto ${
-                          color?.startsWith('light')
-                            ? 'fill-white'
-                            : 'fill-haiti'
-                        } ${
-                          color === 'lightDark'
-                            ? 'dark:fill-haiti'
-                            : color === 'darkLight'
-                              ? 'dark:fill-white'
-                              : ''
-                        }`}
-                      />
-                    </div>
-                  )}
-                  {logoTextVisibility && (
-                    <div className="flex flex-col">
-                      <span className="whitespace-nowrap text-lg md:text-xl font-bold leading-5">
-                        UTD NOTEBOOK
-                      </span>
-                      <span className="whitespace-nowrap text-xs md:text-sm font-medium">
-                        by Nebula Labs
-                      </span>
-                    </div>
-                  )}
-                </Link>
-              )}
+                {menuVisibility && menu}
+                {logoVisibility && (
+                  <Link
+                    href="/"
+                    className={`font-display flex gap-2 items-center select-none ${
+                      color?.startsWith('light') ? 'text-white' : 'text-haiti'
+                    } ${
+                      color === 'lightDark'
+                        ? 'dark:text-haiti'
+                        : color === 'darkLight'
+                          ? 'dark:text-white'
+                          : ''
+                    } ${shadow ? 'drop-shadow-[0_0_4px_rgb(0_0_0_/_0.4)]' : ''}`}
+                  >
+                    {logoIconVisibility && (
+                      <div
+                        className={`flex flex-row items-center ${logoVisibility === true ? 'max-sm:hidden' : ''}`}
+                      >
+                        <UTDNotebookLogoStandalone
+                          className={`h-10 w-auto ${
+                            color?.startsWith('light')
+                              ? 'fill-white'
+                              : 'fill-haiti'
+                          } ${
+                            color === 'lightDark'
+                              ? 'dark:fill-haiti'
+                              : color === 'darkLight'
+                                ? 'dark:fill-white'
+                                : ''
+                          }`}
+                        />
+                      </div>
+                    )}
+                    {logoTextVisibility && (
+                      <div className="flex flex-col">
+                        <span className="whitespace-nowrap text-lg md:text-xl font-bold leading-5">
+                          UTD NOTEBOOK
+                        </span>
+                        <span className="whitespace-nowrap text-xs md:text-sm font-medium">
+                          by Nebula Labs
+                        </span>
+                      </div>
+                    )}
+                  </Link>
+                )}
               </div>
               {fullSearchBarVisibility && searchBar && (
                 <div
