@@ -1,6 +1,7 @@
 import { relations } from 'drizzle-orm';
 import {
   boolean,
+  integer,
   pgTable,
   primaryKey,
   text,
@@ -24,6 +25,8 @@ export const userMetadataToNotes = pgTable(
     saved: boolean('saved').notNull().default(true),
 
     savedAt: timestamp('saved_at').defaultNow().notNull(),
+
+    rating: integer('rating'),
   },
   (t) => [primaryKey({ columns: [t.userId, t.fileId] })],
 );

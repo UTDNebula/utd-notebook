@@ -6,6 +6,7 @@ import Image from 'next/image';
 import Link from 'next/link';
 import { useMemo, useState } from 'react';
 import { BaseCard } from '@src/components/common/BaseCard';
+import RatingWidget from '@src/components/sections/RatingWidget';
 import SaveButton from '@src/components/sections/SaveButton';
 import type { SelectFileWithAuthorPreview } from '@src/server/db/models';
 import { authClient } from '@src/utils/auth-client';
@@ -132,6 +133,10 @@ export default function FileCard({ file }: FileCardProps) {
           </div>
         </div>
       </Link>
+
+      <div className="mx-4 mb-2 mt-0">
+        <RatingWidget fileId={file.id} />
+      </div>
 
       <div className="m-4 mt-0 flex flex-row items-center space-x-2">
         {isAuthor && <NoteEditButton fileId={file.id} />}
