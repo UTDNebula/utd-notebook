@@ -4,11 +4,12 @@ import { useThumbnails, type FileData } from '@mkholt/pdf-thumbnail';
 import { Skeleton } from '@mui/material';
 import Image from 'next/image';
 import Link from 'next/link';
-import { useMemo, useState } from 'react';
+import { useEffect, useMemo, useState } from 'react';
 import { BaseCard } from '@src/components/common/BaseCard';
 import SaveButton from '@src/components/sections/SaveButton';
 import type { SelectFileWithAuthorPreview } from '@src/server/db/models';
 import { authClient } from '@src/utils/auth-client';
+import { ensurePdfJsWorker } from '@src/utils/pdfWorker';
 import NoteDeleteButton from './NoteDeleteButton';
 import NoteEditButton from './NoteEditButton';
 
@@ -30,6 +31,10 @@ const formatUpdatedAt = (
 };
 
 export default function FileCard({ file }: FileCardProps) {
+  useEffect(() => {
+    ensurePdfJsWorker();
+  }, []);
+
   const { data: session } = authClient.useSession();
   const isAuthor = session?.user?.id === file.authorId;
 
@@ -64,9 +69,11 @@ export default function FileCard({ file }: FileCardProps) {
 
   const [hasStartedFetching, setHasStartedFetching] = useState(false);
 
-  if (isLoading && !hasStartedFetching) {
-    setHasStartedFetching(true);
-  }
+  useEffect(() => {
+    if (isLoading && !hasStartedFetching) {
+      setHasStartedFetching(true);
+    }
+  }, [hasStartedFetching, isLoading]);
 
   const showPreviewError =
     hasStartedFetching && !thumbData && thumbnails.length === 0 && !isLoading;

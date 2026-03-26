@@ -138,23 +138,27 @@ export const BaseHeader = ({
   return (
     <BaseHeaderContext.Provider value={{ openCompactSearchBar }}>
       <div
-        className={`${disableSticky ? '' : 'sticky'} min-h-17 top-0 z-50 flex w-full justify-between items-center gap-y-2 gap-x-2 md:gap-x-4 lg:gap-x-8 py-2 px-4 ${menu ? 'max-sm:pl-2' : ''} flex-wrap sm:flex-nowrap ${transparent ? '' : 'bg-lighten dark:bg-darken'} ${className}`}
+        className={`${disableSticky ? '' : 'sticky top-0 z-50'}`}
       >
-        {!transparent && (
-          <>
-            <Image
-              src={gradientBG}
-              alt="gradient background"
-              fill
-              className="object-cover -z-20 select-none"
-              sizes="120vw"
-            />
-            <div className="absolute inset-0 bg-lighten dark:bg-darken -z-10"></div>
-          </>
-        )}
-        {!openCompactSearchBar ? (
-          <>
-            <div className="grow basis-0 flex gap-x-2 sm:gap-x-8">
+        <div
+          className={`relative min-h-17 flex w-full justify-between items-center gap-y-2 gap-x-2 md:gap-x-4 lg:gap-x-8 py-2 px-4 ${menu ? 'max-sm:pl-2' : ''} flex-wrap sm:flex-nowrap ${transparent ? '' : 'bg-lighten dark:bg-darken'} ${className}`}
+        >
+          {!transparent && (
+            <>
+              <Image
+                src={gradientBG}
+                alt="gradient background"
+                fill
+                priority
+                className="object-cover -z-20 select-none"
+                sizes="120vw"
+              />
+              <div className="absolute inset-0 bg-lighten dark:bg-darken -z-10"></div>
+            </>
+          )}
+          {!openCompactSearchBar ? (
+            <>
+              <div className="grow basis-0 flex gap-x-2 sm:gap-x-8">
               {menuVisibility && menu}
               {logoVisibility && (
                 <Link
@@ -200,45 +204,46 @@ export const BaseHeader = ({
                   )}
                 </Link>
               )}
-            </div>
-            {fullSearchBarVisibility && searchBar && (
-              <div
-                className={`order-last max-sm:basis-full basis-128 sm:order-none gap-x-2 md:gap-x-4 lg:gap-x-8 ${searchVisibility === true ? 'max-md:hidden' : ''} ${shadow ? 'drop-shadow-[0_0_4px_rgb(0_0_0_/_0.4)]' : ''}`}
-              >
-                {searchBar}
               </div>
-            )}
-            <div
-              className={`grow basis-0 flex justify-end items-center gap-x-2 ${shadow ? 'drop-shadow-[0_0_4px_rgb(0_0_0_/_0.2)]' : ''}`}
-            >
-              {compactSearchBarVisibility && searchBar && (
+              {fullSearchBarVisibility && searchBar && (
+                <div
+                  className={`order-last max-sm:basis-full basis-128 sm:order-none gap-x-2 md:gap-x-4 lg:gap-x-8 ${searchVisibility === true ? 'max-md:hidden' : ''} ${shadow ? 'drop-shadow-[0_0_4px_rgb(0_0_0_/_0.4)]' : ''}`}
+                >
+                  {searchBar}
+                </div>
+              )}
+              <div
+                className={`grow basis-0 flex justify-end items-center gap-x-2 ${shadow ? 'drop-shadow-[0_0_4px_rgb(0_0_0_/_0.2)]' : ''}`}
+              >
+                {compactSearchBarVisibility && searchBar && (
+                  <IconButton
+                    size="large"
+                    className={`${searchVisibility === true ? 'md:hidden' : ''}`}
+                    onClick={() => setOpenCompactSearchBar(true)}
+                  >
+                    <SearchIcon />
+                  </IconButton>
+                )}
+                {childrenVisibility && children}
+                {accountVisibility && <ProfileDropDown />}
+              </div>
+            </>
+          ) : (
+            <div className="w-full flex justify-center">
+              <div className="w-full max-w-128 flex gap-x-2 items-center">
                 <IconButton
                   size="large"
-                  className={`${searchVisibility === true ? 'md:hidden' : ''}`}
-                  onClick={() => setOpenCompactSearchBar(true)}
+                  onClick={() => setOpenCompactSearchBar(false)}
                 >
-                  <SearchIcon />
+                  <ArrowBackIcon />
                 </IconButton>
-              )}
-              {childrenVisibility && children}
-              {accountVisibility && <ProfileDropDown />}
+                {compactSearchBarVisibility && (
+                  <div className="grow">{searchBar}</div>
+                )}
+              </div>
             </div>
-          </>
-        ) : (
-          <div className="w-full flex justify-center">
-            <div className="w-full max-w-128 flex gap-x-2 items-center">
-              <IconButton
-                size="large"
-                onClick={() => setOpenCompactSearchBar(false)}
-              >
-                <ArrowBackIcon />
-              </IconButton>
-              {compactSearchBarVisibility && (
-                <div className="grow">{searchBar}</div>
-              )}
-            </div>
-          </div>
-        )}
+          )}
+        </div>
       </div>
     </BaseHeaderContext.Provider>
   );

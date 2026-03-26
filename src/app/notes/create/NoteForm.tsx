@@ -25,6 +25,7 @@ type NoteFormProps =
         name: string;
         description?: string;
         publicUrl: string;
+        section: string;
       };
     };
 
@@ -48,7 +49,7 @@ const NoteForm = ({ mode = 'create', file: existingFile }: NoteFormProps) => {
         file: null,
         name: existingFile.name,
         description: existingFile.description ?? '',
-        section: '',
+        section: existingFile.section,
       };
     }
     return {
@@ -149,11 +150,20 @@ const NoteForm = ({ mode = 'create', file: existingFile }: NoteFormProps) => {
                 <FormFile
                   label="File"
                   value={field.state.value}
+                  existingFile={
+                    mode === 'edit' && existingFile
+                      ? {
+                          name: existingFile.name,
+                          publicUrl: existingFile.publicUrl,
+                        }
+                      : undefined
+                  }
                   onBlur={field.handleBlur}
                   onChange={(e) => {
                     const file = e.target.files?.[0] ?? null;
                     field.handleChange(file);
                   }}
+                  isError={!field.state.meta.isValid}
                   helperText={
                     !field.state.meta.isValid
                       ? field.state.meta.errors
@@ -206,13 +216,24 @@ const NoteForm = ({ mode = 'create', file: existingFile }: NoteFormProps) => {
                 )}
               </form.AppField>
 
-              {mode === 'create' && (
+              {mode === 'create' ? (
                 <form.AppField name="section">
                   {(field) => (
                     <field.TextField
                       label="Section"
                       className="w-full"
                       helperText="Example: CS 1200.001 Fall 2025"
+                    />
+                  )}
+                </form.AppField>
+              ) : (
+                <form.AppField name="section">
+                  {(field) => (
+                    <field.TextField
+                      label="Section"
+                      className="w-full"
+                      helperText="Section is locked after note creation"
+                      disabled
                     />
                   )}
                 </form.AppField>
