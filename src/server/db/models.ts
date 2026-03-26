@@ -2,6 +2,7 @@ import { createInsertSchema, createSelectSchema } from 'drizzle-zod';
 import { z } from 'zod';
 import { user } from './schema/auth';
 import { file } from './schema/file';
+import { userMetadataToNotes } from './schema/savedNote';
 import { section } from './schema/section';
 import { userMetadata } from './schema/user';
 
@@ -44,6 +45,15 @@ export const selectFile = createSelectSchema(file);
 
 export type InsertFile = z.infer<typeof insertFile>;
 export type SelectFile = z.infer<typeof selectFile>;
+
+/* =========================
+   SAVED NOTE
+========================= */
+
+export const insertSavedNote = createInsertSchema(userMetadataToNotes);
+export const selectSavedNote = createSelectSchema(userMetadataToNotes);
+export type InsertSavedNote = z.infer<typeof insertSavedNote>;
+export type SelectSavedNote = z.infer<typeof selectSavedNote>;
 
 /* =========================
    FILE WITH USER METADATA

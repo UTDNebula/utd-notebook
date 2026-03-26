@@ -13,7 +13,10 @@
     "test": "NODE_OPTIONS=--experimental-vm-modules dotenv jest --detectOpenHandles --forceExit",
     "auth-schema:generate": "dotenv -- npx @better-auth/cli@latest generate --output src/server/db/schema/auth.ts --config src/server/auth.ts",
     "drizzle:generate": "dotenv drizzle-kit generate",
-    "drizzle:push": "dotenv drizzle-kit push"
+    "drizzle:push": "dotenv drizzle-kit push",
+    "fetchdata": "ts-node -O \"{\\\"module\\\":\\\"commonjs\\\"}\" src/scripts/fetchAggregatedData.ts",
+    "buildautocomplete": "ts-node -O \"{\\\"module\\\":\\\"commonjs\\\"}\" src/scripts/generateAutocompleteGraph.ts",
+    "buildcoursenames": "ts-node -O \"{\\\"module\\\":\\\"commonjs\\\"}\" src/scripts/generateCourseNameTable.ts"
   },
   "dependencies": {
     "@auth/drizzle-adapter": "^0.3.2",
@@ -39,11 +42,13 @@
     "@trpc/client": "^11.8.1",
     "@trpc/server": "^11.8.1",
     "@trpc/tanstack-react-query": "^11.8.1",
+    "autosuggest-highlight": "^3.3.4",
     "better-auth": "^1.4.17",
     "date-fns": "^4.1.0",
     "dotenv": "^17.2.3",
     "drizzle-orm": "^0.45.1",
     "drizzle-zod": "^0.8.3",
+    "graphology": "^0.26.0",
     "next": "^16.1.4",
     "next-auth": "^4.24.11",
     "pdfjs-dist": "^5.4.296",
@@ -82,7 +87,8 @@
     "tailwindcss-animate": "^1.0.7",
     "ts-jest": "^29.4.6",
     "ts-node": "^10.9.1",
-    "typescript": "^5.9.3"
+    "typescript": "^5.9.3",
+    "@types/autosuggest-highlight": "^3.2.3"
   },
   "overrides": {
     "drizzle-zod": {

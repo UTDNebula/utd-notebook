@@ -1,7 +1,5 @@
-import SearchIcon from '@mui/icons-material/Search';
-import InputAdornment from '@mui/material/InputAdornment';
-import TextField from '@mui/material/TextField';
 import Header from '@src/components/header/Header';
+import SearchBar from '@src/components/header/SearchBar';
 import NebulaLogo from '@src/icons/NebulaLogo';
 
 const Home = () => {
@@ -23,7 +21,6 @@ const Home = () => {
           itemVisibility={{ search: false }}
           color="light"
         />
-
         <section className="h-screen">
           <div className="flex h-full w-full flex-col items-center justify-center overflow-visible">
             <h2 className="mb-3 flex items-center gap-1 text-sm font-semibold tracking-wider text-white text-shadow-[0_0_4px_rgb(0_0_0_/_0.4)]">
@@ -48,22 +45,7 @@ const Home = () => {
             <p className="mb-10 text-center text-white text-base md:text-lg text-shadow-[0_0_4px_rgb(0_0_0_/_0.4)]">
               Share and access course notes. By students, for students.
             </p>
-
-            <TextField
-              placeholder="Search for courses or professors"
-              variant="outlined"
-              slotProps={{
-                input: {
-                  endAdornment: (
-                    <InputAdornment position="end" key="search-icon">
-                      <SearchIcon className="text-royal dark:text-cornflower-300" />
-                    </InputAdornment>
-                  ),
-                  className: 'rounded-full bg-white dark:bg-neutral-700',
-                },
-              }}
-              className="w-full max-w-xs md:max-w-sm lg:max-w-md"
-            />
+            <SearchBar autoFocus />
           </div>
         </section>
       </div>

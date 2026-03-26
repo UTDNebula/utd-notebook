@@ -6,6 +6,7 @@ import Image from 'next/image';
 import Link from 'next/link';
 import { useMemo, useState } from 'react';
 import { BaseCard } from '@src/components/common/BaseCard';
+import SaveButton from '@src/components/sections/SaveButton';
 import type { SelectFileWithAuthorPreview } from '@src/server/db/models';
 import { authClient } from '@src/utils/auth-client';
 import NoteDeleteButton from './NoteDeleteButton';
@@ -148,6 +149,11 @@ export default function FileCard({ file }: FileCardProps) {
           <NoteDeleteButton fileId={file.id} />
         </div>
       )}
+      <div className="m-4 mt-0 flex flex-row items-center space-x-2">
+        {isAuthor && <NoteEditButton fileId={file.id} />}
+        {isAuthor && <NoteDeleteButton fileId={file.id} />}
+        <SaveButton fileId={file.id} />
+      </div>
     </BaseCard>
   );
 }
