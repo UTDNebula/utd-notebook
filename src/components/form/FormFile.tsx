@@ -4,8 +4,9 @@ import { useThumbnails, type FileData } from '@mkholt/pdf-thumbnail';
 import CloudUploadIcon from '@mui/icons-material/CloudUpload';
 import { FormHelperText, Skeleton } from '@mui/material';
 import Image from 'next/image';
-import { useEffect, useMemo, useState } from 'react';
+import { useEffect, useMemo } from 'react';
 import { ensurePdfJsWorker } from '@src/utils/pdfWorker';
+import useDebounce from '@src/utils/useDebounce';
 
 interface FormFileProps {
   label?: string;
@@ -63,17 +64,18 @@ const FormFile = ({
   const { thumbnails, isLoading } = useThumbnails(fileForPreview);
   const thumbData = thumbnails[0]?.thumbData;
 
-  const [hasStartedFetching, setHasStartedFetching] = useState(false);
-
-  useEffect(() => {
-    if (isLoading && !hasStartedFetching) {
-      setHasStartedFetching(true);
-    }
-  }, [hasStartedFetching, isLoading]);
+  const shouldShowPreviewError =
+    fileForPreview.length > 0 &&
+    !thumbData &&
+    thumbnails.length === 0 &&
+    !isLoading;
+  const debouncedShowPreviewError = useDebounce(
+    shouldShowPreviewError,
+    shouldShowPreviewError ? 1500 : 0,
+  );
 
   const showPreview = !!thumbData;
-  const showPreviewError =
-    hasStartedFetching && !thumbData && thumbnails.length === 0 && !isLoading;
+  const showPreviewError = debouncedShowPreviewError && shouldShowPreviewError;
   const selectedFileName = file?.name ?? existingFile?.name;
 
   return (
