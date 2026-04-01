@@ -136,9 +136,9 @@ export default async function NotesPage({ params }: NotesPageProps) {
         breadcrumbs={buildBreadcrumbs(query)}
       />
 
-      {sections.length === 0 ? (
+      {fileCount === 0 ? (
         <EmptyStateCard
-          title="No notes found"
+          title="No notes yet"
           description="No notes have been uploaded for this query yet."
         />
       ) : (
