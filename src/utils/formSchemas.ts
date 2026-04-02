@@ -77,6 +77,7 @@ export const createFileFormSchema = z.object({
     .max(100, 'Character limit reached'),
   description: z.string().max(1000, 'Character limit reached').optional(),
   section: z.string().regex(sectionRegex, 'Section must follow format'),
+  handwritten: z.boolean(),
 });
 
 export const createFileSchema = z.object({
@@ -86,6 +87,7 @@ export const createFileSchema = z.object({
     .max(100, 'Character limit reached'),
   description: z.string().max(1000, 'Character limit reached').optional(),
   section: z.string().regex(sectionRegex, 'Section must follow format'),
+  handwritten: z.boolean(),
 });
 
 export const editFileFormSchema = z.object({
@@ -96,6 +98,7 @@ export const editFileFormSchema = z.object({
     .min(3, 'Name must be at least 3 characters')
     .max(100, 'Character limit reached'),
   description: z.string().max(1000, 'Character limit reached').optional(),
+  handwritten: z.boolean(),
 });
 
 export const editFileSchema = z.object({
@@ -106,4 +109,5 @@ export const editFileSchema = z.object({
     .min(3, 'Name must be at least 3 characters')
     .max(100, 'Character limit reached'),
   description: z.string().max(1000, 'Character limit reached').optional(),
+  handwritten: z.boolean(),
 });

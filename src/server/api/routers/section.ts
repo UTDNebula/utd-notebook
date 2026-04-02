@@ -110,4 +110,41 @@ export const sectionRouter = createTRPCRouter({
         ],
       });
     }),
+
+  getAllCourses: publicProcedure.query(async ({ ctx }) => {
+    return ctx.db
+      .selectDistinct({
+        prefix: section.prefix,
+        number: section.number,
+      })
+      .from(section)
+      .orderBy(section.prefix, section.number);
+  }),
+
+  getAllProfessors: publicProcedure.query(async ({ ctx }) => {
+    return ctx.db
+      .selectDistinct({
+        profFirst: section.profFirst,
+        profLast: section.profLast,
+      })
+      .from(section)
+      .orderBy(section.profFirst, section.profLast);
+  }),
+
+  getAllCourseProfessorCombos: publicProcedure.query(async ({ ctx }) => {
+    return ctx.db
+      .selectDistinct({
+        prefix: section.prefix,
+        number: section.number,
+        profFirst: section.profFirst,
+        profLast: section.profLast,
+      })
+      .from(section)
+      .orderBy(
+        section.prefix,
+        section.number,
+        section.profFirst,
+        section.profLast,
+      );
+  }),
 });

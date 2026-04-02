@@ -7,7 +7,11 @@ import { writeFileSync } from 'fs';
 import { DirectedGraph } from 'graphology';
 import aggregatedDataRaw from '../data/aggregated_data.json';
 import professor_to_alias from '../data/professor_to_alias.json';
-import { decodeSearchQueryLabel, type SearchQuery } from '../utils/SearchQuery';
+import {
+  decodeSearchQueryLabel,
+  type SearchQuery,
+  type SearchQueryWithTotalStudents,
+} from '../utils/SearchQuery';
 
 interface ProfessorData {
   first_name?: string;
@@ -16,6 +20,7 @@ interface ProfessorData {
 
 interface SectionData {
   professors: ProfessorData[];
+  total_students?: number;
 }
 
 interface AcademicSessionData {
@@ -37,7 +42,7 @@ const aggregatedData = aggregatedDataRaw as { data: PrefixData[] };
 
 export type NodeAttributes = {
   c: string;
-  d?: SearchQuery;
+  d?: SearchQueryWithTotalStudents;
   visited?: boolean;
 };
 
@@ -56,7 +61,7 @@ const root = graph.addNode(numNodes++, {
 function addSearchQueryCharacter(
   node: string,
   characters: string,
-  data?: SearchQuery,
+  data?: SearchQueryWithTotalStudents,
 ): string {
   characters = characters.toUpperCase();
   const preExisting = graph.findOutNeighbor(
@@ -98,7 +103,7 @@ function addWithParents(
   //main parent must be first!!! Otherwise can lead to accessing unmatched data like typing GEOS 2305 CE and getting ce2305 because it looped back
   nodes: string[],
   characters: string,
-  data?: SearchQuery,
+  data?: SearchQueryWithTotalStudents,
 ) {
   const nodeFirstChar = addSearchQueryCharacter(
     nodes.shift() as string,
@@ -119,13 +124,14 @@ function addWithParents(
 
 //Add node in format: <prefix>[<number>| <number>[.<section>]
 //and: (<number>|<number> )<prefix>[.<section>]
-function addCourse(prefix: string, number: string) {
+function addCourse(prefix: string, number: string, courseStudents: number) {
   //<prefix>[ ]<number>
   const prefixNode = addSearchQueryCharacter(root, prefix);
   const prefixSpaceNode = addSearchQueryCharacter(prefixNode, ' ');
   addWithParents([prefixNode, prefixSpaceNode], number, {
     prefix: prefix,
     number: number,
+    total_students: courseStudents,
   });
 
   //<number>[ ]<prefix>
@@ -134,6 +140,7 @@ function addCourse(prefix: string, number: string) {
   addWithParents([classNode2, classSpaceNode], prefix, {
     prefix: prefix,
     number: number,
+    total_students: courseStudents,
   });
 }
 
@@ -142,6 +149,7 @@ function addProfessor(
   profFirst: string,
   profLast: string,
   originalProf?: SearchQuery,
+  sectionStudents: number = 0,
 ) {
   //seperate first names so you can skip them when searching
   const firstNames = profFirst.split(' ');
@@ -151,11 +159,22 @@ function addProfessor(
     nodes.unshift(addSearchQueryCharacter(nodes[0] ?? '', name + ' '));
   }
   // if it is an alias, map the alias path to the original professor, else, just insert the professor as graph data
-  const data = originalProf ?? {
+  const data: SearchQueryWithTotalStudents = originalProf ?? {
     profFirst: profFirst,
     profLast: profLast,
   };
-  addWithParents(nodes, profLast, data);
+
+  // saves the node with the data
+  const profNode = addWithParents(nodes, profLast, data);
+
+  // uses the prof node to update the student counter
+  graph.updateNodeAttribute(profNode, 'd', (prev) => {
+    const attrs = (prev ?? data) as SearchQueryWithTotalStudents;
+    return {
+      ...attrs,
+      total_students: (attrs.total_students ?? 0) + sectionStudents,
+    };
+  });
 }
 
 for (let prefixItr = 0; prefixItr < aggregatedData.data.length; prefixItr++) {
@@ -169,7 +188,7 @@ for (let prefixItr = 0; prefixItr < aggregatedData.data.length; prefixItr++) {
   ) {
     const courseNumberData = prefixData.course_numbers[courseNumberItr];
     if (!courseNumberData) continue; //handle blank data
-    addCourse(prefixData.subject_prefix, courseNumberData.course_number);
+    let courseStudents = 0;
     for (
       let academicSessionItr = 0;
       academicSessionItr < courseNumberData.academic_sessions.length;
@@ -185,6 +204,9 @@ for (let prefixItr = 0; prefixItr < aggregatedData.data.length; prefixItr++) {
       ) {
         const sectionData = academicSessionData.sections[sectionItr];
         if (!sectionData) continue; //handle blank data
+
+        const uniqueProfessorSet = new Set<string>();
+        courseStudents += sectionData.total_students ?? 0;
         for (
           let professorItr = 0;
           professorItr < sectionData.professors.length;
@@ -198,11 +220,27 @@ for (let prefixItr = 0; prefixItr < aggregatedData.data.length; prefixItr++) {
             professorData.first_name !== '' && //handle blank name
             professorData.last_name !== ''
           ) {
-            addProfessor(professorData.first_name!, professorData.last_name!);
+            if (!professorData.first_name || !professorData.last_name) continue;
+            const uniqueSetKey = `${professorData.first_name}|${professorData.last_name}`;
+            if (uniqueProfessorSet.has(uniqueSetKey)) {
+              continue;
+            }
+            uniqueProfessorSet.add(uniqueSetKey);
+            addProfessor(
+              professorData.first_name,
+              professorData.last_name,
+              undefined,
+              sectionData.total_students ?? 0,
+            );
           }
         }
       }
     }
+    addCourse(
+      prefixData.subject_prefix,
+      courseNumberData.course_number,
+      courseStudents,
+    );
   }
 }
 

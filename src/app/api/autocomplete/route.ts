@@ -2,7 +2,7 @@ import { NextResponse } from 'next/server';
 import autocompleteGraph from 'src/data/autocomplete_graph.json';
 import { getGraph, searchAutocomplete } from '@src/utils/autocomplete';
 import type { GenericFetchedData } from '@src/utils/GenericFetchedData';
-import { type SearchQuery } from '@src/utils/SearchQuery';
+import { type SearchQueryWithTotalStudents } from '@src/utils/SearchQuery';
 
 const graph = getGraph(autocompleteGraph as object);
 
@@ -34,7 +34,7 @@ export function GET(request: Request) {
     {
       state: 'done',
       data: results,
-    } satisfies GenericFetchedData<SearchQuery[]>,
+    } satisfies GenericFetchedData<SearchQueryWithTotalStudents[]>,
     { status: 200 },
   );
 }

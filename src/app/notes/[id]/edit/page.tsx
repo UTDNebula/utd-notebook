@@ -34,6 +34,7 @@ export default async function EditNotePage({ params }: EditNotePageProps) {
             id: file.id,
             name: file.name,
             description: file.description ?? undefined,
+            handwritten: file.handwritten,
             publicUrl: file.publicUrl,
           }}
         />
