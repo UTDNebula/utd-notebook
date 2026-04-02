@@ -61,6 +61,36 @@ export const fileRouter = createTRPCRouter({
       return files;
     }),
 
+  // Resolve a username to a user, then return all files they authored.
+  // Two-step lookup: userMetadata (by username) → file (by authorId).
+  getByUsername: publicProcedure
+    .input(z.object({ username: z.string() }))
+    .query(async ({ input, ctx }) => {
+      const author = await ctx.db.query.userMetadata.findFirst({
+        where: (um) => eq(um.username, input.username),
+      });
+
+      if (!author) {
+        throw new TRPCError({
+          code: 'NOT_FOUND',
+          message: 'User not found',
+        });
+      }
+
+      const files = await ctx.db.query.file.findMany({
+        where: (file) => eq(file.authorId, author.id),
+        orderBy: (file, { desc }) => [desc(file.updatedAt)],
+        with: {
+          section: true,
+          author: {
+            columns: { username: true, firstName: true, lastName: true },
+          },
+        },
+      });
+
+      return files;
+    }),
+
   create: protectedProcedure
     .input(createFileSchema)
     .mutation(async ({ input, ctx }) => {

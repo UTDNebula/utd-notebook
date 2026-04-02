@@ -99,6 +99,41 @@ export const userMetadataRouter = createTRPCRouter({
       });
       return !!existing;
     }),
+  // Resolve a username to public profile data across userMetadata + auth user tables.
+  // Two-step lookup avoids relation-merge ambiguity and keeps the return shape minimal.
+  getPublicProfile: publicProcedure
+    .input(z.object({ username: z.string() }))
+    .query(async ({ input, ctx }) => {
+      const metadata = await ctx.db.query.userMetadata.findFirst({
+        where: eq(userMetadata.username, input.username),
+        columns: {
+          id: true,
+          username: true,
+          firstName: true,
+          lastName: true,
+        },
+      });
+
+      if (!metadata) {
+        throw new TRPCError({
+          code: 'NOT_FOUND',
+          message: 'User not found',
+        });
+      }
+
+      const authUser = await ctx.db.query.user.findFirst({
+        where: (u) => eq(u.id, metadata.id),
+        columns: { image: true },
+      });
+
+      return {
+        username: metadata.username,
+        firstName: metadata.firstName,
+        lastName: metadata.lastName,
+        image: authUser?.image ?? null,
+      };
+    }),
+
   getUserSidebarCapabilities: publicProcedure.query(async ({ ctx }) => {
     const session = ctx.session;
     const capabilites: (typeof personalCats)[number][] = [];
