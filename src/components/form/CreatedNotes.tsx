@@ -15,7 +15,7 @@ export default function CreatedNotes({ createdNotes }: CreatedNotesProps) {
       {createdNotes.length === 0 ? (
         <EmptyStateCard
           title="No uploaded notes yet"
-          description="This user hasn&apos;t uploaded any notes yet."
+          description="This user hasn't uploaded any notes yet."
         />
       ) : (
         <FilesGrid files={createdNotes} />

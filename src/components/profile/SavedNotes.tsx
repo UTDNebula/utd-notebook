@@ -11,7 +11,9 @@ export default function SavedNotes() {
   const api = useTRPC();
 
   // getSavedNotes is session-scoped (protected) and returns the current user's saved files.
-  const { data, isLoading } = useQuery(api.savedNote.getSavedNotes.queryOptions());
+  const { data, isLoading } = useQuery(
+    api.savedNote.getSavedNotes.queryOptions(),
+  );
 
   // Reuse FilesGrid/FileCard rendering; empty and loading states stay within this panel.
   const savedNotes = (data ?? []) as SelectFileWithAuthorPreview[];

@@ -74,7 +74,10 @@ export default function ProfileHeader({ username }: ProfileHeaderProps) {
             </span>
           </div>
           <div className="max-sm:mx-auto sm:ml-auto drop-shadow-[0_0_16px_rgb(0_0_0_/_0.2)]">
-            <Avatar src={data.image ?? undefined} className="w-18 h-18 rounded-full">
+            <Avatar
+              src={data.image ?? undefined}
+              className="w-18 h-18 rounded-full"
+            >
               {displayName.charAt(0)}
             </Avatar>
           </div>

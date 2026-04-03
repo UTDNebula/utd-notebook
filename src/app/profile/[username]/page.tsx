@@ -1,7 +1,7 @@
 import Header from '@src/components/header/Header';
 import SavedNotes from '@src/components/profile/SavedNotes';
-import ProfileHeader from './ProfileHeader';
 import ProfileCreatedNotes from './ProfileCreatedNotes';
+import ProfileHeader from './ProfileHeader';
 
 type ProfilePageProps = {
   params: Promise<{ username: string }>;
