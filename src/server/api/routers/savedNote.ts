@@ -78,7 +78,7 @@ export const savedNoteRouter = createTRPCRouter({
     .input(
       z.object({
         fileId: z.string(),
-        rating: z.number().int().min(1).max(5),
+        rating: z.number().int().min(1).max(5).nullable(),
       }),
     )
     .mutation(async ({ input, ctx }) => {
@@ -104,12 +104,15 @@ export const savedNoteRouter = createTRPCRouter({
         return { rating: input.rating };
       }
 
-      await ctx.db.insert(userMetadataToNotes).values({
-        userId,
-        fileId: input.fileId,
-        saved: false,
-        rating: input.rating,
-      });
+      // Only insert a new row if setting a rating (not clearing one)
+      if (input.rating !== null) {
+        await ctx.db.insert(userMetadataToNotes).values({
+          userId,
+          fileId: input.fileId,
+          saved: false,
+          rating: input.rating,
+        });
+      }
 
       return { rating: input.rating };
     }),

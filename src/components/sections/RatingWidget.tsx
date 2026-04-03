@@ -1,8 +1,8 @@
 'use client';
 
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
-import { useRouter } from 'next/navigation';
 import StyledRating from '@src/components/common/Rating';
+import { useRegisterModal } from '@src/components/global/RegisterModalProvider';
 import { setSnackbar } from '@src/components/global/Snackbar';
 import { useTRPC } from '@src/trpc/react';
 import { authClient } from '@src/utils/auth-client';
@@ -14,8 +14,8 @@ type RatingWidgetProps = {
 export default function RatingWidget({ fileId }: RatingWidgetProps) {
   const api = useTRPC();
   const queryClient = useQueryClient();
-  const router = useRouter();
   const { data: session } = authClient.useSession();
+  const { setShowRegisterModal } = useRegisterModal();
 
   const { data: userRating } = useQuery(
     api.savedNote.getUserRating.queryOptions({ fileId }),
@@ -54,10 +54,26 @@ export default function RatingWidget({ fileId }: RatingWidgetProps) {
         queryClient.setQueryData(
           api.savedNote.getAverageRating.queryKey({ fileId }),
           (old: { average: number; total: number } | undefined) => {
-            if (!old || old.total === 0) {
-              return { average: variables.rating, total: 1 };
-            }
+            if (!old)
+              return {
+                average: variables.rating ?? 0,
+                total: variables.rating ? 1 : 0,
+              };
             const oldRating = previousUserRating?.rating;
+            if (variables.rating === null) {
+              // Removing rating
+              if (
+                oldRating !== null &&
+                oldRating !== undefined &&
+                old.total > 1
+              ) {
+                const newTotal = old.total - 1;
+                const newAverage =
+                  (old.average * old.total - oldRating) / newTotal;
+                return { average: newAverage, total: newTotal };
+              }
+              return { average: 0, total: 0 };
+            }
             if (oldRating !== null && oldRating !== undefined) {
               // Updating existing rating: adjust average
               const newAverage =
@@ -76,9 +92,10 @@ export default function RatingWidget({ fileId }: RatingWidgetProps) {
         // Return context for rollback
         return { previousUserRating, previousAverage };
       },
-      onSuccess: () => {
+      onSuccess: (_data, variables) => {
         setSnackbar({
-          message: 'Rating submitted!',
+          message:
+            variables.rating !== null ? 'Rating submitted!' : 'Rating removed',
           type: 'success',
           autoHideDuration: true,
           fitContent: true,
@@ -124,15 +141,15 @@ export default function RatingWidget({ fileId }: RatingWidgetProps) {
     e.stopPropagation();
 
     if (!session?.user) {
-      router.push(
-        `/auth?callbackUrl=${encodeURIComponent(window.location.href)}`,
-      );
+      setShowRegisterModal(true);
       return;
     }
 
-    if (newValue !== null) {
-      rateMutation.mutate({ fileId, rating: newValue });
-    }
+    // null means the user clicked the same star to clear their rating
+    rateMutation.mutate({
+      fileId,
+      rating: newValue !== null ? Math.round(newValue) : null,
+    });
   };
 
   const avg = averageRating?.average ?? 0;
