@@ -228,8 +228,7 @@ export default function OnboardingForm({
       color={!form.state.isFieldsValid ? 'inherit' : 'primary'}
       onClick={handleBack}
       disabled={
-        activeStep.current === 0 ||
-        activeStep.current === steps.length - 1
+        activeStep.current === 0 || activeStep.current === steps.length - 1
       }
     >
       Back
