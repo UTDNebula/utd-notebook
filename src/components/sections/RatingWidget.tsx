@@ -1,6 +1,8 @@
 'use client';
 
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
+import { useRouter } from 'next/navigation';
+import { useRef } from 'react';
 import StyledRating from '@src/components/common/Rating';
 import { useRegisterModal } from '@src/components/global/RegisterModalProvider';
 import { setSnackbar } from '@src/components/global/Snackbar';
@@ -14,6 +16,7 @@ type RatingWidgetProps = {
 export default function RatingWidget({ fileId }: RatingWidgetProps) {
   const api = useTRPC();
   const queryClient = useQueryClient();
+  const router = useRouter();
   const { data: session } = authClient.useSession();
   const useAuthPage = useRef(false);
 
@@ -21,11 +24,11 @@ export default function RatingWidget({ fileId }: RatingWidgetProps) {
     useAuthPage.current = true;
   });
 
-  const { data: userRating } = useQuery(
+  const { data: userRating, isPending: userRatingIsPending } = useQuery(
     api.savedNote.getUserRating.queryOptions({ fileId }),
   );
 
-  const { data: averageRating } = useQuery(
+  const { data: averageRating, isPending: averageRatingIsPending } = useQuery(
     api.savedNote.getAverageRating.queryOptions({ fileId }),
   );
 
@@ -144,19 +147,20 @@ export default function RatingWidget({ fileId }: RatingWidgetProps) {
     e.preventDefault();
     e.stopPropagation();
 
-    if (userRatingIsPending || averageRatingIsPending || rateMutation.isPending) return;
+    if (userRatingIsPending || averageRatingIsPending || rateMutation.isPending)
+      return;
 
     if (!session) {
-        // This will use auth page when this JoinButton and a RegisterModal are not wrapped in a `<RegisterModalProvider>`.
-        if (useAuthPage.current) {
-          router.push(
-            `/auth?callbackUrl=${encodeURIComponent(window.location.href)}`,
-          );
-        } else {
-          setShowRegisterModal(true);
-        }
-        return;
+      // Falls back to auth page when not wrapped in a RegisterModalProvider
+      if (useAuthPage.current) {
+        router.push(
+          `/auth?callbackUrl=${encodeURIComponent(window.location.href)}`,
+        );
+      } else {
+        setShowRegisterModal(true);
       }
+      return;
+    }
 
     // null means the user clicked the same star to clear their rating
     rateMutation.mutate({
