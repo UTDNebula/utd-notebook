@@ -15,7 +15,11 @@ export default function RatingWidget({ fileId }: RatingWidgetProps) {
   const api = useTRPC();
   const queryClient = useQueryClient();
   const { data: session } = authClient.useSession();
-  const { setShowRegisterModal } = useRegisterModal();
+  const useAuthPage = useRef(false);
+
+  const { setShowRegisterModal } = useRegisterModal(() => {
+    useAuthPage.current = true;
+  });
 
   const { data: userRating } = useQuery(
     api.savedNote.getUserRating.queryOptions({ fileId }),
