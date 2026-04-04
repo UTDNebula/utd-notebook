@@ -142,10 +142,17 @@ export default function RatingWidget({ fileId }: RatingWidgetProps) {
 
     if (userRatingIsPending || averageRatingIsPending || rateMutation.isPending) return;
 
-    if (!session?.user) {
-      setShowRegisterModal(true);
-      return;
-    }
+    if (!session) {
+        // This will use auth page when this JoinButton and a RegisterModal are not wrapped in a `<RegisterModalProvider>`.
+        if (useAuthPage.current) {
+          router.push(
+            `/auth?callbackUrl=${encodeURIComponent(window.location.href)}`,
+          );
+        } else {
+          setShowRegisterModal(true);
+        }
+        return;
+      }
 
     // null means the user clicked the same star to clear their rating
     rateMutation.mutate({
