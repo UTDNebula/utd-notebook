@@ -140,6 +140,8 @@ export default function RatingWidget({ fileId }: RatingWidgetProps) {
     e.preventDefault();
     e.stopPropagation();
 
+    if (userRatingIsPending || averageRatingIsPending || rateMutation.isPending) return;
+
     if (!session?.user) {
       setShowRegisterModal(true);
       return;
