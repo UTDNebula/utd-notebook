@@ -1,5 +1,6 @@
 import { notFound } from 'next/navigation';
 import Header from '@src/components/header/Header';
+import RatingWidget from '@src/components/sections/RatingWidget';
 import { api } from '@src/trpc/server';
 
 type NotePageProps = {
@@ -41,6 +42,11 @@ export default async function NotePage({ params }: NotePageProps) {
             {file.updatedAt?.toLocaleDateString()}
           </p>
         </section>
+
+        <section>
+          <RatingWidget fileId={id} />
+        </section>
+
         <section>
           <h2>PDF</h2>
           {file.publicUrl ? (

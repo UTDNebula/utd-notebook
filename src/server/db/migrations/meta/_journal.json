@@ -43,6 +43,13 @@
       "when": 1773528852747,
       "tag": "0005_talented_jamie_braddock",
       "breakpoints": true
+    },
+    {
+      "idx": 6,
+      "version": "7",
+      "when": 1774555838679,
+      "tag": "0006_lively_katie_power",
+      "breakpoints": true
     }
   ]
 }
