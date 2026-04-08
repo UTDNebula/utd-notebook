@@ -1,7 +1,6 @@
 'use server';
 
 import Alert from '@mui/material/Alert';
-import CreatedNotes from '@src/components/form/CreatedNotes';
 import { auth } from '@src/server/auth';
 import { SelectUserMetadata } from '@src/server/db/models';
 import type { SelectFileWithAuthorPreview } from '@src/server/db/models';
@@ -49,8 +48,6 @@ async function SettingsForm({
       <SettingsHeader user={user} />
       {userData && <Username user={userData} />}
       {userData && <UserInfo user={userData} />}
-
-      <CreatedNotes createdNotes={createdNotes} />
 
       <DeleteAccount />
     </div>
