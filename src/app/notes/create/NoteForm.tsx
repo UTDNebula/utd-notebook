@@ -1,7 +1,7 @@
 'use client';
 
 import { useMutation } from '@tanstack/react-query';
-import { useRouter } from 'next/navigation';
+import { useRouter, useSearchParams } from 'next/navigation';
 import { useMemo } from 'react';
 import Panel, { PanelSkeleton } from '@src/components/common/Panel';
 import FormFile from '@src/components/form/FormFile';
@@ -43,6 +43,8 @@ const NoteForm = ({ mode = 'create', file: existingFile }: NoteFormProps) => {
   const updateMutation = useMutation(api.file.update.mutationOptions());
   const uploadFile = useUploadToUploadURL();
   const router = useRouter();
+  const searchParams = useSearchParams();
+  const courseQueryParam = searchParams.get('course');
 
   const defaultValues = useMemo<FileDetails>(() => {
     if (mode === 'edit' && existingFile) {
@@ -58,10 +60,10 @@ const NoteForm = ({ mode = 'create', file: existingFile }: NoteFormProps) => {
       file: null,
       name: '',
       description: '',
-      section: '',
+      section: courseQueryParam ?? '',
       handwritten: false,
     };
-  }, [mode, existingFile]);
+  }, [mode, existingFile, courseQueryParam]);
 
   const form = useAppForm({
     defaultValues,
