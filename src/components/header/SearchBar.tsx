@@ -1,7 +1,7 @@
 'use client';
 
-import ArticleIcon from '@mui/icons-material/Article';
 import AddCircleOutlineIcon from '@mui/icons-material/AddCircleOutline';
+import ArticleIcon from '@mui/icons-material/Article';
 import SearchIcon from '@mui/icons-material/Search';
 import { Autocomplete, TextField } from '@mui/material';
 import InputAdornment from '@mui/material/InputAdornment';
@@ -79,6 +79,7 @@ const SearchBar = ({ className, input_className, autoFocus }: SearchProps) => {
   }
 
   function updateQueries(term: SearchQuery) {
+    // Navigate to notes page based on search term
     if (term.prefix && term.number) {
       if (term.hasNotes === false) {
         router.push(
@@ -86,7 +87,7 @@ const SearchBar = ({ className, input_className, autoFocus }: SearchProps) => {
         );
         return;
       }
-      
+
       // Navigate to notes page based on search term
       router.push(`/notes/${term.prefix.toLowerCase()}/${term.number}`);
     } else if (term.profFirst && term.profLast) {
@@ -216,12 +217,19 @@ const SearchBar = ({ className, input_className, autoFocus }: SearchProps) => {
         const parts = parse(text, matches);
         const { key, ...otherProps } = props;
         return (
-          <li key={key} {...otherProps} className="flex flex-row items-center gap-2 px-4 py-2">
+          <li
+            key={key}
+            {...otherProps}
+            className="flex flex-row items-center gap-2 px-4 py-2"
+          >
             {typeof option !== 'string' ? (
               option.hasNotes ? (
                 <ArticleIcon className="text-gray-500" fontSize="small" />
               ) : (
-                <AddCircleOutlineIcon className="text-gray-500" fontSize="small" />
+                <AddCircleOutlineIcon
+                  className="text-gray-500"
+                  fontSize="small"
+                />
               )
             ) : null}
             <div className="flex-1">
