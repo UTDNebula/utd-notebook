@@ -138,10 +138,10 @@ export const BaseHeader = ({
   return (
     <BaseHeaderContext.Provider value={{ openCompactSearchBar }}>
       <div
-        className={`${disableSticky ? '' : 'sticky'} min-h-17 top-0 z-50 flex w-full justify-between items-center gap-y-2 gap-x-2 md:gap-x-4 lg:gap-x-8 py-2 px-4 ${menu ? 'max-sm:pl-2' : ''} flex-wrap sm:flex-nowrap ${transparent ? '' : 'bg-lighten dark:bg-darken'} ${className}`}
+        className={`${disableSticky ? '' : 'sticky'} relative min-h-17 top-0 z-50 flex w-full justify-between items-center gap-y-2 gap-x-2 md:gap-x-4 lg:gap-x-8 py-2 px-4 ${menu ? 'max-sm:pl-2' : ''} flex-wrap sm:flex-nowrap ${transparent ? '' : 'bg-lighten dark:bg-darken'} ${className}`}
       >
         {!transparent && (
-          <>
+          <div className="absolute inset-0 -z-20">
             <Image
               src={gradientBG}
               alt="gradient background"
@@ -150,7 +150,7 @@ export const BaseHeader = ({
               sizes="120vw"
             />
             <div className="absolute inset-0 bg-lighten dark:bg-darken -z-10"></div>
-          </>
+          </div>
         )}
         {!openCompactSearchBar ? (
           <>
@@ -167,7 +167,7 @@ export const BaseHeader = ({
                       : color === 'darkLight'
                         ? 'dark:text-white'
                         : ''
-                  } ${shadow ? 'drop-shadow-[0_0_4px_rgb(0_0_0_/_0.4)]' : ''}`}
+                  } ${shadow ? 'drop-shadow-[0_0_4px_rgb(0_0_0/0.4)]' : ''}`}
                 >
                   {logoIconVisibility && (
                     <div
@@ -203,13 +203,13 @@ export const BaseHeader = ({
             </div>
             {fullSearchBarVisibility && searchBar && (
               <div
-                className={`order-last max-sm:basis-full basis-128 sm:order-none gap-x-2 md:gap-x-4 lg:gap-x-8 ${searchVisibility === true ? 'max-md:hidden' : ''} ${shadow ? 'drop-shadow-[0_0_4px_rgb(0_0_0_/_0.4)]' : ''}`}
+                className={`order-last max-sm:basis-full basis-lg sm:order-0 gap-x-2 md:gap-x-4 lg:gap-x-8 ${searchVisibility === true ? 'max-md:hidden' : ''} ${shadow ? 'drop-shadow-[0_0_4px_rgb(0_0_0/0.4)]' : ''}`}
               >
                 {searchBar}
               </div>
             )}
             <div
-              className={`grow basis-0 flex justify-end items-center gap-x-2 ${shadow ? 'drop-shadow-[0_0_4px_rgb(0_0_0_/_0.2)]' : ''}`}
+              className={`grow basis-0 flex justify-end items-center gap-x-2 ${shadow ? 'drop-shadow-[0_0_4px_rgb(0_0_0/0.2)]' : ''}`}
             >
               {compactSearchBarVisibility && searchBar && (
                 <IconButton
@@ -226,7 +226,7 @@ export const BaseHeader = ({
           </>
         ) : (
           <div className="w-full flex justify-center">
-            <div className="w-full max-w-128 flex gap-x-2 items-center">
+            <div className="w-full max-w-lg flex gap-x-2 items-center">
               <IconButton
                 size="large"
                 onClick={() => setOpenCompactSearchBar(false)}
