@@ -16,6 +16,24 @@ interface AutocompleteResponse {
   state: string;
   data: SearchQuery[];
 }
+
+/**
+ * api response type for courseNameAutoComplete endpoint
+ */
+interface CourseNameResult {
+  title: string;
+  result: SearchQuery;
+}
+
+interface GenericFetchedDataResponse {
+  state: string;
+  data: CourseNameResult[];
+}
+
+type SearchQueryWithCourseTitle = SearchQuery & {
+  courseTitle?: string;
+};
+
 /**
  * Props type used by the SearchBar component
  */
@@ -33,7 +51,7 @@ interface SearchProps {
  */
 const SearchBar = ({ className, input_className, autoFocus }: SearchProps) => {
   //what you can choose from
-  const [options, setOptions] = useState<SearchQuery[]>([]);
+  const [options, setOptions] = useState<SearchQueryWithCourseTitle[]>([]);
   //initial loading prop for first load
   const [loading, setLoading] = useState(false);
 
@@ -47,6 +65,9 @@ const SearchBar = ({ className, input_className, autoFocus }: SearchProps) => {
   }
   //chosen value (single, was previously an array for multi-select)
   const [value, setValue] = useState<SearchQuery | null>(null);
+
+  //shortcut to loading course name results if a known substring has no normal results
+  const [noResult, setNoResults] = useState<null | string>(null);
 
   //set value from query
   const router = useRouter();
@@ -88,7 +109,69 @@ const SearchBar = ({ className, input_className, autoFocus }: SearchProps) => {
   }
 
   //fetch new options, add tags if valid
+  function loadNewCourseNameOptions(newInputValue: string) {
+    fetch(
+      '/api/courseNameAutoComplete?input=' + encodeURIComponent(newInputValue),
+    )
+      .then(
+        (response) => response.json() as Promise<GenericFetchedDataResponse>,
+      )
+      .then((data) => {
+        if (data.state !== 'done') {
+          throw new Error(data.state);
+        }
+
+        const queryWords = newInputValue
+          .toLowerCase()
+          .trim()
+          .split(/\s+/)
+          .filter(Boolean);
+
+        const scored = data.data.map((item: CourseNameResult) => {
+          const courseTitle = item.title.toLowerCase();
+          const allWordsMatch =
+            queryWords.length > 0 &&
+            queryWords.every((word) => courseTitle.includes(word));
+
+          return {
+            ...item.result,
+            courseTitle: item.title,
+            score: allWordsMatch ? 0 : 1,
+          };
+        });
+
+        scored.sort((a, b) => a.score - b.score);
+
+        const deduped: SearchQueryWithCourseTitle[] = [];
+        const seen = new Set<string>();
+        for (const item of scored) {
+          const key = searchQueryLabel(item);
+          if (seen.has(key)) continue;
+          seen.add(key);
+          deduped.push(item);
+        }
+
+        if (quickInputValue.current === newInputValue) {
+          //still valid options
+          setOptions(deduped);
+        }
+      })
+      .catch((error) => {
+        if (!(error instanceof DOMException)) {
+          console.error('Course name autocomplete', error);
+        }
+      })
+      .finally(() => {
+        setLoading(false);
+      });
+  }
+
   function loadNewOptions(newInputValue: string) {
+    if (noResult !== null && newInputValue.startsWith(noResult)) {
+      setLoading(true);
+      loadNewCourseNameOptions(newInputValue);
+      return;
+    }
     setLoading(true);
     if (newInputValue.trim() === '') {
       setOptions([]);
@@ -111,7 +194,13 @@ const SearchBar = ({ className, input_className, autoFocus }: SearchProps) => {
         }
         if (quickInputValue.current === newInputValue) {
           //still valid options
-          setOptions(data.data);
+          if (!data.data.length) {
+            setNoResults(newInputValue);
+            loadNewCourseNameOptions(newInputValue);
+          } else {
+            setOptions(data.data);
+            setNoResults(null);
+          }
         }
       })
       .catch((error) => {
@@ -199,6 +288,7 @@ const SearchBar = ({ className, input_className, autoFocus }: SearchProps) => {
 
         const parts = parse(text, matches);
         const { key, ...otherProps } = props;
+
         return (
           <li key={key} {...otherProps}>
             {parts.map((part, index) => (
