@@ -80,9 +80,7 @@ export default function FileCard({ file }: FileCardProps) {
   return (
     <BaseCard variant="interactive" className="flex h-full flex-col">
       <Link
-        href={file.publicUrl}
-        target="_blank"
-        rel="noreferrer"
+        href={`/notes/${file.id}`}
         className="flex grow flex-col"
       >
         <div className="overflow-hidden rounded-t-lg border-b border-neutral-200 bg-white dark:border-neutral-600 dark:bg-neutral-700">
