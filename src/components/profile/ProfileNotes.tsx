@@ -8,6 +8,7 @@ import { Albert_Sans } from 'next/font/google';
 import { useState } from 'react';
 import Panel from '@src/components/common/Panel';
 import CreatedNotes from '@src/components/form/CreatedNotes';
+import { HOME_PAGE_GRADIENT_CLASS } from '@src/constants/gradients';
 import type { SelectFileWithAuthorPreview } from '@src/server/db/models';
 
 const albertSans = Albert_Sans({
@@ -50,7 +51,9 @@ export default function ProfileNotes({
 
   return (
     <div className={`${albertSans.className} flex w-full flex-col gap-4`}>
-      <Panel className="relative overflow-clip bg-linear-to-r from-[#5A49F7] from-[4.36%] via-[#9403D8] via-[49.74%] to-[#FD9365] p-0 shadow-xl">
+      <Panel
+        className={`relative overflow-clip ${HOME_PAGE_GRADIENT_CLASS} p-0 shadow-xl`}
+      >
         <div className="absolute inset-0 dark:bg-slightly-darken" />
         <div className="z-10 border-b border-white/20 px-6 py-5">
           <div className="flex items-center gap-4 max-sm:flex-col-reverse max-sm:items-start sm:flex-row">
