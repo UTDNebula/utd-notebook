@@ -1,5 +1,5 @@
 import { TRPCError } from '@trpc/server';
-import { and, eq, ne, sql } from 'drizzle-orm';
+import { and, eq, ne, or, sql } from 'drizzle-orm';
 import { headers } from 'next/headers';
 import { z } from 'zod';
 import { type personalCats } from '@src/constants/categories';
@@ -11,6 +11,7 @@ import { userMetadata } from '@src/server/db/schema/user';
 import { createTRPCRouter, protectedProcedure, publicProcedure } from '../trpc';
 
 const byIdSchema = z.object({ id: z.string() });
+const byUsernameSchema = z.object({ username: z.string().trim().min(1) });
 
 const updateByIdSchema = z.object({
   updateUser: insertUserMetadata.partial().omit({ id: true }),
@@ -28,6 +29,34 @@ export const userMetadataRouter = createTRPCRouter({
 
     return userMetadata;
   }),
+  byUsername: publicProcedure
+    .input(byUsernameSchema)
+    .query(async ({ input, ctx }) => {
+      const profile = await ctx.db.query.userMetadata.findFirst({
+        where: or(
+          eq(userMetadata.username, input.username),
+          eq(userMetadata.id, input.username),
+        ),
+      });
+
+      if (!profile) {
+        return null;
+      }
+
+      const user = await ctx.db.query.user.findFirst({
+        where: eq(users.id, profile.id),
+        columns: {
+          name: true,
+          image: true,
+        },
+      });
+
+      return {
+        ...profile,
+        name: user?.name ?? null,
+        image: user?.image ?? null,
+      };
+    }),
   updateById: protectedProcedure
     .input(updateByIdSchema)
     .mutation(async ({ input, ctx }) => {

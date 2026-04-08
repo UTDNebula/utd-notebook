@@ -67,7 +67,14 @@ export const savedNoteRouter = createTRPCRouter({
         eq(userMetadataToNotes.saved, true),
       ),
       with: {
-        file: true,
+        file: {
+          with: {
+            section: true,
+            author: {
+              columns: { username: true, firstName: true, lastName: true },
+            },
+          },
+        },
       },
     });
 

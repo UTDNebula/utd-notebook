@@ -1,5 +1,5 @@
 import { TRPCError } from '@trpc/server';
-import { and, eq, ilike } from 'drizzle-orm';
+import { and, eq, ilike, or } from 'drizzle-orm';
 import { z } from 'zod';
 import { file as files } from '@src/server/db/schema/file';
 import { section as sections } from '@src/server/db/schema/section';
@@ -49,6 +49,38 @@ export const fileRouter = createTRPCRouter({
 
       const files = await ctx.db.query.file.findMany({
         where: (file) => eq(file.authorId, authorId),
+        orderBy: (file, { desc }) => [desc(file.updatedAt)],
+        with: {
+          section: true,
+          author: {
+            columns: { username: true, firstName: true, lastName: true },
+          },
+        },
+      });
+
+      return files;
+    }),
+  byUsername: publicProcedure
+    .input(
+      z.object({
+        username: z.string().trim().min(1),
+      }),
+    )
+    .query(async ({ input, ctx }) => {
+      const author = await ctx.db.query.userMetadata.findFirst({
+        where: (userMetadata, { eq }) =>
+          or(
+            eq(userMetadata.username, input.username),
+            eq(userMetadata.id, input.username),
+          ),
+      });
+
+      if (!author) {
+        return [];
+      }
+
+      const files = await ctx.db.query.file.findMany({
+        where: (file) => eq(file.authorId, author.id),
         orderBy: (file, { desc }) => [desc(file.updatedAt)],
         with: {
           section: true,
