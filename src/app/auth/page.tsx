@@ -33,7 +33,7 @@ export default async function Auth(props: {
         <div className="z-10">
           <Link
             href="/"
-            className="font-display flex gap-2 items-center select-none text-white drop-shadow-[0_0_4px_rgb(0_0_0_/_0.4)]"
+            className="font-display flex gap-2 items-center select-none text-white drop-shadow-[0_0_4px_rgb(0_0_0/0.4)]"
           >
             <div className="flex flex-row items-center">
               <UTDNotebookLogoStandalone className="h-10 w-auto fill-white" />
