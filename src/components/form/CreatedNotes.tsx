@@ -9,6 +9,7 @@ type CreatedNotesProps = {
   createdNotes: SelectFileWithAuthorPreview[];
   heading?: ReactNode;
   noFilesMessage?: ReactNode;
+  gridClassName?: string;
 };
 
 export default function CreatedNotes({
