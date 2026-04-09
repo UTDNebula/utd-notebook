@@ -59,7 +59,7 @@ export const ProfileDropDown = ({ shadow = false }: Props) => {
             }
           }}
           component="button"
-          className={`cursor-pointer ${shadow ? 'drop-shadow-[0_0_4px_rgb(0_0_0/0.4)]' : ''}`}
+          className={`cursor-pointer ${shadow ? 'drop-shadow-[0_0_4px_rgb(0_0_0_/_0.4)]' : ''}`}
         />
       </Tooltip>
       {session && (
@@ -73,7 +73,7 @@ export const ProfileDropDown = ({ shadow = false }: Props) => {
         >
           <Card>
             <MenuList>
-              <MenuItem divider component={Link} href="/profile">
+              <MenuItem divider component={Link} href="/settings">
                 <ListItemIcon>
                   <Avatar
                     alt={session.user.name}

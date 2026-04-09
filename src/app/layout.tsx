@@ -53,7 +53,6 @@ export default function RootLayout({
   return (
     <html lang="en">
       <body
-        suppressHydrationWarning
         className={`bg-light dark:bg-dark ${inter.variable} font-main ${baiJamjuree.variable} text-haiti dark:text-white`}
       >
         <AppRouterCacheProvider>

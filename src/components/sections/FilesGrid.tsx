@@ -11,14 +11,9 @@ type FilesGridProps = {
     | SectionWithFilesWithUserMetadata['files']
     | SelectFileWithAuthorPreview[];
   noFilesMessage?: ReactNode;
-  gridClassName?: string;
 };
 
-export default function FilesGrid({
-  files,
-  noFilesMessage,
-  gridClassName,
-}: FilesGridProps) {
+export default function FilesGrid({ files, noFilesMessage }: FilesGridProps) {
   if (files.length === 0) {
     if (noFilesMessage) {
       return noFilesMessage;
@@ -35,9 +30,7 @@ export default function FilesGrid({
   }
 
   return (
-    <div
-      className={`grid gap-4 sm:grid-cols-2 lg:grid-cols-3 ${gridClassName ?? ''}`}
-    >
+    <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
       {files.map((file) => (
         <FileCard key={file.id} file={file} />
       ))}
