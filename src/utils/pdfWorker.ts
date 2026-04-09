@@ -15,12 +15,10 @@ export const ensurePdfJsWorker = () => {
   );
 
   try {
-    // Prefer workerPort in Next.js to avoid URL resolution issues that can trigger fake worker mode.
     GlobalWorkerOptions.workerPort = new Worker(workerUrl, {
       type: 'module',
     });
   } catch {
-    // Fallback for environments where constructing Worker can fail.
     GlobalWorkerOptions.workerSrc = workerUrl.toString();
   }
 

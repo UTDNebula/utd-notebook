@@ -70,7 +70,7 @@ const sectionRegex =
   /^[A-Z]{2,4} [A-Z0-9]{4}.[A-Z0-9]{3} (Spring|Summer|Fall) [0-9]{4}$/;
 
 export const createFileFormSchema = z.object({
-  file: fileSchema,
+  file: fileSchema.nullish(),
   name: z
     .string()
     .min(3, 'Name must be at least 3 characters')
@@ -90,7 +90,7 @@ export const createFileSchema = z.object({
 
 export const editFileFormSchema = z.object({
   id: z.string(),
-  file: fileSchema.nullable(),
+  file: fileSchema.nullish(),
   name: z
     .string()
     .min(3, 'Name must be at least 3 characters')

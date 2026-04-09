@@ -137,111 +137,108 @@ export const BaseHeader = ({
 
   return (
     <BaseHeaderContext.Provider value={{ openCompactSearchBar }}>
-      <div className={`${disableSticky ? '' : 'sticky top-0 z-50'}`}>
-        <div
-          className={`relative min-h-17 flex w-full justify-between items-center gap-y-2 gap-x-2 md:gap-x-4 lg:gap-x-8 py-2 px-4 ${menu ? 'max-sm:pl-2' : ''} flex-wrap sm:flex-nowrap ${transparent ? '' : 'bg-lighten dark:bg-darken'} ${className}`}
-        >
-          {!transparent && (
-            <>
-              <Image
-                src={gradientBG}
-                alt="gradient background"
-                fill
-                priority
-                className="object-cover -z-20 select-none"
-                sizes="120vw"
-              />
-              <div className="absolute inset-0 bg-lighten dark:bg-darken -z-10"></div>
-            </>
-          )}
-          {!openCompactSearchBar ? (
-            <>
-              <div className="grow basis-0 flex gap-x-2 sm:gap-x-8">
-                {menuVisibility && menu}
-                {logoVisibility && (
-                  <Link
-                    href="/"
-                    className={`font-display flex gap-2 items-center select-none ${
-                      color?.startsWith('light') ? 'text-white' : 'text-haiti'
-                    } ${
-                      color === 'lightDark'
-                        ? 'dark:text-haiti'
-                        : color === 'darkLight'
-                          ? 'dark:text-white'
-                          : ''
-                    } ${shadow ? 'drop-shadow-[0_0_4px_rgb(0_0_0_/_0.4)]' : ''}`}
-                  >
-                    {logoIconVisibility && (
-                      <div
-                        className={`flex flex-row items-center ${logoVisibility === true ? 'max-sm:hidden' : ''}`}
-                      >
-                        <UTDNotebookLogoStandalone
-                          className={`h-10 w-auto ${
-                            color?.startsWith('light')
-                              ? 'fill-white'
-                              : 'fill-haiti'
-                          } ${
-                            color === 'lightDark'
-                              ? 'dark:fill-haiti'
-                              : color === 'darkLight'
-                                ? 'dark:fill-white'
-                                : ''
-                          }`}
-                        />
-                      </div>
-                    )}
-                    {logoTextVisibility && (
-                      <div className="flex flex-col">
-                        <span className="whitespace-nowrap text-lg md:text-xl font-bold leading-5">
-                          UTD NOTEBOOK
-                        </span>
-                        <span className="whitespace-nowrap text-xs md:text-sm font-medium">
-                          by Nebula Labs
-                        </span>
-                      </div>
-                    )}
-                  </Link>
-                )}
-              </div>
-              {fullSearchBarVisibility && searchBar && (
-                <div
-                  className={`order-last max-sm:basis-full basis-128 sm:order-none gap-x-2 md:gap-x-4 lg:gap-x-8 ${searchVisibility === true ? 'max-md:hidden' : ''} ${shadow ? 'drop-shadow-[0_0_4px_rgb(0_0_0_/_0.4)]' : ''}`}
+      <div
+        className={`${disableSticky ? '' : 'sticky'} min-h-17 top-0 z-50 flex w-full justify-between items-center gap-y-2 gap-x-2 md:gap-x-4 lg:gap-x-8 py-2 px-4 ${menu ? 'max-sm:pl-2' : ''} flex-wrap sm:flex-nowrap ${transparent ? '' : 'bg-lighten dark:bg-darken'} ${className}`}
+      >
+        {!transparent && (
+          <>
+            <Image
+              src={gradientBG}
+              alt="gradient background"
+              fill
+              className="object-cover -z-20 select-none"
+              sizes="120vw"
+            />
+            <div className="absolute inset-0 bg-lighten dark:bg-darken -z-10"></div>
+          </>
+        )}
+        {!openCompactSearchBar ? (
+          <>
+            <div className="grow basis-0 flex gap-x-2 sm:gap-x-8">
+              {menuVisibility && menu}
+              {logoVisibility && (
+                <Link
+                  href="/"
+                  className={`font-display flex gap-2 items-center select-none ${
+                    color?.startsWith('light') ? 'text-white' : 'text-haiti'
+                  } ${
+                    color === 'lightDark'
+                      ? 'dark:text-haiti'
+                      : color === 'darkLight'
+                        ? 'dark:text-white'
+                        : ''
+                  } ${shadow ? 'drop-shadow-[0_0_4px_rgb(0_0_0_/_0.4)]' : ''}`}
                 >
-                  {searchBar}
-                </div>
+                  {logoIconVisibility && (
+                    <div
+                      className={`flex flex-row items-center ${logoVisibility === true ? 'max-sm:hidden' : ''}`}
+                    >
+                      <UTDNotebookLogoStandalone
+                        className={`h-10 w-auto ${
+                          color?.startsWith('light')
+                            ? 'fill-white'
+                            : 'fill-haiti'
+                        } ${
+                          color === 'lightDark'
+                            ? 'dark:fill-haiti'
+                            : color === 'darkLight'
+                              ? 'dark:fill-white'
+                              : ''
+                        }`}
+                      />
+                    </div>
+                  )}
+                  {logoTextVisibility && (
+                    <div className="flex flex-col">
+                      <span className="whitespace-nowrap text-lg md:text-xl font-bold leading-5">
+                        UTD NOTEBOOK
+                      </span>
+                      <span className="whitespace-nowrap text-xs md:text-sm font-medium">
+                        by Nebula Labs
+                      </span>
+                    </div>
+                  )}
+                </Link>
               )}
+            </div>
+            {fullSearchBarVisibility && searchBar && (
               <div
-                className={`grow basis-0 flex justify-end items-center gap-x-2 ${shadow ? 'drop-shadow-[0_0_4px_rgb(0_0_0_/_0.2)]' : ''}`}
+                className={`order-last max-sm:basis-full basis-128 sm:order-none gap-x-2 md:gap-x-4 lg:gap-x-8 ${searchVisibility === true ? 'max-md:hidden' : ''} ${shadow ? 'drop-shadow-[0_0_4px_rgb(0_0_0_/_0.4)]' : ''}`}
               >
-                {compactSearchBarVisibility && searchBar && (
-                  <IconButton
-                    size="large"
-                    className={`${searchVisibility === true ? 'md:hidden' : ''}`}
-                    onClick={() => setOpenCompactSearchBar(true)}
-                  >
-                    <SearchIcon />
-                  </IconButton>
-                )}
-                {childrenVisibility && children}
-                {accountVisibility && <ProfileDropDown />}
+                {searchBar}
               </div>
-            </>
-          ) : (
-            <div className="w-full flex justify-center">
-              <div className="w-full max-w-128 flex gap-x-2 items-center">
+            )}
+            <div
+              className={`grow basis-0 flex justify-end items-center gap-x-2 ${shadow ? 'drop-shadow-[0_0_4px_rgb(0_0_0_/_0.2)]' : ''}`}
+            >
+              {compactSearchBarVisibility && searchBar && (
                 <IconButton
                   size="large"
-                  onClick={() => setOpenCompactSearchBar(false)}
+                  className={`${searchVisibility === true ? 'md:hidden' : ''}`}
+                  onClick={() => setOpenCompactSearchBar(true)}
                 >
-                  <ArrowBackIcon />
+                  <SearchIcon />
                 </IconButton>
-                {compactSearchBarVisibility && (
-                  <div className="grow">{searchBar}</div>
-                )}
-              </div>
+              )}
+              {childrenVisibility && children}
+              {accountVisibility && <ProfileDropDown />}
             </div>
-          )}
-        </div>
+          </>
+        ) : (
+          <div className="w-full flex justify-center">
+            <div className="w-full max-w-128 flex gap-x-2 items-center">
+              <IconButton
+                size="large"
+                onClick={() => setOpenCompactSearchBar(false)}
+              >
+                <ArrowBackIcon />
+              </IconButton>
+              {compactSearchBarVisibility && (
+                <div className="grow">{searchBar}</div>
+              )}
+            </div>
+          </div>
+        )}
       </div>
     </BaseHeaderContext.Provider>
   );

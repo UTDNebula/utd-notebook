@@ -30,11 +30,13 @@ type NoteFormProps =
     };
 
 interface FileDetails {
-  file: File | null;
+  file?: File | null;
   name: string;
   description?: string;
   section?: string;
 }
+
+const SAVE_REDIRECT_DELAY_MS = 1200;
 
 const NoteForm = ({ mode = 'create', file: existingFile }: NoteFormProps) => {
   const api = useTRPC();
@@ -42,6 +44,12 @@ const NoteForm = ({ mode = 'create', file: existingFile }: NoteFormProps) => {
   const updateMutation = useMutation(api.file.update.mutationOptions());
   const uploadFile = useUploadToUploadURL();
   const router = useRouter();
+
+  const redirectHomeWithDelay = () => {
+    window.setTimeout(() => {
+      router.push('/');
+    }, SAVE_REDIRECT_DELAY_MS);
+  };
 
   const defaultValues = useMemo<FileDetails>(() => {
     if (mode === 'edit' && existingFile) {
@@ -63,7 +71,8 @@ const NoteForm = ({ mode = 'create', file: existingFile }: NoteFormProps) => {
   const form = useAppForm({
     defaultValues,
     onSubmit: async ({ value, formApi }) => {
-      const { file: selectedFile, section, ...rest } = value;
+      const { file, section, ...rest } = value;
+      const selectedFile = file ?? null;
 
       if (mode === 'edit' && existingFile) {
         let fileUrl = existingFile.publicUrl;
@@ -82,7 +91,7 @@ const NoteForm = ({ mode = 'create', file: existingFile }: NoteFormProps) => {
             file: fileUrl,
           },
           {
-            onSuccess: () => router.push(`/notes/${existingFile.id}`),
+            onSuccess: redirectHomeWithDelay,
           },
         );
       }
@@ -94,7 +103,7 @@ const NoteForm = ({ mode = 'create', file: existingFile }: NoteFormProps) => {
           onSuccess: async (newId) => {
             const isFileDirty = !formApi.getFieldMeta('file')?.isDefaultValue;
             if (!isFileDirty) {
-              router.push(`/notes/${newId}`);
+              redirectHomeWithDelay();
               return;
             }
 
@@ -109,7 +118,7 @@ const NoteForm = ({ mode = 'create', file: existingFile }: NoteFormProps) => {
                 file: url,
               },
               {
-                onSuccess: () => router.push(`/notes/${newId}`),
+                onSuccess: redirectHomeWithDelay,
               },
             );
           },
@@ -149,10 +158,11 @@ const NoteForm = ({ mode = 'create', file: existingFile }: NoteFormProps) => {
               {(field) => (
                 <FormFile
                   label="File"
-                  value={field.state.value}
+                  value={field.state.value ?? null}
                   existingFile={
                     mode === 'edit' && existingFile
                       ? {
+                          id: existingFile.id,
                           name: existingFile.name,
                           publicUrl: existingFile.publicUrl,
                         }
