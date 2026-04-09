@@ -1,8 +1,24 @@
 import { and, eq, ilike } from 'drizzle-orm';
 import { z } from 'zod';
+import sectionsData from '@src/data/sections_data.json';
 import { section } from '@src/server/db/schema/section';
 import { normalizePrefix } from '@src/utils/section';
+import type { SectionEntry } from '@src/utils/sectionEntry';
 import { createTRPCRouter, publicProcedure } from '../trpc';
+
+const termOrder: Record<string, number> = {
+  Spring: 1,
+  Summer: 2,
+  Fall: 3,
+};
+
+// Pre-sort by year desc, term desc so search results are already ordered
+const sections: SectionEntry[] = (sectionsData as SectionEntry[]).sort(
+  (a, b) => {
+    if (a.year !== b.year) return b.year - a.year;
+    return (termOrder[b.term] ?? 0) - (termOrder[a.term] ?? 0);
+  },
+);
 
 const byIdSchema = z.object({
   id: z.string(),
@@ -147,4 +163,18 @@ export const sectionRouter = createTRPCRouter({
         section.profLast,
       );
   }),
+
+  searchSections: publicProcedure
+    .input(z.object({ query: z.string().min(2).max(100) }))
+    .query(({ input }) => {
+      const q = input.query.toUpperCase();
+      const matches: SectionEntry[] = [];
+      for (const s of sections) {
+        if (s.label.toUpperCase().includes(q)) {
+          matches.push(s);
+          if (matches.length >= 20) break;
+        }
+      }
+      return matches;
+    }),
 });

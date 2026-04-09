@@ -65,8 +65,9 @@ export const fileRouter = createTRPCRouter({
     .input(createFileSchema)
     .mutation(async ({ input, ctx }) => {
       const userId = ctx.session.user.id;
+      const { section: sectionStr, profFirst, profLast, ...fileData } = input;
 
-      const sectionSplit = input.section.split(' ');
+      const sectionSplit = sectionStr.split(' ');
       const numberSectionSplit = sectionSplit[1]?.split('.');
 
       let section = await ctx.db.query.section.findFirst({
@@ -90,8 +91,8 @@ export const fileRouter = createTRPCRouter({
               sectionCode: numberSectionSplit![1]!,
               term: sectionSplit[2] as 'Spring' | 'Summer' | 'Fall',
               year: parseInt(sectionSplit[3]!),
-              profFirst: 'Should be pulled',
-              profLast: 'from db',
+              profFirst,
+              profLast,
             })
             .returning()
         )[0];
@@ -106,7 +107,7 @@ export const fileRouter = createTRPCRouter({
       const res = await ctx.db
         .insert(files)
         .values({
-          ...input,
+          ...fileData,
           authorId: userId,
           sectionId: section.id,
           publicUrl: '', // This must be filled in with an update call right after the create call

@@ -34,6 +34,8 @@ interface FileDetails {
   name: string;
   description?: string;
   section?: string;
+  profFirst?: string;
+  profLast?: string;
   handwritten: boolean;
 }
 
@@ -51,6 +53,8 @@ const NoteForm = ({ mode = 'create', file: existingFile }: NoteFormProps) => {
         name: existingFile.name,
         description: existingFile.description ?? '',
         section: '',
+        profFirst: '',
+        profLast: '',
         handwritten: existingFile.handwritten,
       };
     }
@@ -59,6 +63,8 @@ const NoteForm = ({ mode = 'create', file: existingFile }: NoteFormProps) => {
       name: '',
       description: '',
       section: '',
+      profFirst: '',
+      profLast: '',
       handwritten: false,
     };
   }, [mode, existingFile]);
@@ -66,7 +72,13 @@ const NoteForm = ({ mode = 'create', file: existingFile }: NoteFormProps) => {
   const form = useAppForm({
     defaultValues,
     onSubmit: async ({ value, formApi }) => {
-      const { file: selectedFile, section, ...rest } = value;
+      const {
+        file: selectedFile,
+        section,
+        profFirst,
+        profLast,
+        ...rest
+      } = value;
 
       if (mode === 'edit' && existingFile) {
         let fileUrl = existingFile.publicUrl;
@@ -92,7 +104,12 @@ const NoteForm = ({ mode = 'create', file: existingFile }: NoteFormProps) => {
 
       // Create
       return createMutation.mutateAsync(
-        { ...rest, section: section ?? '' },
+        {
+          ...rest,
+          section: section ?? '',
+          profFirst: profFirst ?? '',
+          profLast: profLast ?? '',
+        },
         {
           onSuccess: async (newId) => {
             const isFileDirty = !formApi.getFieldMeta('file')?.isDefaultValue;
@@ -213,10 +230,13 @@ const NoteForm = ({ mode = 'create', file: existingFile }: NoteFormProps) => {
               {mode === 'create' && (
                 <form.AppField name="section">
                   {(field) => (
-                    <field.TextField
+                    <field.SectionAutocomplete
                       label="Section"
                       className="w-full"
-                      helperText="Example: CS 1200.001 Fall 2025"
+                      onSectionSelect={(entry) => {
+                        form.setFieldValue('profFirst', entry?.profFirst ?? '');
+                        form.setFieldValue('profLast', entry?.profLast ?? '');
+                      }}
                     />
                   )}
                 </form.AppField>

@@ -67,7 +67,7 @@ const fileSchema = z
   );
 
 const sectionRegex =
-  /^[A-Z]{2,4} [A-Z0-9]{4}.[A-Z0-9]{3} (Spring|Summer|Fall) [0-9]{4}$/;
+  /^[A-Z]{2,4} [A-Z0-9]{4}\.[A-Z0-9]{3} (Spring|Summer|Fall) [0-9]{4}$/;
 
 export const createFileFormSchema = z.object({
   file: fileSchema,
@@ -77,6 +77,8 @@ export const createFileFormSchema = z.object({
     .max(100, 'Character limit reached'),
   description: z.string().max(1000, 'Character limit reached').optional(),
   section: z.string().regex(sectionRegex, 'Section must follow format'),
+  profFirst: z.string().min(1, 'Select a section to populate professor'),
+  profLast: z.string().min(1, 'Select a section to populate professor'),
   handwritten: z.boolean(),
 });
 
@@ -87,6 +89,8 @@ export const createFileSchema = z.object({
     .max(100, 'Character limit reached'),
   description: z.string().max(1000, 'Character limit reached').optional(),
   section: z.string().regex(sectionRegex, 'Section must follow format'),
+  profFirst: z.string().min(1, 'Professor info required'),
+  profLast: z.string().min(1, 'Professor info required'),
   handwritten: z.boolean(),
 });
 
