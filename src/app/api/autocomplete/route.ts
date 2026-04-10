@@ -10,6 +10,78 @@ import { type SearchQueryWithTotalStudents } from '@src/utils/SearchQuery';
 
 const graph = getGraph(autocompleteGraph as object);
 
+const CACHE_TTL_MS = 1000 *60 * 5;
+
+declare global {
+  var __autocompleteNotesCache:
+    | {
+        courseKeys: Set<string>;
+        profKeys: Set<string>;
+        lastUpdated: number;
+        refreshPromise?: Promise<void>;
+      }
+    | undefined;
+}
+
+function getNotesCache() {
+  if (!globalThis.__autocompleteNotesCache) {
+    globalThis.__autocompleteNotesCache = {
+      courseKeys: new Set(),
+      profKeys: new Set(),
+      lastUpdated: 0,
+    };
+  }
+  return globalThis.__autocompleteNotesCache;
+}
+
+async function refreshNotesCache() {
+  const cache = getNotesCache();
+  if (cache.refreshPromise) {
+    await cache.refreshPromise;
+    return;
+  }
+
+  cache.refreshPromise = (async () => {
+    const rows = await db
+      .select({
+        prefix: section.prefix,
+        number: section.number,
+        profFirst: section.profFirst,
+        profLast: section.profLast,
+      })
+      .from(section)
+      .innerJoin(file, eq(file.sectionId, section.id));
+
+    const courseKeys = new Set<string>();
+    const profKeys = new Set<string>();
+
+    for (const row of rows) {
+      if (row.prefix && row.number) {
+        courseKeys.add(`${row.prefix.toLowerCase()}|${row.number}`);
+      }
+      if (row.profFirst && row.profLast) {
+        profKeys.add(
+          `${row.profFirst.toLowerCase()}|${row.profLast.toLowerCase()}`,
+        );
+      }
+    }
+
+    cache.courseKeys = courseKeys;
+    cache.profKeys = profKeys;
+    cache.lastUpdated = Date.now();
+    cache.refreshPromise = undefined;
+  })();
+
+  await cache.refreshPromise;
+}
+
+async function ensureNotesCacheFresh() {
+  const cache = getNotesCache();
+  if (Date.now() - cache.lastUpdated > CACHE_TTL_MS) {
+    await refreshNotesCache();
+  }
+}
+
 export async function GET(request: Request) {
   const { searchParams } = new URL(request.url);
   const input = searchParams.get('input');
@@ -34,53 +106,17 @@ export async function GET(request: Request) {
 
   const results = searchAutocomplete(graph, input, limit, searchBy);
 
-  // Check DB for notes
-  const courseConditions = [];
-  const profConditions = [];
+  await ensureNotesCacheFresh();
+  const cache = getNotesCache();
 
   for (const res of results) {
     if (res.prefix && res.number) {
-      courseConditions.push(
-        and(eq(section.prefix, res.prefix), eq(section.number, res.number)),
+      res.hasNotes = cache.courseKeys.has(
+        `${res.prefix.toLowerCase()}|${res.number}`,
       );
     } else if (res.profFirst && res.profLast) {
-      profConditions.push(
-        and(
-          eq(section.profFirst, res.profFirst),
-          eq(section.profLast, res.profLast),
-        ),
-      );
-    }
-  }
-
-  const queryConditions = [];
-  if (courseConditions.length > 0) {
-    queryConditions.push(or(...courseConditions));
-  }
-  if (profConditions.length > 0) {
-    queryConditions.push(or(...profConditions));
-  }
-
-  if (queryConditions.length > 0) {
-    const existingSections = await db
-      .select({
-        prefix: section.prefix,
-        number: section.number,
-        profFirst: section.profFirst,
-        profLast: section.profLast,
-      })
-      .from(section)
-      .innerJoin(file, eq(file.sectionId, section.id))
-      .where(or(...queryConditions));
-
-    // Then for each in results, check if it matches existingSections
-    for (const res of results) {
-      res.hasNotes = existingSections.some(
-        (s) =>
-          (res.prefix && s.prefix === res.prefix && s.number === res.number) ||
-          (res.profFirst &&
-            s.profFirst === res.profFirst &&
-            s.profLast === res.profLast),
+      res.hasNotes = cache.profKeys.has(
+        `${res.profFirst.toLowerCase()}|${res.profLast.toLowerCase()}`,
       );
     }
   }

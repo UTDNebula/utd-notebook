@@ -92,9 +92,7 @@ const SearchBar = ({ className, input_className, autoFocus }: SearchProps) => {
       router.push(`/notes/${term.prefix.toLowerCase()}/${term.number}`);
     } else if (term.profFirst && term.profLast) {
       if (term.hasNotes === false) {
-        router.push(
-          `/notes/create?course=${encodeURIComponent(`${term.profFirst} ${term.profLast}`)}`,
-        );
+        router.push(`/notes/create?course`);
         return;
       }
 
