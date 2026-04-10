@@ -10,7 +10,7 @@ import { type SearchQueryWithTotalStudents } from '@src/utils/SearchQuery';
 
 const graph = getGraph(autocompleteGraph as object);
 
-const CACHE_TTL_MS = 1000 *60 * 5;
+const CACHE_TTL_MS = 1000 * 60 * 5;
 
 declare global {
   var __autocompleteNotesCache:
