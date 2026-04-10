@@ -76,7 +76,7 @@ export default function OnboardingForm({
     lastName: userMetadata?.lastName,
     major: userMetadata?.major,
     minor: userMetadata?.minor,
-    studentClassification: userMetadata?.studentClassification,
+    studentClassification: userMetadata?.studentClassification ?? 'Student',
     // `userMetadata.graduation` is automatically set with a time zone, which shows the wrong month in the date picker
     // Add the timezone offset (in milliseconds) to convert back to UTC
     graduationDate: userMetadata?.graduationDate
