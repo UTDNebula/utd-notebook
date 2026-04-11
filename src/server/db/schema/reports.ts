@@ -27,6 +27,7 @@ export const report = pgTable(
     // Short category (e.g., "inappropriate", "copyright", "spam", "other")
     category: varchar('category', { length: 32 }).notNull().default('other'),
 
+    // Free-text explanation
     details: text('details').notNull(),
 
     createdAt: timestamp('created_at', { mode: 'date' })
