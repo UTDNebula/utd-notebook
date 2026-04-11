@@ -24,9 +24,13 @@ export const reportRouter = createTRPCRouter({
         });
 
         return { success: true };
-      } catch (error: any) {
-        // PostgreSQL unique constraint violation
-        if (error?.code === '23505') {
+      } catch (error: unknown) {
+        if (
+          typeof error === 'object' &&
+          error !== null &&
+          'code' in error &&
+          (error as { code?: string }).code === '23505'
+        ) {
           throw new TRPCError({
             code: 'BAD_REQUEST',
             message: 'You have already reported this file',
