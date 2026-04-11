@@ -27,10 +27,15 @@ export function FormSectionAutocomplete({
   const [selectedEntry, setSelectedEntry] = useState<SectionEntry | null>(null);
   const debouncedInput = useDebounce(inputValue, 300);
 
+  // Normalize: insert space between letters and digits ("CS1200" -> "CS 1200")
+  const normalizedQuery = debouncedInput
+    .replace(/([a-zA-Z]{2,4})(\d)/, '$1 $2')
+    .replace(/(\d)([a-zA-Z]{1,4})/, '$1 $2');
+
   const { data: options = [], isLoading } = useQuery(
     api.section.searchSections.queryOptions(
-      { query: debouncedInput },
-      { enabled: debouncedInput.length >= 2 },
+      { query: normalizedQuery },
+      { enabled: normalizedQuery.length >= 2 },
     ),
   );
 
@@ -88,7 +93,9 @@ export function FormSectionAutocomplete({
                 )
                   .map((err) => err?.message)
                   .join('. ') + '.'
-              : 'Start typing a course prefix (e.g. CS, MATH)'
+              : selectedEntry
+                ? undefined
+                : 'Start typing a course prefix (e.g. CS, MATH)'
           }
           className="w-full"
           slotProps={{

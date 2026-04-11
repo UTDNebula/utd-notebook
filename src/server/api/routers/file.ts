@@ -65,19 +65,25 @@ export const fileRouter = createTRPCRouter({
     .input(createFileSchema)
     .mutation(async ({ input, ctx }) => {
       const userId = ctx.session.user.id;
-      const { section: sectionStr, profFirst, profLast, ...fileData } = input;
-
-      const sectionSplit = sectionStr.split(' ');
-      const numberSectionSplit = sectionSplit[1]?.split('.');
+      const {
+        prefix,
+        number,
+        sectionCode,
+        term,
+        year,
+        profFirst,
+        profLast,
+        ...fileData
+      } = input;
 
       let section = await ctx.db.query.section.findFirst({
         where: (section) =>
           and(
-            eq(section.prefix, sectionSplit[0]!),
-            eq(section.number, numberSectionSplit![0]!),
-            eq(section.sectionCode, numberSectionSplit![1]!),
-            eq(section.term, sectionSplit[2] as 'Spring' | 'Summer' | 'Fall'),
-            eq(section.year, parseInt(sectionSplit[3]!)),
+            eq(section.prefix, prefix),
+            eq(section.number, number),
+            eq(section.sectionCode, sectionCode),
+            eq(section.term, term),
+            eq(section.year, year),
           ),
       });
 
@@ -86,11 +92,11 @@ export const fileRouter = createTRPCRouter({
           await ctx.db
             .insert(sections)
             .values({
-              prefix: sectionSplit[0]!,
-              number: numberSectionSplit![0]!,
-              sectionCode: numberSectionSplit![1]!,
-              term: sectionSplit[2] as 'Spring' | 'Summer' | 'Fall',
-              year: parseInt(sectionSplit[3]!),
+              prefix,
+              number,
+              sectionCode,
+              term,
+              year,
               profFirst,
               profLast,
             })

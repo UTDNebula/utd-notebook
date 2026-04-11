@@ -34,6 +34,11 @@ interface FileDetails {
   name: string;
   description?: string;
   section?: string;
+  prefix?: string;
+  number?: string;
+  sectionCode?: string;
+  term?: string;
+  year?: number;
   profFirst?: string;
   profLast?: string;
   handwritten: boolean;
@@ -53,6 +58,11 @@ const NoteForm = ({ mode = 'create', file: existingFile }: NoteFormProps) => {
         name: existingFile.name,
         description: existingFile.description ?? '',
         section: '',
+        prefix: '',
+        number: '',
+        sectionCode: '',
+        term: '',
+        year: 0,
         profFirst: '',
         profLast: '',
         handwritten: existingFile.handwritten,
@@ -63,6 +73,11 @@ const NoteForm = ({ mode = 'create', file: existingFile }: NoteFormProps) => {
       name: '',
       description: '',
       section: '',
+      prefix: '',
+      number: '',
+      sectionCode: '',
+      term: '',
+      year: 0,
       profFirst: '',
       profLast: '',
       handwritten: false,
@@ -72,13 +87,7 @@ const NoteForm = ({ mode = 'create', file: existingFile }: NoteFormProps) => {
   const form = useAppForm({
     defaultValues,
     onSubmit: async ({ value, formApi }) => {
-      const {
-        file: selectedFile,
-        section,
-        profFirst,
-        profLast,
-        ...rest
-      } = value;
+      const { file: selectedFile, section, ...rest } = value;
 
       if (mode === 'edit' && existingFile) {
         let fileUrl = existingFile.publicUrl;
@@ -93,7 +102,9 @@ const NoteForm = ({ mode = 'create', file: existingFile }: NoteFormProps) => {
         return updateMutation.mutateAsync(
           {
             id: existingFile.id,
-            ...rest,
+            name: rest.name,
+            description: rest.description,
+            handwritten: rest.handwritten,
             file: fileUrl,
           },
           {
@@ -105,10 +116,16 @@ const NoteForm = ({ mode = 'create', file: existingFile }: NoteFormProps) => {
       // Create
       return createMutation.mutateAsync(
         {
-          ...rest,
-          section: section ?? '',
-          profFirst: profFirst ?? '',
-          profLast: profLast ?? '',
+          name: rest.name,
+          description: rest.description,
+          handwritten: rest.handwritten,
+          prefix: rest.prefix ?? '',
+          number: rest.number ?? '',
+          sectionCode: rest.sectionCode ?? '',
+          term: (rest.term ?? '') as 'Spring' | 'Summer' | 'Fall',
+          year: rest.year ?? 0,
+          profFirst: rest.profFirst ?? '',
+          profLast: rest.profLast ?? '',
         },
         {
           onSuccess: async (newId) => {
@@ -125,7 +142,9 @@ const NoteForm = ({ mode = 'create', file: existingFile }: NoteFormProps) => {
             updateMutation.mutate(
               {
                 id: newId,
-                ...rest,
+                name: rest.name,
+                description: rest.description,
+                handwritten: rest.handwritten,
                 file: url,
               },
               {
@@ -234,6 +253,14 @@ const NoteForm = ({ mode = 'create', file: existingFile }: NoteFormProps) => {
                       label="Section"
                       className="w-full"
                       onSectionSelect={(entry) => {
+                        form.setFieldValue('prefix', entry?.prefix ?? '');
+                        form.setFieldValue('number', entry?.number ?? '');
+                        form.setFieldValue(
+                          'sectionCode',
+                          entry?.sectionCode ?? '',
+                        );
+                        form.setFieldValue('term', entry?.term ?? '');
+                        form.setFieldValue('year', entry?.year ?? 0);
                         form.setFieldValue('profFirst', entry?.profFirst ?? '');
                         form.setFieldValue('profLast', entry?.profLast ?? '');
                       }}

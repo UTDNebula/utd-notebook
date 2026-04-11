@@ -6,19 +6,8 @@ import { normalizePrefix } from '@src/utils/section';
 import type { SectionEntry } from '@src/utils/sectionEntry';
 import { createTRPCRouter, publicProcedure } from '../trpc';
 
-const termOrder: Record<string, number> = {
-  Spring: 1,
-  Summer: 2,
-  Fall: 3,
-};
-
-// Pre-sort by year desc, term desc so search results are already ordered
-const sections: SectionEntry[] = (sectionsData as SectionEntry[]).sort(
-  (a, b) => {
-    if (a.year !== b.year) return b.year - a.year;
-    return (termOrder[b.term] ?? 0) - (termOrder[a.term] ?? 0);
-  },
-);
+// Already sorted by year desc, term desc at build time (generateSectionsData.ts)
+const sections: SectionEntry[] = sectionsData as SectionEntry[];
 
 const byIdSchema = z.object({
   id: z.string(),
@@ -167,10 +156,17 @@ export const sectionRouter = createTRPCRouter({
   searchSections: publicProcedure
     .input(z.object({ query: z.string().min(2).max(100) }))
     .query(({ input }) => {
-      const q = input.query.toUpperCase();
+      // Normalize: insert space between letters and digits ("CS1200" -> "CS 1200")
+      const normalized = input.query
+        .replace(/([a-zA-Z]{2,4})(\d)/, '$1 $2')
+        .replace(/(\d)([a-zA-Z]{1,4})/, '$1 $2');
+      const tokens = normalized.toUpperCase().split(/\s+/).filter(Boolean);
+      if (tokens.length === 0) return [];
+
       const matches: SectionEntry[] = [];
       for (const s of sections) {
-        if (s.label.toUpperCase().includes(q)) {
+        const upper = s.label.toUpperCase();
+        if (tokens.every((t) => upper.includes(t))) {
           matches.push(s);
           if (matches.length >= 20) break;
         }

@@ -1,7 +1,7 @@
 export type SectionEntry = {
   label: string;
   prefix: string;
-  courseNumber: string;
+  number: string;
   sectionCode: string;
   term: 'Spring' | 'Summer' | 'Fall';
   year: number;

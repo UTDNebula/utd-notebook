@@ -65,6 +65,12 @@ function getFirstProfessor(professors: ProfessorData[]): {
   return { profFirst: 'TBD', profLast: 'TBD' };
 }
 
+const termOrder: Record<string, number> = {
+  Spring: 1,
+  Summer: 2,
+  Fall: 3,
+};
+
 const aggregatedData = aggregatedDataRaw as { data: PrefixData[] };
 const entries: SectionEntry[] = [];
 
@@ -74,7 +80,7 @@ for (const prefixData of aggregatedData.data) {
 
   for (const courseData of prefixData.course_numbers) {
     if (!courseData) continue;
-    const courseNumber = courseData.course_number;
+    const number = courseData.course_number;
 
     for (const sessionData of courseData.academic_sessions) {
       if (!sessionData) continue;
@@ -86,12 +92,12 @@ for (const prefixData of aggregatedData.data) {
         const { profFirst, profLast } = getFirstProfessor(
           sectionData.professors,
         );
-        const label = `${prefix} ${courseNumber}.${sectionData.section_number} ${parsed.term} ${parsed.year}`;
+        const label = `${prefix} ${number}.${sectionData.section_number} ${parsed.term} ${parsed.year}`;
 
         entries.push({
           label,
           prefix,
-          courseNumber,
+          number,
           sectionCode: sectionData.section_number,
           term: parsed.term,
           year: parsed.year,
@@ -102,6 +108,12 @@ for (const prefixData of aggregatedData.data) {
     }
   }
 }
+
+// Pre-sort by year desc, then term desc so search results arrive in order
+entries.sort((a, b) => {
+  if (a.year !== b.year) return b.year - a.year;
+  return (termOrder[b.term] ?? 0) - (termOrder[a.term] ?? 0);
+});
 
 writeFileSync('src/data/sections_data.json', JSON.stringify(entries));
 console.log(`Sections data generation done. ${entries.length} entries.`);
