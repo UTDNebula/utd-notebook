@@ -30,6 +30,7 @@ export const report = pgTable(
     // Free-text explanation
     details: text('details').notNull(),
 
+    // Created timestamp
     createdAt: timestamp('created_at', { mode: 'date' })
       .notNull()
       .default(sql`now()`),
