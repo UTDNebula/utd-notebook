@@ -63,6 +63,7 @@
   },
   "devDependencies": {
     "@tailwindcss/postcss": "^4.1.18",
+    "@types/autosuggest-highlight": "^3.2.3",
     "@types/eslint": "^9.6.1",
     "@types/jest": "^30.0.0",
     "@types/node": "^25.0.9",
@@ -88,8 +89,7 @@
     "tailwindcss-animate": "^1.0.7",
     "ts-jest": "^29.4.6",
     "ts-node": "^10.9.1",
-    "typescript": "^5.9.3",
-    "@types/autosuggest-highlight": "^3.2.3"
+    "typescript": "^5.9.3"
   },
   "overrides": {
     "drizzle-zod": {
