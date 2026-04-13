@@ -87,7 +87,7 @@ const NoteForm = ({ mode = 'create', file: existingFile }: NoteFormProps) => {
   const form = useAppForm({
     defaultValues,
     onSubmit: async ({ value, formApi }) => {
-      const { file: selectedFile, section, ...rest } = value;
+      const selectedFile = value.file;
 
       if (mode === 'edit' && existingFile) {
         let fileUrl = existingFile.publicUrl;
@@ -102,9 +102,9 @@ const NoteForm = ({ mode = 'create', file: existingFile }: NoteFormProps) => {
         return updateMutation.mutateAsync(
           {
             id: existingFile.id,
-            name: rest.name,
-            description: rest.description,
-            handwritten: rest.handwritten,
+            name: value.name,
+            description: value.description,
+            handwritten: value.handwritten,
             file: fileUrl,
           },
           {
@@ -116,16 +116,16 @@ const NoteForm = ({ mode = 'create', file: existingFile }: NoteFormProps) => {
       // Create
       return createMutation.mutateAsync(
         {
-          name: rest.name,
-          description: rest.description,
-          handwritten: rest.handwritten,
-          prefix: rest.prefix ?? '',
-          number: rest.number ?? '',
-          sectionCode: rest.sectionCode ?? '',
-          term: (rest.term ?? '') as 'Spring' | 'Summer' | 'Fall',
-          year: rest.year ?? 0,
-          profFirst: rest.profFirst ?? '',
-          profLast: rest.profLast ?? '',
+          name: value.name,
+          description: value.description,
+          handwritten: value.handwritten,
+          prefix: value.prefix ?? '',
+          number: value.number ?? '',
+          sectionCode: value.sectionCode ?? '',
+          term: (value.term ?? '') as 'Spring' | 'Summer' | 'Fall',
+          year: value.year ?? 0,
+          profFirst: value.profFirst ?? '',
+          profLast: value.profLast ?? '',
         },
         {
           onSuccess: async (newId) => {
@@ -142,9 +142,9 @@ const NoteForm = ({ mode = 'create', file: existingFile }: NoteFormProps) => {
             updateMutation.mutate(
               {
                 id: newId,
-                name: rest.name,
-                description: rest.description,
-                handwritten: rest.handwritten,
+                name: value.name,
+                description: value.description,
+                handwritten: value.handwritten,
                 file: url,
               },
               {

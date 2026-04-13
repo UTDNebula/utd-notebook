@@ -9,6 +9,25 @@ import { createTRPCRouter, publicProcedure } from '../trpc';
 // Already sorted by year desc, term desc at build time (generateSectionsData.ts)
 const sections: SectionEntry[] = sectionsData as SectionEntry[];
 
+function levenshtein(a: string, b: string): number {
+  const m = a.length;
+  const n = b.length;
+  const dp: number[] = Array.from({ length: n + 1 }, (_, j) => j);
+  for (let i = 1; i <= m; i++) {
+    let prev = dp[0]!;
+    dp[0] = i;
+    for (let j = 1; j <= n; j++) {
+      const temp = dp[j]!;
+      dp[j] =
+        a[i - 1] === b[j - 1]
+          ? prev
+          : 1 + Math.min(prev, dp[j]!, dp[j - 1]!);
+      prev = temp;
+    }
+  }
+  return dp[n]!;
+}
+
 const byIdSchema = z.object({
   id: z.string(),
 });
@@ -160,17 +179,48 @@ export const sectionRouter = createTRPCRouter({
       const normalized = input.query
         .replace(/([a-zA-Z]{2,4})(\d)/, '$1 $2')
         .replace(/(\d)([a-zA-Z]{1,4})/, '$1 $2');
-      const tokens = normalized.toUpperCase().split(/\s+/).filter(Boolean);
+      const tokens = normalized.toLowerCase().split(/\s+/).filter(Boolean);
       if (tokens.length === 0) return [];
 
-      const matches: SectionEntry[] = [];
+      const maxDistPerToken = 2;
+      const scored: { entry: SectionEntry; score: number }[] = [];
+
       for (const s of sections) {
-        const upper = s.label.toUpperCase();
-        if (tokens.every((t) => upper.includes(t))) {
-          matches.push(s);
-          if (matches.length >= 20) break;
+        const fields = [
+          s.prefix,
+          s.number,
+          s.sectionCode,
+          s.term,
+          String(s.year),
+          s.profFirst,
+          s.profLast,
+        ].map((f) => f.toLowerCase());
+
+        let totalScore = 0;
+        let valid = true;
+
+        for (const token of tokens) {
+          let minDist = Infinity;
+          for (const field of fields) {
+            if (field.includes(token)) {
+              minDist = 0;
+              break;
+            }
+            minDist = Math.min(minDist, levenshtein(token, field));
+          }
+          if (minDist > maxDistPerToken) {
+            valid = false;
+            break;
+          }
+          totalScore += minDist;
+        }
+
+        if (valid) {
+          scored.push({ entry: s, score: totalScore });
         }
       }
-      return matches;
+
+      scored.sort((a, b) => a.score - b.score);
+      return scored.slice(0, 20).map((s) => s.entry);
     }),
 });
