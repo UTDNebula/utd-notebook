@@ -19,9 +19,7 @@ function levenshtein(a: string, b: string): number {
     for (let j = 1; j <= n; j++) {
       const temp = dp[j]!;
       dp[j] =
-        a[i - 1] === b[j - 1]
-          ? prev
-          : 1 + Math.min(prev, dp[j]!, dp[j - 1]!);
+        a[i - 1] === b[j - 1] ? prev : 1 + Math.min(prev, dp[j]!, dp[j - 1]!);
       prev = temp;
     }
   }
