@@ -91,10 +91,7 @@ export default function PdfViewer({ url, title }: PdfViewerProps) {
           Loading PDF…
         </div>
       )}
-      <div
-        ref={containerRef}
-        aria-label={title ?? 'PDF viewer'}
-      />
+      <div ref={containerRef} aria-label={title ?? 'PDF viewer'} />
       {!loading && numPages > 0 && (
         <div className="pointer-events-none absolute bottom-2 right-4 text-xs text-slate-400">
           {numPages} page{numPages !== 1 ? 's' : ''}

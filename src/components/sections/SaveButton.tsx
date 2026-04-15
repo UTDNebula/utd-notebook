@@ -14,7 +14,10 @@ type SaveButtonProps = {
   iconOnly?: boolean;
 };
 
-export default function SaveButton({ fileId, iconOnly = false }: SaveButtonProps) {
+export default function SaveButton({
+  fileId,
+  iconOnly = false,
+}: SaveButtonProps) {
   const api = useTRPC();
   const queryClient = useQueryClient();
   const router = useRouter();
