@@ -111,3 +111,32 @@ export const editFileSchema = z.object({
   description: z.string().max(1000, 'Character limit reached').optional(),
   handwritten: z.boolean(),
 });
+
+export const reportCategoryEnum = z.enum([
+  'inappropriate',
+  'incorrect',
+  'spam',
+  'copyright',
+  'other',
+]);
+
+export const createReportFormSchema = z.object({
+  fileId: z.string().min(1, 'Missing file'),
+  category: reportCategoryEnum,
+  details: z
+    .string()
+    .min(10, 'Please provide at least 10 characters')
+    .max(1000, 'Character limit reached'),
+});
+
+export const createReportSchema = z.object({
+  fileId: z.string().min(1, 'Missing file'),
+  category: reportCategoryEnum,
+  details: z
+    .string()
+    .min(10, 'Please provide at least 10 characters')
+    .max(1000, 'Character limit reached'),
+});
+
+export type CreateReportFormSchema = z.infer<typeof createReportFormSchema>;
+export type CreateReportSchema = z.infer<typeof createReportSchema>;
