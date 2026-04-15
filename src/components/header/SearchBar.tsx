@@ -140,14 +140,15 @@ interface Props {
 export default function SearchBar(props: Props) {
   const [isPending, startTransition] = useTransition();
 
-  const [options, setOptions] = useState<SearchQueryWithTitle[]>([]);
+  const [options, setOptions] = useState<SearchQueryWithTitle[]>(() =>
+    getRecentSearches().map((entry) => ({ ...entry, isRecent: true })),
+  );
   const [loading, setLoading] = useState(false);
   const [openErrorTooltip, setErrorTooltip] = useState(false);
   const [noResult, setNoResults] = useState<null | string>(null);
   const [inputValue, _setInputValue] = useState('');
   const quickInputValue = useRef('');
   const [value, setValue] = useState<SearchQuery | null>(null);
-  const [courseNames, setCourseNames] = useState<Record<string, string>>({});
 
   function setInputValue(newValue: string) {
     quickInputValue.current = newValue;
@@ -189,17 +190,6 @@ export default function SearchBar(props: Props) {
     setValue(newValue);
     if (newValue) {
       setInputValue(searchQueryLabel(newValue));
-    }
-
-    if (newValue && newValue.prefix && newValue.number) {
-      const key = searchQueryLabel(newValue);
-      courseNames[key] =
-        options.find(
-          (o) => o.prefix === newValue.prefix && o.number === newValue.number,
-        )?.subtitle ??
-        courseNames[key] ??
-        '';
-      setCourseNames({ ...courseNames });
     }
 
     if (typeof props.onSelect !== 'undefined' && newValue) {
@@ -381,7 +371,6 @@ export default function SearchBar(props: Props) {
 
   useEffect(() => {
     void fetch('/api/autocomplete?input=someSearchTerm');
-    prePopulateRecents();
   }, []);
 
   const [highlightedOption, setHighlightedOption] = useState<boolean>(false);
