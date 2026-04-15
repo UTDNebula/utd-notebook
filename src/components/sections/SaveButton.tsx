@@ -2,7 +2,7 @@
 
 import BookmarkIcon from '@mui/icons-material/Bookmark';
 import BookmarkBorderIcon from '@mui/icons-material/BookmarkBorder';
-import { Button } from '@mui/material';
+import { Button, IconButton } from '@mui/material';
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import { useRouter } from 'next/navigation';
 import { setSnackbar } from '@src/components/global/Snackbar';
@@ -11,9 +11,10 @@ import { authClient } from '@src/utils/auth-client';
 
 type SaveButtonProps = {
   fileId: string;
+  iconOnly?: boolean;
 };
 
-export default function SaveButton({ fileId }: SaveButtonProps) {
+export default function SaveButton({ fileId, iconOnly = false }: SaveButtonProps) {
   const api = useTRPC();
   const queryClient = useQueryClient();
   const router = useRouter();
@@ -26,17 +27,14 @@ export default function SaveButton({ fileId }: SaveButtonProps) {
   const toggleMutation = useMutation(
     api.savedNote.toggle.mutationOptions({
       onMutate: async () => {
-        // Cancel outgoing refetches
         await queryClient.cancelQueries({
           queryKey: api.savedNote.isSaved.queryKey({ fileId }),
         });
 
-        // Remember previous value
         const previous = queryClient.getQueryData(
           api.savedNote.isSaved.queryKey({ fileId }),
         );
 
-        // Optimistically update the cache
         queryClient.setQueryData(
           api.savedNote.isSaved.queryKey({ fileId }),
           (old: { saved: boolean } | undefined) => ({
@@ -44,7 +42,6 @@ export default function SaveButton({ fileId }: SaveButtonProps) {
           }),
         );
 
-        // Return context for rollback
         return { previous };
       },
       onSuccess: (data) => {
@@ -93,6 +90,22 @@ export default function SaveButton({ fileId }: SaveButtonProps) {
 
     toggleMutation.mutate({ fileId });
   };
+
+  if (iconOnly) {
+    return (
+      <IconButton
+        onClick={handleClick}
+        aria-label={isSaved ? 'Unsave note' : 'Save note'}
+        style={{ color: '#7C60BF', padding: '6px' }}
+      >
+        {isSaved ? (
+          <BookmarkIcon style={{ fontSize: 32 }} />
+        ) : (
+          <BookmarkBorderIcon style={{ fontSize: 32 }} />
+        )}
+      </IconButton>
+    );
+  }
 
   return (
     <Button

@@ -1,6 +1,7 @@
 import { notFound } from 'next/navigation';
 import Header from '@src/components/header/Header';
-import RatingWidget from '@src/components/sections/RatingWidget';
+import NoteInfoPanel from '@src/components/sections/NoteInfoPanel';
+import PdfViewer from '@src/components/sections/PdfViewer';
 import { api } from '@src/trpc/server';
 
 type NotePageProps = {
@@ -12,54 +13,58 @@ export default async function NotePage({ params }: NotePageProps) {
   const file = await api.file.byId({ id });
   if (!file) notFound();
 
+  const course = file.section
+    ? `${file.section.prefix} ${file.section.number}`
+    : undefined;
+  const professor =
+    file.section?.profFirst || file.section?.profLast
+      ? `${file.section.profFirst ?? ''} ${file.section.profLast ?? ''}`.trim()
+      : undefined;
+  const authorName = file.author
+    ? `${file.author.firstName} ${file.author.lastName}`.trim()
+    : undefined;
+
   return (
     <>
       <Header />
-      <main>
-        <h1>{file.name}</h1>
-        <p>{file.description || 'No provided description.'}</p>
+      <main
+        className="relative overflow-hidden"
+        style={{
+          height: 'calc(100dvh - 68px)',
+          backgroundColor: '#F0EEF5',
+        }}
+      >
+        {/* Scrollable area with white card background for the PDF */}
+        <div className="absolute inset-0 overflow-y-auto px-10 py-6">
+          <div
+            className="mx-auto rounded-2xl overflow-hidden"
+            style={{
+              backgroundColor: '#FFFFFF',
+              boxShadow: '0 2px 16px 0 rgba(124,96,191,0.10)',
+              padding: '50px',
+              maxWidth: '1200px',
+            }}
+          >
+            {file.publicUrl ? (
+              <PdfViewer url={file.publicUrl} title={file.name} />
+            ) : (
+              <p className="p-8 text-gray-500">PDF not available yet.</p>
+            )}
+          </div>
+        </div>
 
-        <section>
-          <p>
-            <strong>Course:</strong> {file.section?.prefix}{' '}
-            {file.section?.number}
-          </p>
-          <p>
-            <strong>Section: </strong> {file.section?.sectionCode}
-          </p>
-          <p>
-            <strong>Professor:</strong> {file.section?.profFirst}{' '}
-            {file.section?.profLast}
-          </p>
-          <p>
-            <strong>Author:</strong>{' '}
-            {file.author
-              ? `${file.author.firstName} ${file.author.lastName}`
-              : 'Unknown'}
-          </p>
-          <p>
-            <strong>Last Updated:</strong>{' '}
-            {file.updatedAt?.toLocaleDateString()}
-          </p>
-        </section>
-
-        <section>
-          <RatingWidget fileId={id} />
-        </section>
-
-        <section>
-          <h2>PDF</h2>
-          {file.publicUrl ? (
-            <iframe
-              src={file.publicUrl}
-              title={file.name}
-              width="100%"
-              height="800px"
-            />
-          ) : (
-            <p>PDF not available yet.</p>
-          )}
-        </section>
+        {/* Info panel pinned to the top, floats over the PDF */}
+        <NoteInfoPanel
+          fileId={id}
+          name={file.name}
+          description={file.description}
+          authorId={file.authorId}
+          authorName={authorName}
+          course={course}
+          section={file.section?.sectionCode ?? undefined}
+          professor={professor}
+          updatedAt={file.updatedAt?.toLocaleDateString()}
+        />
       </main>
     </>
   );
