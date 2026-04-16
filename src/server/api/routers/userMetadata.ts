@@ -1,5 +1,5 @@
 import { TRPCError } from '@trpc/server';
-import { and, eq, ne, or, sql } from 'drizzle-orm';
+import { and, eq, ne, sql } from 'drizzle-orm';
 import { headers } from 'next/headers';
 import { z } from 'zod';
 import { type personalCats } from '@src/constants/categories';
@@ -33,10 +33,7 @@ export const userMetadataRouter = createTRPCRouter({
     .input(byUsernameSchema)
     .query(async ({ input, ctx }) => {
       const profile = await ctx.db.query.userMetadata.findFirst({
-        where: or(
-          eq(userMetadata.username, input.username),
-          eq(userMetadata.id, input.username),
-        ),
+        where: eq(userMetadata.username, input.username),
       });
 
       if (!profile) {

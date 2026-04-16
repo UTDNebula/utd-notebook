@@ -1,5 +1,5 @@
 import { TRPCError } from '@trpc/server';
-import { and, eq, ilike, or } from 'drizzle-orm';
+import { and, eq, ilike } from 'drizzle-orm';
 import { z } from 'zod';
 import { file as files } from '@src/server/db/schema/file';
 import { section as sections } from '@src/server/db/schema/section';
@@ -69,10 +69,7 @@ export const fileRouter = createTRPCRouter({
     .query(async ({ input, ctx }) => {
       const author = await ctx.db.query.userMetadata.findFirst({
         where: (userMetadata, { eq }) =>
-          or(
-            eq(userMetadata.username, input.username),
-            eq(userMetadata.id, input.username),
-          ),
+          eq(userMetadata.username, input.username),
       });
 
       if (!author) {
