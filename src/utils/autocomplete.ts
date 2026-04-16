@@ -6,6 +6,7 @@ import {
   searchQueryEqual,
   searchQueryLabel,
   type SearchQuery,
+  type SearchQueryWithTotalStudents,
 } from '@src/utils/SearchQuery';
 
 const root = '0';
@@ -228,7 +229,7 @@ function validateSearch(searchQuery: SearchQuery, searchBy: string) {
   return false;
 }
 
-type bfsReturn = SearchQuery | undefined;
+type bfsReturn = SearchQueryWithTotalStudents | undefined;
 
 // search autocomplete program using a DAG (more specifically a radix tree) to search for matches until limit is reached
 export function searchAutocomplete(
@@ -256,12 +257,12 @@ export function searchAutocomplete(
     });
   });
 
-  type SearchQueryWithTitle = SearchQuery & {
+  type SearchQueryWithTitleAndStudents = SearchQueryWithTotalStudents & {
     title?: string;
     subtitle?: string;
   };
 
-  let results: SearchQueryWithTitle[] = [];
+  let results: SearchQueryWithTitleAndStudents[] = [];
   while (!queue.isEmpty() && results.length < limit) {
     let response: bfsReturn;
     if (queue.front()?.data?.toNext) {
@@ -282,8 +283,24 @@ export function searchAutocomplete(
     };
   });
 
-  return results.filter(
+  const filteredResults = results.filter(
     (option, index, self) =>
       index === self.findIndex((t) => searchQueryEqual(t, option)),
   );
+
+  return filteredResults.sort((a, b) => {
+    const aIsCourse = 'prefix' in a;
+    const bIsCourse = 'prefix' in b;
+
+    // making sure that courses always come before professors
+    if (aIsCourse !== bIsCourse) {
+      if (aIsCourse) {
+        return -1;
+      }
+      return 1;
+    }
+
+    // sorts results in descending order, while putting any results with 0 students at the end
+    return (b.total_students ?? -1) - (a.total_students ?? -1);
+  });
 }

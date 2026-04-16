@@ -24,6 +24,7 @@ type NoteFormProps =
         id: string;
         name: string;
         description?: string;
+        handwritten: boolean;
         publicUrl: string;
       };
     };
@@ -33,6 +34,7 @@ interface FileDetails {
   name: string;
   description?: string;
   section?: string;
+  handwritten: boolean;
 }
 
 const NoteForm = ({ mode = 'create', file: existingFile }: NoteFormProps) => {
@@ -49,6 +51,7 @@ const NoteForm = ({ mode = 'create', file: existingFile }: NoteFormProps) => {
         name: existingFile.name,
         description: existingFile.description ?? '',
         section: '',
+        handwritten: existingFile.handwritten,
       };
     }
     return {
@@ -56,6 +59,7 @@ const NoteForm = ({ mode = 'create', file: existingFile }: NoteFormProps) => {
       name: '',
       description: '',
       section: '',
+      handwritten: false,
     };
   }, [mode, existingFile]);
 
@@ -217,6 +221,11 @@ const NoteForm = ({ mode = 'create', file: existingFile }: NoteFormProps) => {
                   )}
                 </form.AppField>
               )}
+              <form.AppField name="handwritten">
+                {(field) => (
+                  <field.Checkbox label="Handwritten"></field.Checkbox>
+                )}
+              </form.AppField>
             </div>
           </div>
         </div>

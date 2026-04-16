@@ -1,5 +1,6 @@
 import EmptyStateCard from '@src/components/sections/EmptyStateCard';
 import FilesGrid from '@src/components/sections/FilesGrid';
+import HandwrittenFilter from '@src/components/sections/Filters';
 import LinkCard from '@src/components/sections/LinkCard';
 import SectionHeader from '@src/components/sections/SectionHeader';
 import type { SectionWithFilesWithUserMetadata } from '@src/server/db/models';
@@ -13,6 +14,7 @@ import {
 
 type NotesPageProps = {
   params: Promise<{ slug: string[] }>;
+  searchParams: Promise<{ [key: string]: string }>;
 };
 
 async function fetchSections(
@@ -111,8 +113,26 @@ function getCourseLinks(
     }));
 }
 
-export default async function NotesPage({ params }: NotesPageProps) {
-  const { slug } = await params;
+function filterSections(
+  sections: SectionWithFilesWithUserMetadata[],
+  handwritten: string | undefined,
+): SectionWithFilesWithUserMetadata[] {
+  if (handwritten !== 'true' && handwritten !== 'false') return sections;
+  const isHandwritten = handwritten === 'true';
+  return sections.map((s) => ({
+    ...s,
+    files: s.files.filter((f) => f.handwritten === isHandwritten),
+  }));
+}
+
+export default async function NotesPage({
+  params,
+  searchParams,
+}: NotesPageProps) {
+  const [{ slug }, resolvedSearchParams] = await Promise.all([
+    params,
+    searchParams,
+  ]);
   const query = parseNoteSlug(slug);
 
   if (!query) {
@@ -125,7 +145,11 @@ export default async function NotesPage({ params }: NotesPageProps) {
   }
 
   const sections = await fetchSections(query);
-  const fileCount = totalFileCount(sections);
+  const filteredSections = filterSections(
+    sections,
+    resolvedSearchParams.handwritten,
+  );
+  const fileCount = totalFileCount(filteredSections);
 
   return (
     <>
@@ -135,6 +159,8 @@ export default async function NotesPage({ params }: NotesPageProps) {
         metaLabel={`${fileCount} note${fileCount === 1 ? '' : 's'}`}
         breadcrumbs={buildBreadcrumbs(query)}
       />
+
+      <HandwrittenFilter />
 
       {fileCount === 0 ? (
         <EmptyStateCard
@@ -149,8 +175,8 @@ export default async function NotesPage({ params }: NotesPageProps) {
               {(() => {
                 const links =
                   query.type === 'course'
-                    ? getProfessorLinks(sections, query)
-                    : getCourseLinks(sections, query);
+                    ? getProfessorLinks(filteredSections, query)
+                    : getCourseLinks(filteredSections, query);
                 if (links.length <= 1) return null;
                 return (
                   <div className="col-span-full">
@@ -176,7 +202,7 @@ export default async function NotesPage({ params }: NotesPageProps) {
           )}
 
           {/* Notes grouped by section */}
-          {sections.map((s) => (
+          {filteredSections.map((s) => (
             <div key={s.id} className="col-span-full">
               <h2 className="mb-3 text-lg font-semibold">
                 {s.prefix} {s.number}.{s.sectionCode} — {s.term} {s.year}
