@@ -65,14 +65,14 @@ export default function ProfileNotes({
               {(displayName || username || '?').charAt(0)}
             </Avatar>
 
-            <div className="min-w-0 sm:ml-1">
-              <h1 className="font-display truncate text-4xl font-semibold max-sm:text-center text-white">
-                {displayName}
-              </h1>
-              <p className="truncate text-xl max-sm:text-lg max-sm:text-center text-white opacity-80">
-                @{username}
-              </p>
-            </div>
+            <div className="flex flex-col gap-2 text-shadow-[0_0_8px_rgb(0_0_0_/_0.4)]">
+            <h1 className="font-display text-4xl font-semibold max-sm:text-center text-white">
+              Settings
+            </h1>
+            <span className="text-xl max-sm:text-lg max-sm:text-center text-white opacity-80">
+              Manage your account preferences
+            </span>
+          </div>
           </div>
         </div>
 
@@ -81,28 +81,14 @@ export default function ProfileNotes({
             value={tab}
             onChange={(_event, value: TabKey) => setTab(value)}
             variant="fullWidth"
-            TabIndicatorProps={{
-              sx: { backgroundColor: '#ffffff', height: 3 },
-            }}
+            defaultValue={tab}
+            indicatorColor="primary"
+            textColor="inherit"
+            className="[&_.MuiTab-root]:min-h-0 [&_.MuiTab-root]:text-sm [&_.MuiTab-root]:normal-case [&_.MuiTab-root]:text-slate-200 [&_.MuiTab-root:hover]:opacity-100 [&_.MuiTab-root.Mui-selected]:text-white [&_.MuiTab-root.Mui-selected]:font-medium [&_.MuiTab-root.Mui-selected]:drop-shadow-[0_0_10px_rgba(0,0,0,0.2)] [&_.MuiTabs-flexContainer]:gap-4"
             sx={{
-              minHeight: 0,
-              '& .MuiTab-root': {
-                minHeight: 0,
-                textTransform: 'none',
-                fontSize: '0.95rem',
-                color: 'rgba(226,232,240,0.88)',
-                py: 1.5,
-              },
-              '& .MuiTab-root.Mui-selected': {
-                color: '#f8fafc !important',
-                fontWeight: 500,
-                textShadow: '0 0 10px rgba(0,0,0,0.2)',
-              },
-              '& .MuiTab-root.Mui-disabled': {
-                color: 'rgba(226,232,240,0.55)',
-              },
-              '& .MuiTabs-flexContainer': {
-                gap: '1rem',
+              '& .MuiTabs-indicator': {
+                backgroundColor: '#ffffff',
+                height: 3,
               },
             }}
           >
