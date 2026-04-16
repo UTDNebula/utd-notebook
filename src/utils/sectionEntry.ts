@@ -1,5 +1,4 @@
 export type SectionEntry = {
-  label: string;
   prefix: string;
   number: string;
   sectionCode: string;

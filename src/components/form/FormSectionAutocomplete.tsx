@@ -10,6 +10,10 @@ import type { SectionEntry } from '@src/utils/sectionEntry';
 import useDebounce from '@src/utils/useDebounce';
 import { StyledTextField } from './FormTextField';
 
+function sectionLabel(entry: SectionEntry): string {
+  return `${entry.prefix} ${entry.number}.${entry.sectionCode} ${entry.term} ${entry.year}`;
+}
+
 type FormSectionAutocompleteProps = {
   label: string;
   className?: string;
@@ -39,8 +43,9 @@ export function FormSectionAutocomplete({
     ),
   );
 
+  const selectedLabel = selectedEntry ? sectionLabel(selectedEntry) : '';
   const displayedOptions =
-    selectedEntry && !options.some((o) => o.label === selectedEntry.label)
+    selectedEntry && !options.some((o) => sectionLabel(o) === selectedLabel)
       ? [selectedEntry, ...options]
       : options;
 
@@ -49,13 +54,15 @@ export function FormSectionAutocomplete({
       options={displayedOptions}
       loading={isLoading}
       getOptionLabel={(option) =>
-        typeof option === 'string' ? option : option.label
+        typeof option === 'string' ? option : sectionLabel(option)
       }
-      isOptionEqualToValue={(option, value) => option.label === value.label}
+      isOptionEqualToValue={(option, value) =>
+        sectionLabel(option) === sectionLabel(value)
+      }
       renderOption={(props, option) => (
-        <li {...props} key={option.label}>
+        <li {...props} key={sectionLabel(option)}>
           <div>
-            <div>{option.label}</div>
+            <div>{sectionLabel(option)}</div>
             <div className="text-xs text-slate-500">
               Prof. {option.profFirst} {option.profLast}
             </div>
@@ -67,7 +74,7 @@ export function FormSectionAutocomplete({
       value={selectedEntry}
       onChange={(_e, newValue) => {
         setSelectedEntry(newValue);
-        field.handleChange(newValue?.label ?? '');
+        field.handleChange(newValue ? sectionLabel(newValue) : '');
         onSectionSelect?.(newValue);
       }}
       onBlur={field.handleBlur}

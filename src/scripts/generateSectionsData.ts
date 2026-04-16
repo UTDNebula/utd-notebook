@@ -92,10 +92,8 @@ for (const prefixData of aggregatedData.data) {
         const { profFirst, profLast } = getFirstProfessor(
           sectionData.professors,
         );
-        const label = `${prefix} ${number}.${sectionData.section_number} ${parsed.term} ${parsed.year}`;
 
         entries.push({
-          label,
           prefix,
           number,
           sectionCode: sectionData.section_number,

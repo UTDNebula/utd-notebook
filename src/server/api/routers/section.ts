@@ -177,11 +177,14 @@ export const sectionRouter = createTRPCRouter({
       const normalized = input.query
         .replace(/([a-zA-Z]{2,4})(\d)/, '$1 $2')
         .replace(/(\d)([a-zA-Z]{1,4})/, '$1 $2');
-      const tokens = normalized.toLowerCase().split(/\s+/).filter(Boolean);
+      const tokens = normalized
+        .toLowerCase()
+        .split(/[\s.]+/)
+        .filter(Boolean);
       if (tokens.length === 0) return [];
 
       const maxDistPerToken = 2;
-      const scored: { entry: SectionEntry; score: number }[] = [];
+      const top: { entry: SectionEntry; score: number }[] = [];
 
       for (const s of sections) {
         const fields = [
@@ -214,11 +217,17 @@ export const sectionRouter = createTRPCRouter({
         }
 
         if (valid) {
-          scored.push({ entry: s, score: totalScore });
+          // O(n) top-20 selection: insert in sorted position, cap at 20
+          const idx = top.findIndex((t) => t.score > totalScore);
+          if (idx === -1 && top.length < 20) {
+            top.push({ entry: s, score: totalScore });
+          } else if (idx !== -1) {
+            top.splice(idx, 0, { entry: s, score: totalScore });
+            if (top.length > 20) top.pop();
+          }
         }
       }
 
-      scored.sort((a, b) => a.score - b.score);
-      return scored.slice(0, 20).map((s) => s.entry);
+      return top.map((s) => s.entry);
     }),
 });
