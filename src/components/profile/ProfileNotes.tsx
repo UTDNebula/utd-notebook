@@ -6,7 +6,7 @@ import Tab from '@mui/material/Tab';
 import Tabs from '@mui/material/Tabs';
 import { useState } from 'react';
 import Panel from '@src/components/common/Panel';
-import NotesPanel from '@src/components/form/CreatedNotes';
+import NotesPanel from '@src/components/form/NotesPanel';
 import { HOME_PAGE_GRADIENT_CLASS } from '@src/constants/gradients';
 import type { SelectFileWithAuthorPreview } from '@src/server/db/models';
 
@@ -14,7 +14,6 @@ type ProfileNotesProps = {
   username: string;
   displayName: string;
   image?: string | null;
-  isProfileOwner: boolean;
   uploadedNotes: SelectFileWithAuthorPreview[];
   savedNotes: SelectFileWithAuthorPreview[];
 };
@@ -25,7 +24,6 @@ export default function ProfileNotes({
   username,
   displayName,
   image,
-  isProfileOwner,
   uploadedNotes,
   savedNotes,
 }: ProfileNotesProps) {
@@ -61,10 +59,10 @@ export default function ProfileNotes({
 
             <div className="flex flex-col gap-2 text-shadow-[0_0_8px_rgb(0_0_0_/_0.4)]">
               <h1 className="font-display text-4xl font-semibold max-sm:text-center text-white">
-                Settings
+                {displayName}
               </h1>
               <span className="text-xl max-sm:text-lg max-sm:text-center text-white opacity-80">
-                Manage your account preferences
+                @{username}
               </span>
             </div>
           </div>
