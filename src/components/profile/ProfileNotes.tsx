@@ -4,17 +4,11 @@ import Avatar from '@mui/material/Avatar';
 import Box from '@mui/material/Box';
 import Tab from '@mui/material/Tab';
 import Tabs from '@mui/material/Tabs';
-import { Albert_Sans } from 'next/font/google';
 import { useState } from 'react';
 import Panel from '@src/components/common/Panel';
-import CreatedNotes from '@src/components/form/CreatedNotes';
+import NotesPanel from '@src/components/form/CreatedNotes';
 import { HOME_PAGE_GRADIENT_CLASS } from '@src/constants/gradients';
 import type { SelectFileWithAuthorPreview } from '@src/server/db/models';
-
-const albertSans = Albert_Sans({
-  subsets: ['latin'],
-  weight: ['400', '500', '600', '700'],
-});
 
 type ProfileNotesProps = {
   username: string;
@@ -35,7 +29,7 @@ export default function ProfileNotes({
   uploadedNotes,
   savedNotes,
 }: ProfileNotesProps) {
-  const [tab, setTab] = useState<TabKey>(isProfileOwner ? 'saved' : 'uploaded');
+  const [tab, setTab] = useState<TabKey>('saved');
 
   const activeNotes = tab === 'saved' ? savedNotes : uploadedNotes;
   const activeHeading =
@@ -50,7 +44,7 @@ export default function ProfileNotes({
       : 'This user has not uploaded any notes yet.';
 
   return (
-    <div className={`${albertSans.className} flex w-full flex-col gap-4`}>
+    <div className="flex w-full flex-col gap-4">
       <Panel
         className={`relative overflow-clip ${HOME_PAGE_GRADIENT_CLASS} p-0 shadow-xl`}
       >
@@ -66,13 +60,13 @@ export default function ProfileNotes({
             </Avatar>
 
             <div className="flex flex-col gap-2 text-shadow-[0_0_8px_rgb(0_0_0_/_0.4)]">
-            <h1 className="font-display text-4xl font-semibold max-sm:text-center text-white">
-              Settings
-            </h1>
-            <span className="text-xl max-sm:text-lg max-sm:text-center text-white opacity-80">
-              Manage your account preferences
-            </span>
-          </div>
+              <h1 className="font-display text-4xl font-semibold max-sm:text-center text-white">
+                Settings
+              </h1>
+              <span className="text-xl max-sm:text-lg max-sm:text-center text-white opacity-80">
+                Manage your account preferences
+              </span>
+            </div>
           </div>
         </div>
 
@@ -92,16 +86,15 @@ export default function ProfileNotes({
               },
             }}
           >
-            {isProfileOwner && <Tab label="Saved Notes" value="saved" />}
+            <Tab label="Saved Notes" value="saved" />
             <Tab label="Uploaded Notes" value="uploaded" />
           </Tabs>
         </Box>
       </Panel>
 
-      <CreatedNotes
+      <NotesPanel
         heading={activeHeading}
-        createdNotes={activeNotes}
-        gridClassName="lg:grid-cols-4"
+        notes={activeNotes}
         noFilesMessage={
           <div className="w-full py-12 flex flex-col items-center justify-center border-2 border-dashed border-slate-200 dark:border-slate-800 rounded-xl text-md font-medium text-slate-600 dark:text-slate-400">
             {emptyMessage}

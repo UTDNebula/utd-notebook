@@ -12,51 +12,6 @@ type ProfilePageProps = {
   }>;
 };
 
-function sanitizeDisplayName(...candidates: Array<string | null | undefined>) {
-  for (const candidate of candidates) {
-    const value = candidate?.trim();
-    if (!value) continue;
-
-    const normalized = value.toLowerCase().replace(/\s+/g, ' ');
-    if (
-      normalized === 'undefined undefined' ||
-      normalized === 'null null' ||
-      normalized === 'undefined' ||
-      normalized === 'null'
-    ) {
-      continue;
-    }
-
-    return value;
-  }
-
-  return 'Profile';
-}
-
-function sanitizeUsername(...candidates: Array<string | null | undefined>) {
-  for (const candidate of candidates) {
-    const value = candidate?.trim();
-    if (!value) continue;
-
-    const normalized = value.toLowerCase();
-    if (
-      normalized === 'undefined undefined' ||
-      normalized === 'null null' ||
-      normalized === 'undefined' ||
-      normalized === 'null'
-    ) {
-      continue;
-    }
-
-    // Keep username-ish strings only.
-    if (/^[a-zA-Z0-9_-]+$/.test(value)) {
-      return value;
-    }
-  }
-
-  return 'profile';
-}
-
 export async function generateMetadata({
   params,
 }: ProfilePageProps): Promise<Metadata> {
@@ -90,21 +45,15 @@ export default async function ProfilePage({ params }: ProfilePageProps) {
 
   const isProfileOwner = session?.user.id === profile.id;
   const savedNotes = isProfileOwner ? await api.savedNote.getSavedNotes() : [];
-  const displayName = sanitizeDisplayName(
-    profile.name,
-    `${profile.firstName ?? ''} ${profile.lastName ?? ''}`,
-    profile.username,
-    session?.user.name,
-  );
-  const safeUsername = sanitizeUsername(profile.username, username);
+  const displayName = profile.firstName + ' ' + profile.lastName;
 
   return (
     <>
       <Header />
-      <main className="flex min-h-[calc(100vh-4rem)] w-full justify-center bg-light p-4 dark:bg-dark">
+      <main className="flex w-full flex-col items-center p-4">
         <div className="flex w-full max-w-6xl flex-col gap-4">
           <ProfileNotes
-            username={safeUsername}
+            username={username}
             displayName={displayName}
             image={profile.image}
             isProfileOwner={isProfileOwner}

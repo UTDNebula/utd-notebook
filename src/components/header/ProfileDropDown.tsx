@@ -73,7 +73,7 @@ export const ProfileDropDown = ({ shadow = false }: Props) => {
         >
           <Card>
             <MenuList>
-              <MenuItem divider component={Link} href="/settings">
+              <MenuItem divider component={Link} href="/profile">
                 <ListItemIcon>
                   <Avatar
                     alt={session.user.name}
