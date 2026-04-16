@@ -54,6 +54,15 @@ export const userMetadataRouter = createTRPCRouter({
         image: user?.image ?? null,
       };
     }),
+  getAllUsernames: publicProcedure.query(async ({ ctx }) => {
+    const usernames = await ctx.db.query.userMetadata.findMany({
+      columns: {
+        username: true,
+      },
+    });
+
+    return usernames.map((u) => u.username).filter((u) => u !== null);
+  }),
   updateById: protectedProcedure
     .input(updateByIdSchema)
     .mutation(async ({ input, ctx }) => {
