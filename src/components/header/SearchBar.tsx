@@ -92,7 +92,7 @@ const SearchBar = ({ className, input_className, autoFocus }: SearchProps) => {
       router.push(`/notes/${term.prefix.toLowerCase()}/${term.number}`);
     } else if (term.profFirst && term.profLast) {
       if (term.hasNotes === false) {
-        router.push(`/notes/create?course`);
+        router.push(`/notes/create`);
         return;
       }
 
@@ -215,22 +215,15 @@ const SearchBar = ({ className, input_className, autoFocus }: SearchProps) => {
         const parts = parse(text, matches);
         const { key, ...otherProps } = props;
         return (
-          <li
-            key={key}
-            {...otherProps}
-            className="flex flex-row items-center gap-2 px-4 py-2"
-          >
+          <li key={key} {...otherProps}>
             {typeof option !== 'string' ? (
               option.hasNotes ? (
-                <ArticleIcon className="text-gray-500" fontSize="small" />
+                <ArticleIcon className="text-gray-400 self-start mr-2 mt-0.5" />
               ) : (
-                <AddCircleOutlineIcon
-                  className="text-gray-500"
-                  fontSize="small"
-                />
+                <AddCircleOutlineIcon className="text-gray-400 self-start mr-2 mt-0.5" />
               )
             ) : null}
-            <div className="flex-1">
+            <div>
               {parts.map((part, index) => (
                 <span
                   key={index}

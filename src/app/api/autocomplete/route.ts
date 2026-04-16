@@ -1,4 +1,4 @@
-import { and, eq, or } from 'drizzle-orm';
+import { eq } from 'drizzle-orm';
 import { NextResponse } from 'next/server';
 import autocompleteGraph from 'src/data/autocomplete_graph.json';
 import { db } from '@src/server/db';
