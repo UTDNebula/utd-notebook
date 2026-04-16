@@ -56,7 +56,6 @@ export default async function ProfilePage({ params }: ProfilePageProps) {
             username={username}
             displayName={displayName}
             image={profile.image}
-            isProfileOwner={isProfileOwner}
             uploadedNotes={uploadedNotes}
             savedNotes={savedNotes}
           />
