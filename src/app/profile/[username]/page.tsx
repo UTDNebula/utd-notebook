@@ -1,9 +1,7 @@
 import { type Metadata } from 'next';
-import { headers } from 'next/headers';
 import { notFound } from 'next/navigation';
 import Header from '@src/components/header/Header';
 import ProfileNotes from '@src/components/profile/ProfileNotes';
-import { auth } from '@src/server/auth';
 import { api } from '@src/trpc/server';
 
 type ProfilePageProps = {
@@ -32,19 +30,17 @@ export async function generateMetadata({
 
 export default async function ProfilePage({ params }: ProfilePageProps) {
   const { username } = await params;
-  const session = await auth.api.getSession({ headers: await headers() });
 
-  const [profile, uploadedNotes] = await Promise.all([
+  const [profile, uploadedNotes, savedNotes] = await Promise.all([
     api.userMetadata.byUsername({ username }),
     api.file.byUsername({ username }),
+    api.savedNote.byUsername({ username }),
   ]);
 
   if (!profile) {
     notFound();
   }
 
-  const isProfileOwner = session?.user.id === profile.id;
-  const savedNotes = isProfileOwner ? await api.savedNote.getSavedNotes() : [];
   const displayName = profile.firstName + ' ' + profile.lastName;
 
   return (
