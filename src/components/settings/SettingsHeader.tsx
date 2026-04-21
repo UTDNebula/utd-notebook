@@ -8,7 +8,7 @@ type SettingsHeaderProps = {
 
 export default function SettingsHeader({ user }: SettingsHeaderProps) {
   return (
-    <Panel className="relative bg-[linear-gradient(106deg,#C0C2FF_13.64%,#DDBBF3_48.08%,#FFC6C1_83.43%)]">
+    <Panel className="relative bg-linear-to-r from-[#5A49F7] from-[4.36%] via-[#9403D8] via-[49.74%] to-[#FD9365]">
       <div className="absolute inset-0 dark:bg-slightly-darken" />
       <div className="z-10">
         <div className="flex gap-4 max-sm:flex-col-reverse sm:flex-row pl-2">
@@ -17,7 +17,7 @@ export default function SettingsHeader({ user }: SettingsHeaderProps) {
               Settings
             </h1>
             <span className="text-xl max-sm:text-lg max-sm:text-center text-white opacity-80">
-              Manage your account preferences
+              Manage your username and account preferences
             </span>
           </div>
           {user?.image && (
