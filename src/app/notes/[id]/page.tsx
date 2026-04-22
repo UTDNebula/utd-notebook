@@ -35,7 +35,7 @@ export default async function NotePage({ params }: NotePageProps) {
         }}
       >
         {/* Scrollable area with white card background for the PDF */}
-        <div className="absolute inset-0 overflow-y-auto px-10 py-6">
+        <div className="absolute inset-0 overflow-y-auto px-10 pt-40 pb-6">
           <div
             className="mx-auto rounded-2xl overflow-hidden"
             style={{
