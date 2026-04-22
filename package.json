@@ -16,7 +16,8 @@
     "drizzle:push": "dotenv drizzle-kit push",
     "fetchdata": "ts-node -O \"{\\\"module\\\":\\\"commonjs\\\"}\" src/scripts/fetchAggregatedData.ts",
     "buildautocomplete": "ts-node -O \"{\\\"module\\\":\\\"commonjs\\\"}\" src/scripts/generateAutocompleteGraph.ts",
-    "buildcoursenames": "ts-node -O \"{\\\"module\\\":\\\"commonjs\\\"}\" src/scripts/generateCourseNameTable.ts"
+    "buildcoursenames": "ts-node -O \"{\\\"module\\\":\\\"commonjs\\\"}\" src/scripts/generateCourseNameTable.ts",
+    "buildsections": "ts-node -O \"{\\\"module\\\":\\\"commonjs\\\"}\" src/scripts/generateSectionsData.ts"
   },
   "dependencies": {
     "@auth/drizzle-adapter": "^0.3.2",

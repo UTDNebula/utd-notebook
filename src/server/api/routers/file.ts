@@ -65,18 +65,25 @@ export const fileRouter = createTRPCRouter({
     .input(createFileSchema)
     .mutation(async ({ input, ctx }) => {
       const userId = ctx.session.user.id;
-
-      const sectionSplit = input.section.split(' ');
-      const numberSectionSplit = sectionSplit[1]?.split('.');
+      const {
+        prefix,
+        number,
+        sectionCode,
+        term,
+        year,
+        profFirst,
+        profLast,
+        ...fileData
+      } = input;
 
       let section = await ctx.db.query.section.findFirst({
         where: (section) =>
           and(
-            eq(section.prefix, sectionSplit[0]!),
-            eq(section.number, numberSectionSplit![0]!),
-            eq(section.sectionCode, numberSectionSplit![1]!),
-            eq(section.term, sectionSplit[2] as 'Spring' | 'Summer' | 'Fall'),
-            eq(section.year, parseInt(sectionSplit[3]!)),
+            eq(section.prefix, prefix),
+            eq(section.number, number),
+            eq(section.sectionCode, sectionCode),
+            eq(section.term, term),
+            eq(section.year, year),
           ),
       });
 
@@ -85,13 +92,13 @@ export const fileRouter = createTRPCRouter({
           await ctx.db
             .insert(sections)
             .values({
-              prefix: sectionSplit[0]!,
-              number: numberSectionSplit![0]!,
-              sectionCode: numberSectionSplit![1]!,
-              term: sectionSplit[2] as 'Spring' | 'Summer' | 'Fall',
-              year: parseInt(sectionSplit[3]!),
-              profFirst: 'Should be pulled',
-              profLast: 'from db',
+              prefix,
+              number,
+              sectionCode,
+              term,
+              year,
+              profFirst,
+              profLast,
             })
             .returning()
         )[0];
@@ -106,7 +113,7 @@ export const fileRouter = createTRPCRouter({
       const res = await ctx.db
         .insert(files)
         .values({
-          ...input,
+          ...fileData,
           authorId: userId,
           sectionId: section.id,
           publicUrl: '', // This must be filled in with an update call right after the create call
