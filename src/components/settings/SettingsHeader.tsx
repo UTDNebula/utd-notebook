@@ -1,5 +1,6 @@
 import Avatar from '@mui/material/Avatar';
 import Panel from '@src/components/common/Panel';
+import { HOME_PAGE_GRADIENT_CLASS } from '@src/constants/gradients';
 import { SelectUser } from '@src/server/db/models';
 
 type SettingsHeaderProps = {
@@ -8,7 +9,7 @@ type SettingsHeaderProps = {
 
 export default function SettingsHeader({ user }: SettingsHeaderProps) {
   return (
-    <Panel className="relative bg-linear-to-r from-[#5A49F7] from-[4.36%] via-[#9403D8] via-[49.74%] to-[#FD9365]">
+    <Panel className={`relative ${HOME_PAGE_GRADIENT_CLASS}`}>
       <div className="absolute inset-0 dark:bg-slightly-darken" />
       <div className="z-10">
         <div className="flex gap-4 max-sm:flex-col-reverse sm:flex-row pl-2">
