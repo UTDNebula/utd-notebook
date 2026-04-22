@@ -60,6 +60,35 @@ export const fileRouter = createTRPCRouter({
 
       return files;
     }),
+  byUsername: publicProcedure
+    .input(
+      z.object({
+        username: z.string().trim().min(1),
+      }),
+    )
+    .query(async ({ input, ctx }) => {
+      const author = await ctx.db.query.userMetadata.findFirst({
+        where: (userMetadata, { eq }) =>
+          eq(userMetadata.username, input.username),
+      });
+
+      if (!author) {
+        return [];
+      }
+
+      const files = await ctx.db.query.file.findMany({
+        where: (file) => eq(file.authorId, author.id),
+        orderBy: (file, { desc }) => [desc(file.updatedAt)],
+        with: {
+          section: true,
+          author: {
+            columns: { username: true, firstName: true, lastName: true },
+          },
+        },
+      });
+
+      return files;
+    }),
 
   create: protectedProcedure
     .input(createFileSchema)

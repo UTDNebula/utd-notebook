@@ -1,10 +1,8 @@
 'use server';
 
 import Alert from '@mui/material/Alert';
-import CreatedNotes from '@src/components/form/CreatedNotes';
 import { auth } from '@src/server/auth';
 import { SelectUserMetadata } from '@src/server/db/models';
-import type { SelectFileWithAuthorPreview } from '@src/server/db/models';
 import { api } from '@src/trpc/server';
 import DeleteAccount from './forms/DeleteAccount';
 import UserInfo from './forms/UserInfo';
@@ -19,23 +17,17 @@ async function SettingsForm({
   const user = session.user;
 
   let userData: SelectUserMetadata | undefined = undefined;
-  let createdNotes: SelectFileWithAuthorPreview[] = [];
-  await Promise.allSettled([
-    api.userMetadata.byId({ id: user.id }),
-    api.file.byAuthor({ authorId: user.id }),
-  ]).then(([userDataResult, notesResult]) => {
-    if (userDataResult.status === 'fulfilled' && userDataResult.value) {
-      userData = userDataResult.value;
-    } else if (userDataResult.status === 'rejected') {
-      throw new Error(
-        `Failed to fetch user data. Has the \`user_metadata\` table been migrated?\n\n${userDataResult.reason}`,
-      );
-    }
-
-    if (notesResult.status === 'fulfilled' && notesResult.value) {
-      createdNotes = notesResult.value;
-    }
-  });
+  await Promise.allSettled([api.userMetadata.byId({ id: user.id })]).then(
+    ([userDataResult]) => {
+      if (userDataResult.status === 'fulfilled' && userDataResult.value) {
+        userData = userDataResult.value;
+      } else if (userDataResult.status === 'rejected') {
+        throw new Error(
+          `Failed to fetch user data. Has the \`user_metadata\` table been migrated?\n\n${userDataResult.reason}`,
+        );
+      }
+    },
+  );
 
   return (
     <div className="flex flex-col gap-8 w-full max-w-6xl">
@@ -49,8 +41,6 @@ async function SettingsForm({
       <SettingsHeader user={user} />
       {userData && <Username user={userData} />}
       {userData && <UserInfo user={userData} />}
-
-      <CreatedNotes createdNotes={createdNotes} />
 
       <DeleteAccount />
     </div>

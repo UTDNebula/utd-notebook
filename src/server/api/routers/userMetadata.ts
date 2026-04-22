@@ -11,6 +11,7 @@ import { userMetadata } from '@src/server/db/schema/user';
 import { createTRPCRouter, protectedProcedure, publicProcedure } from '../trpc';
 
 const byIdSchema = z.object({ id: z.string() });
+const byUsernameSchema = z.object({ username: z.string().trim().min(1) });
 
 const updateByIdSchema = z.object({
   updateUser: insertUserMetadata.partial().omit({ id: true }),
@@ -27,6 +28,40 @@ export const userMetadataRouter = createTRPCRouter({
     });
 
     return userMetadata;
+  }),
+  byUsername: publicProcedure
+    .input(byUsernameSchema)
+    .query(async ({ input, ctx }) => {
+      const profile = await ctx.db.query.userMetadata.findFirst({
+        where: eq(userMetadata.username, input.username),
+      });
+
+      if (!profile) {
+        return null;
+      }
+
+      const user = await ctx.db.query.user.findFirst({
+        where: eq(users.id, profile.id),
+        columns: {
+          name: true,
+          image: true,
+        },
+      });
+
+      return {
+        ...profile,
+        name: user?.name ?? null,
+        image: user?.image ?? null,
+      };
+    }),
+  getAllUsernames: publicProcedure.query(async ({ ctx }) => {
+    const usernames = await ctx.db.query.userMetadata.findMany({
+      columns: {
+        username: true,
+      },
+    });
+
+    return usernames.map((u) => u.username).filter((u) => u !== null);
   }),
   updateById: protectedProcedure
     .input(updateByIdSchema)

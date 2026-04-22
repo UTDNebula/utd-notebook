@@ -67,12 +67,55 @@ export const savedNoteRouter = createTRPCRouter({
         eq(userMetadataToNotes.saved, true),
       ),
       with: {
-        file: true,
+        file: {
+          with: {
+            section: true,
+            author: {
+              columns: { username: true, firstName: true, lastName: true },
+            },
+          },
+        },
       },
     });
 
     return rows.map((row) => row.file);
   }),
+
+  byUsername: publicProcedure
+    .input(
+      z.object({
+        username: z.string().trim().min(1),
+      }),
+    )
+    .query(async ({ input, ctx }) => {
+      const user = await ctx.db.query.userMetadata.findFirst({
+        where: (userMetadata, { eq }) =>
+          eq(userMetadata.username, input.username),
+      });
+
+      if (!user) {
+        return [];
+      }
+
+      const rows = await ctx.db.query.userMetadataToNotes.findMany({
+        where: and(
+          eq(userMetadataToNotes.userId, user.id),
+          eq(userMetadataToNotes.saved, true),
+        ),
+        with: {
+          file: {
+            with: {
+              section: true,
+              author: {
+                columns: { username: true, firstName: true, lastName: true },
+              },
+            },
+          },
+        },
+      });
+
+      return rows.map((row) => row.file);
+    }),
 
   rate: protectedProcedure
     .input(
