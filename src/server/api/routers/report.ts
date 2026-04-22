@@ -1,26 +1,11 @@
 import { TRPCError } from '@trpc/server';
-import { z } from 'zod';
 import { report as reports } from '@src/server/db/schema/reports';
+import { createReportSchema } from '@src/utils/formSchemas';
 import { createTRPCRouter, protectedProcedure } from '../trpc';
-
-const createReportInputSchema = z.object({
-  fileId: z.string().min(1),
-  category: z.enum([
-    'inappropriate',
-    'incorrect',
-    'spam',
-    'copyright',
-    'other',
-  ]),
-  details: z
-    .string()
-    .min(10, 'Please provide a bit more detail')
-    .max(1000, 'Character limit reached'),
-});
 
 export const reportRouter = createTRPCRouter({
   create: protectedProcedure
-    .input(createReportInputSchema)
+    .input(createReportSchema)
     .mutation(async ({ input, ctx }) => {
       const userId = ctx.session.user.id;
 

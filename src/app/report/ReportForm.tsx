@@ -8,7 +8,7 @@ import Panel from '@src/components/common/Panel';
 import { setSnackbar } from '@src/components/global/Snackbar';
 import { useTRPC } from '@src/trpc/react';
 import { useAppForm } from '@src/utils/form';
-import { createReportFormSchema } from '@src/utils/formSchemas';
+import { createReportSchema } from '@src/utils/formSchemas';
 
 type ReportFormProps = {
   fileId: string;
@@ -42,7 +42,7 @@ export default function ReportForm({ fileId, fileName }: ReportFormProps) {
           fitContent: true,
           closeOn: ['timeout', 'escapeKeyDown', 'dismiss'],
         });
-        router.push('/notes');
+        router.push('/');
       },
       onError: (error) => {
         setSnackbar({
@@ -70,7 +70,7 @@ export default function ReportForm({ fileId, fileName }: ReportFormProps) {
       await createMutation.mutateAsync(value);
     },
     validators: {
-      onChange: createReportFormSchema,
+      onChange: createReportSchema,
     },
   });
 
@@ -81,7 +81,7 @@ export default function ReportForm({ fileId, fileName }: ReportFormProps) {
         e.stopPropagation();
         form.handleSubmit();
       }}
-      className="w-full max-w-3xl"
+      className="w-full max-w-6xl"
     >
       <Panel
         heading="Report Note"
@@ -102,7 +102,7 @@ export default function ReportForm({ fileId, fileName }: ReportFormProps) {
                 <MenuItem value="inappropriate">Inappropriate</MenuItem>
                 <MenuItem value="incorrect">Incorrect</MenuItem>
                 <MenuItem value="spam">Spam</MenuItem>
-                <MenuItem value="copyright">Copyright</MenuItem>
+                <MenuItem value="copyright">Copyright (UTD Content)</MenuItem>
                 <MenuItem value="other">Other</MenuItem>
               </field.TextField>
             )}

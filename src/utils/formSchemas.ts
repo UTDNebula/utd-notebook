@@ -55,6 +55,7 @@ export type AccountOnboardingSchema = z.infer<typeof accountOnboardingSchema>;
 
 export const MAX_FILE_SIZE = 5 * 1024 * 1024;
 export const ACCEPTED_FILE_TYPES = ['application/pdf'];
+
 const fileSchema = z
   .file('File required')
   .refine(
@@ -120,15 +121,6 @@ export const reportCategoryEnum = z.enum([
   'other',
 ]);
 
-export const createReportFormSchema = z.object({
-  fileId: z.string().min(1, 'Missing file'),
-  category: reportCategoryEnum,
-  details: z
-    .string()
-    .min(10, 'Please provide at least 10 characters')
-    .max(1000, 'Character limit reached'),
-});
-
 export const createReportSchema = z.object({
   fileId: z.string().min(1, 'Missing file'),
   category: reportCategoryEnum,
@@ -138,5 +130,4 @@ export const createReportSchema = z.object({
     .max(1000, 'Character limit reached'),
 });
 
-export type CreateReportFormSchema = z.infer<typeof createReportFormSchema>;
 export type CreateReportSchema = z.infer<typeof createReportSchema>;
