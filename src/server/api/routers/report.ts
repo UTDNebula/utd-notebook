@@ -1,4 +1,5 @@
 import { TRPCError } from '@trpc/server';
+import { eq } from 'drizzle-orm';
 import { report as reports } from '@src/server/db/schema/reports';
 import { createReportSchema } from '@src/utils/formSchemas';
 import { createTRPCRouter, protectedProcedure } from '../trpc';
@@ -8,6 +9,24 @@ export const reportRouter = createTRPCRouter({
     .input(createReportSchema)
     .mutation(async ({ input, ctx }) => {
       const userId = ctx.session.user.id;
+
+      const existingFile = await ctx.db.query.file.findFirst({
+        where: (fileRecord) => eq(fileRecord.id, input.fileId),
+      });
+
+      if (!existingFile) {
+        throw new TRPCError({
+          code: 'NOT_FOUND',
+          message: 'File not found',
+        });
+      }
+
+      if (existingFile.authorId === userId) {
+        throw new TRPCError({
+          code: 'UNAUTHORIZED',
+          message: 'You cannot report your own note.',
+        });
+      }
 
       try {
         const inserted = await ctx.db
