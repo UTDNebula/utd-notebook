@@ -12,26 +12,20 @@ export default function PdfViewer({ url, title }: PdfViewerProps) {
   const [numPages, setNumPages] = useState(0);
   const [error, setError] = useState<string | null>(null);
   const [loading, setLoading] = useState(true);
-  const renderingRef = useRef(false);
 
   useEffect(() => {
-    if (!url || renderingRef.current) return;
-    renderingRef.current = true;
-
+    if (!url) return;
     let cancelled = false;
 
     const render = async () => {
       try {
         const pdfjsLib = await import('pdfjs-dist');
-        console.log('pdfjs loaded');
         pdfjsLib.GlobalWorkerOptions.workerSrc = new URL(
           'pdfjs-dist/build/pdf.worker.mjs',
           import.meta.url,
         ).toString();
 
         const pdf = await pdfjsLib.getDocument(url).promise;
-        console.log('pdf document loaded, pages:', pdf.numPages);
-
         setNumPages(pdf.numPages);
 
         const container = containerRef.current;
