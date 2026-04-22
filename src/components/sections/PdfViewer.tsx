@@ -20,10 +20,8 @@ export default function PdfViewer({ url, title }: PdfViewerProps) {
     const render = async () => {
       try {
         const pdfjsLib = await import('pdfjs-dist');
-        pdfjsLib.GlobalWorkerOptions.workerSrc = new URL(
-          'pdfjs-dist/build/pdf.worker.mjs',
-          import.meta.url,
-        ).toString();
+        // Just for you, FireFox
+        pdfjsLib.GlobalWorkerOptions.workerSrc = `https://unpkg.com/pdfjs-dist@${pdfjsLib.version}/build/pdf.worker.mjs`;
 
         const pdf = await pdfjsLib.getDocument(url).promise;
         setNumPages(pdf.numPages);
