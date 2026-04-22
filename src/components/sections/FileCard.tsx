@@ -12,6 +12,7 @@ import type { SelectFileWithAuthorPreview } from '@src/server/db/models';
 import { authClient } from '@src/utils/auth-client';
 import NoteDeleteButton from './NoteDeleteButton';
 import NoteEditButton from './NoteEditButton';
+import ReportButton from './ReportButton';
 
 type FileCardProps = {
   file: SelectFileWithAuthorPreview;
@@ -151,6 +152,7 @@ export default function FileCard({ file }: FileCardProps) {
       <div className="m-4 mt-0 flex flex-row items-center space-x-2">
         {isAuthor && <NoteEditButton fileId={file.id} />}
         {isAuthor && <NoteDeleteButton fileId={file.id} />}
+        {!isAuthor && <ReportButton fileId={file.id} />}
         <SaveButton fileId={file.id} />
       </div>
     </BaseCard>
