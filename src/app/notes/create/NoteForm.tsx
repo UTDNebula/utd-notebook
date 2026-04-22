@@ -36,20 +36,12 @@ interface FileDetails {
   section?: string;
 }
 
-const SAVE_REDIRECT_DELAY_MS = 1200;
-
 const NoteForm = ({ mode = 'create', file: existingFile }: NoteFormProps) => {
   const api = useTRPC();
   const createMutation = useMutation(api.file.create.mutationOptions());
   const updateMutation = useMutation(api.file.update.mutationOptions());
   const uploadFile = useUploadToUploadURL();
   const router = useRouter();
-
-  const redirectHomeWithDelay = () => {
-    window.setTimeout(() => {
-      router.push('/');
-    }, SAVE_REDIRECT_DELAY_MS);
-  };
 
   const defaultValues = useMemo<FileDetails>(() => {
     if (mode === 'edit' && existingFile) {
@@ -91,7 +83,7 @@ const NoteForm = ({ mode = 'create', file: existingFile }: NoteFormProps) => {
             file: fileUrl,
           },
           {
-            onSuccess: redirectHomeWithDelay,
+            onSuccess: () => router.push(`/notes/${existingFile.id}`),
           },
         );
       }
@@ -103,7 +95,7 @@ const NoteForm = ({ mode = 'create', file: existingFile }: NoteFormProps) => {
           onSuccess: async (newId) => {
             const isFileDirty = !formApi.getFieldMeta('file')?.isDefaultValue;
             if (!isFileDirty) {
-              redirectHomeWithDelay();
+              router.push(`/notes/${newId}`);
               return;
             }
 
@@ -118,7 +110,7 @@ const NoteForm = ({ mode = 'create', file: existingFile }: NoteFormProps) => {
                 file: url,
               },
               {
-                onSuccess: redirectHomeWithDelay,
+                onSuccess: () => router.push(`/notes/${newId}`),
               },
             );
           },
@@ -162,7 +154,6 @@ const NoteForm = ({ mode = 'create', file: existingFile }: NoteFormProps) => {
                   existingFile={
                     mode === 'edit' && existingFile
                       ? {
-                          id: existingFile.id,
                           name: existingFile.name,
                           publicUrl: existingFile.publicUrl,
                         }

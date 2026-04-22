@@ -12,7 +12,6 @@ interface FormFileProps {
   label?: string;
   value: File | null;
   existingFile?: {
-    id: string;
     name: string;
     publicUrl: string;
   };
@@ -55,8 +54,12 @@ const FormFile = ({
       return [{ file: selectedFilePreviewUrl, name: file.name }];
     }
 
+    if (existingFile) {
+      return [{ file: existingFile.publicUrl, name: existingFile.name }];
+    }
+
     return [];
-  }, [file, selectedFilePreviewUrl]);
+  }, [existingFile, file, selectedFilePreviewUrl]);
 
   const { thumbnails, isLoading } = useThumbnails(fileForPreview);
   const thumbData = thumbnails[0]?.thumbData;
@@ -74,7 +77,6 @@ const FormFile = ({
   const showPreview = !!thumbData;
   const showPreviewError = debouncedShowPreviewError && shouldShowPreviewError;
   const selectedFileName = file?.name ?? existingFile?.name;
-  const isUploadingPreview = !!file && !!selectedFilePreviewUrl;
 
   return (
     <div className={className}>
@@ -99,7 +101,7 @@ const FormFile = ({
             </p>
           </>
         )}
-        {isUploadingPreview && showPreview ? (
+        {showPreview ? (
           <div className="relative mt-2 aspect-[3/4] w-full max-w-[14rem] overflow-hidden rounded-md border border-neutral-200 bg-white dark:border-neutral-600 dark:bg-neutral-700">
             <Image
               src={thumbData}
@@ -110,11 +112,11 @@ const FormFile = ({
               unoptimized
             />
           </div>
-        ) : isUploadingPreview && showPreviewError ? (
+        ) : showPreviewError ? (
           <div className="mt-2 text-xs text-slate-600 dark:text-slate-400">
             Unable to preview
           </div>
-        ) : isUploadingPreview ? (
+        ) : selectedFileName ? (
           <div className="relative mt-2 aspect-[3/4] w-full max-w-[14rem]">
             <Skeleton variant="rounded" className="h-full w-full" />
           </div>
