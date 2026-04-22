@@ -33,55 +33,15 @@ const professor_to_alias = untyped_professor_to_alias as {
   [key: string]: string;
 };
 
-interface LoadingSearchBarProps {
-  className?: string;
-  input_className?: string;
-}
-
-export function LoadingSearchBar(props: LoadingSearchBarProps) {
-  return (
-    <div
-      className={
-        'flex items-center w-full max-w-xs md:max-w-sm lg:max-w-md ' +
-        (props.className ?? '')
-      }
-    >
-      <Autocomplete
-        className="grow"
-        options={[]}
-        renderInput={(params) => {
-          return (
-            <TextField
-              {...params}
-              variant="outlined"
-              slotProps={{
-                input: {
-                  ...params.InputProps,
-                  endAdornment: (
-                    <InputAdornment position="end" key="search-icon">
-                      <SearchIcon className="text-royal dark:text-cornflower-300" />
-                    </InputAdornment>
-                  ),
-                  className:
-                    'rounded-full bg-white dark:bg-neutral-700 ' +
-                    (props.input_className ?? ''),
-                },
-              }}
-              placeholder="Search for courses or professors"
-            />
-          );
-        }}
-      />
-    </div>
-  );
-}
-
 type SearchQueryWithTitle = SearchQuery & {
   title?: string;
   subtitle?: string;
   isRecent?: boolean;
 };
 
+/**
+ * api response type for autocomplete endpoint
+ */
 interface AutocompleteResponse {
   state: string;
   data: SearchQueryWithTitle[];
@@ -128,6 +88,9 @@ export function updateRecentSearches(newValue: SearchQueryWithTitle[]) {
   }
 }
 
+/**
+ * Props type used by the SearchBar component
+ */
 interface Props {
   manageQuery?: 'onSelect';
   onSelect?: (value: SearchQuery[]) => void;
@@ -137,12 +100,20 @@ interface Props {
   isPending?: boolean;
 }
 
+/**
+ * This component returns a custom search bar component that makes use of the Material UI autocomplete component
+ * Sends a new search value to the parent component when the user selects it from the options list
+ *
+ * Styled for the splash page
+ */
 export default function SearchBar(props: Props) {
   const [isPending, startTransition] = useTransition();
 
+  //what you can choose from
   const [options, setOptions] = useState<SearchQueryWithTitle[]>(() =>
     getRecentSearches().map((entry) => ({ ...entry, isRecent: true })),
   );
+  //initial loading prop for first load
   const [loading, setLoading] = useState(false);
   const [openErrorTooltip, setErrorTooltip] = useState(false);
   const [noResult, setNoResults] = useState<null | string>(null);
@@ -155,7 +126,12 @@ export default function SearchBar(props: Props) {
     _setInputValue(newValue);
   }
 
+  //set value from query
   const router = useRouter();
+  // updateValue -> onSelect_internal -> updateQueries - clicking enter on an autocomplete suggestion in TopMenu Searchbar
+  // updateValue -> onSelect_internal -> onSelect (custom function) - clicking enter on an autocomplete suggestion in home page SearchBar
+  // params.inputProps.onKeyDown -> handleKeyDown -> onSelect_internal -> updateQueries/onSelect - clicking enter in the SearchBar
+  // Button onClick -> onSelect_internal -> updateQueries/onSelect - Pressing the "Search" Button
 
   function updateQueries(term: SearchQuery) {
     if (term.prefix && term.number) {
@@ -184,6 +160,7 @@ export default function SearchBar(props: Props) {
     return decodeSearchQueryLabel(inputValue.trim());
   }
 
+  //update parent and queries
   function onSelect(newValue: SearchQuery | null) {
     setErrorTooltip(!newValue);
 
@@ -210,8 +187,9 @@ export default function SearchBar(props: Props) {
     }
   }
 
+  //change all values
   function updateValue(newValue: SearchQuery | null) {
-    onSelect(newValue);
+    onSelect(newValue); // clicking enter to select a autocomplete suggestion triggers a new search (it also 'Enters' for the searchbar)
   }
 
   function prePopulateRecents() {
@@ -300,6 +278,7 @@ export default function SearchBar(props: Props) {
     onSelect(newValue);
   }
 
+  //fetch new options, add tags if valid
   function loadNewOptions(newInputValue: string) {
     if (noResult !== null && newInputValue.startsWith(noResult)) {
       loadNewCourseNameOptions(newInputValue);
@@ -321,6 +300,7 @@ export default function SearchBar(props: Props) {
       .then((response) => response.json() as Promise<AutocompleteResponse>)
       .then((data) => {
         if (data.state !== 'done') {
+          console.error('Autocomplete API error:', data.state, data);
           throw new Error(data.state);
         }
 
@@ -388,6 +368,7 @@ export default function SearchBar(props: Props) {
             return;
           }
         }}
+        //highlight first option to add with enter
         autoHighlight={true}
         clearOnBlur={false}
         className="grow"
@@ -410,12 +391,14 @@ export default function SearchBar(props: Props) {
           return searchQueryLabel(option);
         }}
         options={options}
+        //don't filter options, done in fetch
         filterOptions={(opts) => opts}
         value={value}
         onChange={(
           _event: React.SyntheticEvent,
           newValue: string | SearchQuery | null,
         ) => {
+          //should never happen
           if (typeof newValue === 'string') {
             setInputValue(newValue);
             return;
@@ -566,6 +549,7 @@ export default function SearchBar(props: Props) {
           const normalizedInput = inputValue
             .replace(/([a-zA-Z]{2,4})([0-9][0-9V]?[0-9]{0,2})/, '$1 $2')
             .replace(/([0-9][0-9V][0-9]{2})([a-zA-Z]{1,4})/, '$1 $2');
+          //add spaces between prefix and course number
           const matches = match(text, normalizedInput);
           const subTextMatches = match(subtext ?? '', normalizedInput);
           const parts = parse(text, matches);
