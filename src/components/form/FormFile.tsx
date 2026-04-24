@@ -5,7 +5,6 @@ import CloudUploadIcon from '@mui/icons-material/CloudUpload';
 import { FormHelperText, Skeleton } from '@mui/material';
 import Image from 'next/image';
 import { useEffect, useMemo } from 'react';
-import { ensurePdfJsWorker } from '@src/utils/pdfWorker';
 import useDebounce from '@src/utils/useDebounce';
 
 interface FormFileProps {
@@ -32,10 +31,6 @@ const FormFile = ({
   isError = false,
   className,
 }: FormFileProps) => {
-  useEffect(() => {
-    ensurePdfJsWorker();
-  }, []);
-
   const selectedFilePreviewUrl = useMemo(
     () => (file ? URL.createObjectURL(file) : null),
     [file],

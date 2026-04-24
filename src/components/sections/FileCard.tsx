@@ -4,13 +4,12 @@ import { useThumbnails, type FileData } from '@mkholt/pdf-thumbnail';
 import { Skeleton } from '@mui/material';
 import Image from 'next/image';
 import Link from 'next/link';
-import { useEffect, useMemo } from 'react';
+import { useMemo } from 'react';
 import { BaseCard } from '@src/components/common/BaseCard';
 import RatingWidget from '@src/components/sections/RatingWidget';
 import SaveButton from '@src/components/sections/SaveButton';
 import type { SelectFileWithAuthorPreview } from '@src/server/db/models';
 import { authClient } from '@src/utils/auth-client';
-import { ensurePdfJsWorker } from '@src/utils/pdfWorker';
 import useDebounce from '@src/utils/useDebounce';
 import NoteDeleteButton from './NoteDeleteButton';
 import NoteEditButton from './NoteEditButton';
@@ -34,10 +33,6 @@ const formatUpdatedAt = (
 };
 
 export default function FileCard({ file }: FileCardProps) {
-  useEffect(() => {
-    ensurePdfJsWorker();
-  }, []);
-
   const { data: session } = authClient.useSession();
   const isAuthor = session?.user?.id === file.authorId;
 

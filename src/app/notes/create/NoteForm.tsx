@@ -58,10 +58,7 @@ const NoteForm = ({ mode = 'create', file: existingFile }: NoteFormProps) => {
         file: null,
         name: existingFile.name,
         description: existingFile.description ?? '',
-<<<<<<< HEAD
         section: existingFile.section,
-=======
-        section: '',
         prefix: '',
         number: '',
         sectionCode: '',
@@ -70,7 +67,6 @@ const NoteForm = ({ mode = 'create', file: existingFile }: NoteFormProps) => {
         profFirst: '',
         profLast: '',
         handwritten: existingFile.handwritten,
->>>>>>> develop
       };
     }
     return {
@@ -92,12 +88,7 @@ const NoteForm = ({ mode = 'create', file: existingFile }: NoteFormProps) => {
   const form = useAppForm({
     defaultValues,
     onSubmit: async ({ value, formApi }) => {
-<<<<<<< HEAD
-      const { file, section, ...rest } = value;
-      const selectedFile = file ?? null;
-=======
-      const selectedFile = value.file;
->>>>>>> develop
+      const selectedFile = value.file ?? null;
 
       if (mode === 'edit' && existingFile) {
         let fileUrl = existingFile.publicUrl;
