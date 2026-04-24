@@ -6,6 +6,10 @@ export type SearchQuery = {
   sectionNumber?: string;
 };
 
+export type SearchQueryWithTotalStudents = SearchQuery & {
+  total_students?: number;
+};
+
 export type Professor = {
   profFirst: string;
   profLast: string;
@@ -40,7 +44,7 @@ export function convertToCourseOnly(
   };
 }
 
-export function searchQueryLabel(query: SearchQuery): string {
+export function searchQueryLabel(query: SearchQueryWithTotalStudents): string {
   let result = '';
   if (typeof query.prefix !== 'undefined') {
     result += query.prefix;

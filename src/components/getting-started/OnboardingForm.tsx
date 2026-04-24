@@ -76,7 +76,7 @@ export default function OnboardingForm({
     lastName: userMetadata?.lastName,
     major: userMetadata?.major,
     minor: userMetadata?.minor,
-    studentClassification: userMetadata?.studentClassification,
+    studentClassification: userMetadata?.studentClassification ?? 'Student',
     // `userMetadata.graduation` is automatically set with a time zone, which shows the wrong month in the date picker
     // Add the timezone offset (in milliseconds) to convert back to UTC
     graduationDate: userMetadata?.graduationDate
@@ -84,7 +84,7 @@ export default function OnboardingForm({
           userMetadata?.graduationDate?.getTime() +
             userMetadata?.graduationDate?.getTimezoneOffset() * 60 * 1000,
         )
-      : undefined,
+      : null,
     contactEmail: userMetadata?.contactEmail ?? '',
   });
 
@@ -213,10 +213,6 @@ export default function OnboardingForm({
   };
 
   const handleBack = () => {
-    // Validates mounted fields and prevents user from navigating if there exist errors
-    validateFields();
-    if (!currentFieldsValid()) return;
-
     if (activeStep.current > 0) {
       setActiveStep((prev) => ({
         current: prev.current - 1,
@@ -232,9 +228,7 @@ export default function OnboardingForm({
       color={!form.state.isFieldsValid ? 'inherit' : 'primary'}
       onClick={handleBack}
       disabled={
-        activeStep.current === 0 ||
-        activeStep.current === steps.length - 1 ||
-        !currentFieldsValid()
+        activeStep.current === 0 || activeStep.current === steps.length - 1
       }
     >
       Back
