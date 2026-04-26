@@ -1,5 +1,6 @@
 import Header from '@src/components/header/Header';
 import SearchBar from '@src/components/header/SearchBar';
+import { HOME_PAGE_GRADIENT_CLASS } from '@src/constants/gradients';
 import NebulaLogo from '@src/icons/NebulaLogo';
 
 const Home = () => {
@@ -7,7 +8,7 @@ const Home = () => {
     <main className="relative">
       <div className="absolute inset-0 z-0">
         <div className="relative h-screen">
-          <div className="absolute inset-0 bg-[linear-gradient(106deg,#C0C2FF_13.64%,#DDBBF3_48.08%,#FFC6C1_83.43%)]" />
+          <div className={`absolute inset-0 ${HOME_PAGE_GRADIENT_CLASS}`} />
           <div className="absolute inset-0 dark:bg-slightly-darken" />
         </div>
       </div>

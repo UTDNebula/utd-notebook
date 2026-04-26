@@ -1,5 +1,6 @@
 import { relations, sql } from 'drizzle-orm';
 import {
+  boolean,
   index,
   pgTable,
   text,
@@ -29,6 +30,8 @@ export const file = pgTable(
     description: text('description'),
 
     publicUrl: text('public_url').notNull(),
+
+    handwritten: boolean('handwritten').notNull().default(false),
 
     updatedAt: timestamp('updated_at').notNull().defaultNow(),
   },

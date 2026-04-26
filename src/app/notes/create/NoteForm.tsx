@@ -24,6 +24,7 @@ type NoteFormProps =
         id: string;
         name: string;
         description?: string;
+        handwritten: boolean;
         publicUrl: string;
       };
     };
@@ -33,6 +34,14 @@ interface FileDetails {
   name: string;
   description?: string;
   section?: string;
+  prefix?: string;
+  number?: string;
+  sectionCode?: string;
+  term?: string;
+  year?: number;
+  profFirst?: string;
+  profLast?: string;
+  handwritten: boolean;
 }
 
 const NoteForm = ({ mode = 'create', file: existingFile }: NoteFormProps) => {
@@ -49,6 +58,14 @@ const NoteForm = ({ mode = 'create', file: existingFile }: NoteFormProps) => {
         name: existingFile.name,
         description: existingFile.description ?? '',
         section: '',
+        prefix: '',
+        number: '',
+        sectionCode: '',
+        term: '',
+        year: 0,
+        profFirst: '',
+        profLast: '',
+        handwritten: existingFile.handwritten,
       };
     }
     return {
@@ -56,13 +73,21 @@ const NoteForm = ({ mode = 'create', file: existingFile }: NoteFormProps) => {
       name: '',
       description: '',
       section: '',
+      prefix: '',
+      number: '',
+      sectionCode: '',
+      term: '',
+      year: 0,
+      profFirst: '',
+      profLast: '',
+      handwritten: false,
     };
   }, [mode, existingFile]);
 
   const form = useAppForm({
     defaultValues,
     onSubmit: async ({ value, formApi }) => {
-      const { file: selectedFile, section, ...rest } = value;
+      const selectedFile = value.file;
 
       if (mode === 'edit' && existingFile) {
         let fileUrl = existingFile.publicUrl;
@@ -77,7 +102,9 @@ const NoteForm = ({ mode = 'create', file: existingFile }: NoteFormProps) => {
         return updateMutation.mutateAsync(
           {
             id: existingFile.id,
-            ...rest,
+            name: value.name,
+            description: value.description,
+            handwritten: value.handwritten,
             file: fileUrl,
           },
           {
@@ -88,7 +115,18 @@ const NoteForm = ({ mode = 'create', file: existingFile }: NoteFormProps) => {
 
       // Create
       return createMutation.mutateAsync(
-        { ...rest, section: section ?? '' },
+        {
+          name: value.name,
+          description: value.description,
+          handwritten: value.handwritten,
+          prefix: value.prefix ?? '',
+          number: value.number ?? '',
+          sectionCode: value.sectionCode ?? '',
+          term: (value.term ?? '') as 'Spring' | 'Summer' | 'Fall',
+          year: value.year ?? 0,
+          profFirst: value.profFirst ?? '',
+          profLast: value.profLast ?? '',
+        },
         {
           onSuccess: async (newId) => {
             const isFileDirty = !formApi.getFieldMeta('file')?.isDefaultValue;
@@ -104,7 +142,9 @@ const NoteForm = ({ mode = 'create', file: existingFile }: NoteFormProps) => {
             updateMutation.mutate(
               {
                 id: newId,
-                ...rest,
+                name: value.name,
+                description: value.description,
+                handwritten: value.handwritten,
                 file: url,
               },
               {
@@ -209,14 +249,30 @@ const NoteForm = ({ mode = 'create', file: existingFile }: NoteFormProps) => {
               {mode === 'create' && (
                 <form.AppField name="section">
                   {(field) => (
-                    <field.TextField
+                    <field.SectionAutocomplete
                       label="Section"
                       className="w-full"
-                      helperText="Example: CS 1200.001 Fall 2025"
+                      onSectionSelect={(entry) => {
+                        form.setFieldValue('prefix', entry?.prefix ?? '');
+                        form.setFieldValue('number', entry?.number ?? '');
+                        form.setFieldValue(
+                          'sectionCode',
+                          entry?.sectionCode ?? '',
+                        );
+                        form.setFieldValue('term', entry?.term ?? '');
+                        form.setFieldValue('year', entry?.year ?? 0);
+                        form.setFieldValue('profFirst', entry?.profFirst ?? '');
+                        form.setFieldValue('profLast', entry?.profLast ?? '');
+                      }}
                     />
                   )}
                 </form.AppField>
               )}
+              <form.AppField name="handwritten">
+                {(field) => (
+                  <field.Checkbox label="Handwritten"></field.Checkbox>
+                )}
+              </form.AppField>
             </div>
           </div>
         </div>
