@@ -81,9 +81,9 @@ export default function OnboardingForm({
     // Add the timezone offset (in milliseconds) to convert back to UTC
     graduationDate: userMetadata?.graduationDate
       ? new Date(
-          userMetadata?.graduationDate?.getTime() +
-            userMetadata?.graduationDate?.getTimezoneOffset() * 60 * 1000,
-        )
+        userMetadata?.graduationDate?.getTime() +
+        userMetadata?.graduationDate?.getTimezoneOffset() * 60 * 1000,
+      )
       : null,
     contactEmail: userMetadata?.contactEmail ?? '',
   });
@@ -100,9 +100,9 @@ export default function OnboardingForm({
             ...updated,
             graduationDate: updated?.graduationDate
               ? new Date(
-                  updated?.graduationDate?.getTime() +
-                    updated?.graduationDate?.getTimezoneOffset() * 60 * 1000,
-                )
+                updated?.graduationDate?.getTime() +
+                updated?.graduationDate?.getTimezoneOffset() * 60 * 1000,
+              )
               : null,
           };
 
@@ -325,8 +325,8 @@ export default function OnboardingForm({
             mounting
               ? undefined
               : {
-                  height: `${formHeight}px`,
-                }
+                height: `${formHeight}px`,
+              }
           }
         >
           {/* Hidden step component used only to correctly size the parent when the page loads */}
@@ -342,19 +342,19 @@ export default function OnboardingForm({
               activeStep.previous !== undefined
                 ? activeStep.current > activeStep.previous
                   ? // on next
-                    activeStep.current === index
+                  activeStep.current === index
                     ? // entering
-                      'left'
+                    'left'
                     : // exiting
-                      'right'
+                    'right'
                   : // on back
-                    activeStep.current === index
+                  activeStep.current === index
                     ? // entering
-                      'right'
+                    'right'
                     : // exiting
-                      'left'
+                    'left'
                 : // on mount
-                  'left';
+                'left';
 
             return (
               <Slide

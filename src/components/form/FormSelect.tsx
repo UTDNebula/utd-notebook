@@ -49,13 +49,14 @@ export default function FormSelect({
     <FormControl className={`w-64 ${className}`}>
       <InputLabel>{label}</InputLabel>
       <GenericSelect
-        value={field.state.value}
+        value={field.state.value ?? ''}
         onBlur={field.handleBlur}
         onChange={(e) => field.handleChange(e.target.value)}
         className="bg-white dark:bg-neutral-800"
         size="small"
-        error={!field.state.meta.isValid}
+        error={!!field.state.value && !field.state.meta.isValid}
         label={label}
+        displayEmpty
         {...props}
       >
         {children}
@@ -70,11 +71,11 @@ export default function FormSelect({
           </MenuItem>
         ))}
       </GenericSelect>
-      <FormHelperText>
-        {!field.state.meta.isValid
-          ? field.state.meta.errors.map((err) => err?.message).join('. ') + '.'
-          : undefined}
-      </FormHelperText>
+      {!!field.state.value && !field.state.meta.isValid && (
+        <FormHelperText>
+          {field.state.meta.errors.map((err) => err?.message).join('. ') + '.'}
+        </FormHelperText>
+      )}
     </FormControl>
   );
 }
