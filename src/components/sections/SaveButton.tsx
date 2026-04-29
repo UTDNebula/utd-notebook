@@ -106,9 +106,9 @@ export default function SaveButton({
         className="text-royal dark:text-cornflower-300 p-1.5"
       >
         {isSaved ? (
-          <BookmarkBorderIcon className="text-4xl" />
+          <BookmarkIcon className="text-4xl" />
         ) : (
-          <BookmarkBorderIcon style={{ fontSize: 32 }} />
+          <BookmarkBorderIcon className="text-4xl" />
         )}
       </IconButton>
     );
