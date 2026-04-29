@@ -97,11 +97,11 @@ export default function NoteInfoPanel({
                   )}
                   <div className="mt-2">
                     {description ? (
-                      <p className="text-sm text-slate-600 dark:text-slate-400 leading-relaxed">
+                      <p className="text-sm text-slate-600 dark:text-slate-400 leading-relaxed mt-2">
                         {description}
                       </p>
                     ) : (
-                      <p className="text-sm text-slate-400 italic">
+                      <p className="text-sm text-slate-400 italic mt-2">
                         No provided description.
                       </p>
                     )}
