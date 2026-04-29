@@ -30,14 +30,17 @@ export default function SaveButton({
   const toggleMutation = useMutation(
     api.savedNote.toggle.mutationOptions({
       onMutate: async () => {
+        // Cancel outgoing refetches
         await queryClient.cancelQueries({
           queryKey: api.savedNote.isSaved.queryKey({ fileId }),
         });
 
+        // Remember previous value
         const previous = queryClient.getQueryData(
           api.savedNote.isSaved.queryKey({ fileId }),
         );
 
+        // Optimistically update the cache
         queryClient.setQueryData(
           api.savedNote.isSaved.queryKey({ fileId }),
           (old: { saved: boolean } | undefined) => ({
@@ -45,6 +48,7 @@ export default function SaveButton({
           }),
         );
 
+        // Return context for rollback
         return { previous };
       },
       onSuccess: (data) => {
