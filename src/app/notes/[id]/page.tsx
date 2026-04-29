@@ -48,9 +48,11 @@ export default async function NotePage({ params }: NotePageProps) {
           description={file.description}
           authorId={file.authorId}
           authorName={authorName}
+          authorUsername={file.author?.username ?? undefined}
           course={course}
           section={file.section?.sectionCode ?? undefined}
-          professor={professor}
+          profFirst={file.section?.profFirst ?? undefined}
+          profLast={file.section?.profLast ?? undefined}
           updatedAt={file.updatedAt?.toLocaleDateString()}
         />
       </main>

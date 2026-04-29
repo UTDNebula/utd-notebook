@@ -3,6 +3,7 @@
 import KeyboardArrowDownIcon from '@mui/icons-material/KeyboardArrowDown';
 import KeyboardArrowUpIcon from '@mui/icons-material/KeyboardArrowUp';
 import { Collapse, IconButton } from '@mui/material';
+import Link from 'next/link'; // To link back to specific profiles
 import { useRef, useState } from 'react';
 import NoteEditButton from '@src/components/sections/NoteEditButton';
 import RatingWidget from '@src/components/sections/RatingWidget';
@@ -15,9 +16,11 @@ type NoteInfoPanelProps = {
   description?: string | null;
   authorId?: string | null;
   authorName?: string;
+  authorUsername?: string; // For hyperlink, not just normal name
   course?: string;
   section?: string;
-  professor?: string;
+  profFirst?: string; // Had to split professor name bc breaking it up was breaking things
+  profLast?: string;
   updatedAt?: string;
 };
 
@@ -27,9 +30,11 @@ export default function NoteInfoPanel({
   description,
   authorId,
   authorName,
+  authorUsername,
   course,
   section,
-  professor,
+  profFirst,
+  profLast,
   updatedAt,
 }: NoteInfoPanelProps) {
   const [expanded, setExpanded] = useState(true);
@@ -64,15 +69,30 @@ export default function NoteInfoPanel({
                   </h1>
                   {authorName && (
                     <p className="text-sm text-slate-500 dark:text-slate-400 mt-0.5">
-                      Author: {authorName}
+                      Author:{' '}
+                      {authorUsername ? (
+                        <Link
+                          href={`/profile/${authorUsername}`}
+                          className="underline hover:text-slate-900 dark:hover:text-slate-200"
+                        >
+                          {authorName}
+                        </Link>
+                      ) : (
+                        authorName
+                      )}
                     </p>
                   )}
-                  {professor && (
+                  {profFirst && profLast && (
                     <p className="text-sm text-slate-600 dark:text-slate-400 mt-1">
                       <span className="font-medium text-slate-800 dark:text-slate-200">
                         Professor:
                       </span>{' '}
-                      {professor}
+                      <Link
+                        href={`/notes/${profFirst}/${profLast}`}
+                        className="underline hover:text-slate-900 dark:hover:text-slate-200"
+                      >
+                        {profFirst} {profLast}
+                      </Link>
                     </p>
                   )}
                   <div className="mt-2">
