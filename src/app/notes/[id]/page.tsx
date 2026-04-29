@@ -28,27 +28,17 @@ export default async function NotePage({ params }: NotePageProps) {
     <>
       <Header />
       <main
-        className="relative overflow-hidden"
-        style={{
-          height: 'calc(100dvh - 68px)',
-          backgroundColor: '#F0EEF5',
-        }}
+        className="relative overflow-hidden h-[calc(100dvh-68px)]"
       >
         {/* Scrollable area with white card background for the PDF */}
         <div className="absolute inset-0 overflow-y-auto px-10 pt-40 pb-6">
           <div
-            className="mx-auto rounded-2xl overflow-hidden"
-            style={{
-              backgroundColor: '#FFFFFF',
-              boxShadow: '0 2px 16px 0 rgba(124,96,191,0.10)',
-              padding: '50px',
-              maxWidth: '1200px',
-            }}
+            className="mx-auto rounded-2xl overflow-hidden shadow-lg max-w-[1200px] bg-white dark:bg-neutral-800 p-[50px]"
           >
             {file.publicUrl ? (
               <PdfViewer url={file.publicUrl} title={file.name} />
             ) : (
-              <p className="p-8 text-gray-500">PDF not available yet.</p>
+              <p className="p-8 text-slate-500 dark:text-slate-400">PDF not available yet.</p>
             )}
           </div>
         </div>

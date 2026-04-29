@@ -46,12 +46,7 @@ export default function NoteInfoPanel({
   return (
     <div className="absolute top-0 left-0 right-0 z-15 px-20 pointer-events-none">
       <div
-        className="pointer-events-auto bg-white rounded-b-2xl overflow-hidden"
-        style={{
-          boxShadow:
-            '0 4px 24px 0 rgba(87,61,255,0.10), 0 1px 4px 0 rgba(0,0,0,0.06)',
-          borderLeft: '4px solid #7C60BF',
-        }}
+        className="pointer-events-auto bg-white dark:bg-neutral-800 rounded-b-2xl overflow-hidden shadow-lg border-l-4 border-royal dark:border-cornflower-300"
       >
         {/* Animating body — always rendered, height transitions via grid trick */}
         <div
@@ -75,19 +70,18 @@ export default function NoteInfoPanel({
                   {/* All text content aligned to the right of the save button */}
                   <div className="min-w-0 flex-1">
                     <h1
-                      className="font-bold text-lg leading-tight truncate"
-                      style={{ color: '#7C60BF' }}
+                      className="font-bold text-lg leading-tight truncate text-royal dark:text-cornflower-300"
                     >
                       {displayTitle}
                     </h1>
                     {authorName && (
-                      <p className="text-sm text-gray-500 mt-0.5">
+                      <p className="text-sm text-slate-500 dark:text-slate-400 mt-0.5">
                         Author: {authorName}
                       </p>
                     )}
                     {professor && (
-                      <p className="text-sm text-gray-600 mt-1">
-                        <span className="font-medium text-gray-800">
+                      <p className="text-sm text-slate-600 dark:text-slate-400 mt-1">
+                        <span className="font-medium text-slate-800 dark:text-slate-200">
                           Professor:
                         </span>{' '}
                         {professor}
@@ -95,11 +89,11 @@ export default function NoteInfoPanel({
                     )}
                     <div className="mt-2">
                       {description ? (
-                        <p className="text-sm text-gray-600 leading-relaxed">
+                        <p className="text-sm text-slate-600 dark:text-slate-400 leading-relaxed">
                           {description}
                         </p>
                       ) : (
-                        <p className="text-sm text-gray-400 italic">
+                        <p className="text-sm text-slate-400 italic">
                           No provided description.
                         </p>
                       )}
@@ -111,7 +105,7 @@ export default function NoteInfoPanel({
                 <div className="flex flex-col items-end shrink-0 gap-0.5">
                   <RatingWidget fileId={fileId} />
                   {updatedAt && (
-                    <span className="text-xs text-gray-400">
+                    <span className="text-xs text-slate-600 dark:text-slate-400">
                       Last modified {updatedAt}
                     </span>
                   )}
@@ -133,10 +127,7 @@ export default function NoteInfoPanel({
           <div className="flex items-center justify-between px-4 py-2">
             <div className="flex items-center gap-3 min-w-0">
               <SaveButton fileId={fileId} iconOnly />
-              <span
-                className="font-semibold text-base truncate"
-                style={{ color: '#7C60BF' }}
-              >
+              <span className="font-semibold text-base truncate text-royal dark:text-cornflower-300">
                 {displayTitle}
               </span>
             </div>
@@ -153,7 +144,7 @@ export default function NoteInfoPanel({
             size="small"
             onClick={() => setExpanded((v) => !v)}
             aria-label={expanded ? 'Collapse info panel' : 'Expand info panel'}
-            style={{ color: '#7C60BF' }}
+            className="text-royal dark:text-cornflower-300"
           >
             {expanded ? <KeyboardArrowUpIcon /> : <KeyboardArrowDownIcon />}
           </IconButton>

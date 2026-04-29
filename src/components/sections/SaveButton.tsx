@@ -103,10 +103,10 @@ export default function SaveButton({
       <IconButton
         onClick={handleClick}
         aria-label={isSaved ? 'Unsave note' : 'Save note'}
-        style={{ color: '#7C60BF', padding: '6px' }}
+        className="text-royal dark:text-cornflower-300 p-1.5"
       >
         {isSaved ? (
-          <BookmarkIcon style={{ fontSize: 32 }} />
+          <BookmarkBorderIcon className="text-4xl" />
         ) : (
           <BookmarkBorderIcon style={{ fontSize: 32 }} />
         )}
