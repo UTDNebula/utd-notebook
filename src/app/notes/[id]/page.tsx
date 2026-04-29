@@ -1,7 +1,6 @@
 import { notFound } from 'next/navigation';
 import Header from '@src/components/header/Header';
 import NoteInfoPanel from '@src/components/sections/NoteInfoPanel';
-import PdfViewer from '@src/components/sections/PdfViewer';
 import { api } from '@src/trpc/server';
 
 type NotePageProps = {
@@ -30,14 +29,12 @@ export default async function NotePage({ params }: NotePageProps) {
       <main className="relative overflow-hidden h-[calc(100dvh-68px)]">
         {/* Scrollable area with white card background for the PDF */}
         <div className="absolute inset-0 overflow-y-auto px-10 pt-40 pb-6">
-          <div className="mx-auto rounded-2xl overflow-hidden shadow-lg max-w-[1200px] bg-white dark:bg-neutral-800 p-[50px]">
-            {file.publicUrl ? (
-              <PdfViewer url={file.publicUrl} title={file.name} />
-            ) : (
-              <p className="p-8 text-slate-500 dark:text-slate-400">
-                PDF not available yet.
-              </p>
-            )}
+          <div className="mx-auto rounded-2xl overflow-hidden shadow-lg max-w-[1200px] bg-white dark:bg-neutral-800">
+            <iframe
+              src={file.publicUrl}
+              title={file.name}
+              className="w-full h-[80vh] rounded border-0"
+            />
           </div>
         </div>
 
