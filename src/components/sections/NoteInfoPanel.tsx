@@ -45,9 +45,7 @@ export default function NoteInfoPanel({
 
   return (
     <div className="absolute top-0 left-0 right-0 z-15 px-20 pointer-events-none">
-      <div
-        className="pointer-events-auto bg-white dark:bg-neutral-800 rounded-b-2xl overflow-hidden shadow-lg border-l-4 border-royal dark:border-cornflower-300"
-      >
+      <div className="pointer-events-auto bg-white dark:bg-neutral-800 rounded-b-2xl overflow-hidden shadow-lg border-l-4 border-royal dark:border-cornflower-300">
         {/* Animating body — always rendered, height transitions via grid trick */}
         <div
           style={{
@@ -69,9 +67,7 @@ export default function NoteInfoPanel({
 
                   {/* All text content aligned to the right of the save button */}
                   <div className="min-w-0 flex-1">
-                    <h1
-                      className="font-bold text-lg leading-tight truncate text-royal dark:text-cornflower-300"
-                    >
+                    <h1 className="font-bold text-lg leading-tight truncate text-royal dark:text-cornflower-300">
                       {displayTitle}
                     </h1>
                     {authorName && (
