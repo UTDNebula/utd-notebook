@@ -26,7 +26,11 @@ type NoteFormProps =
         description?: string;
         handwritten: boolean;
         publicUrl: string;
-        section: string;
+        prefix?: string;
+        number?: string;
+        sectionCode?: string;
+        term?: string;
+        year?: number;
       };
     };
 
@@ -54,11 +58,22 @@ const NoteForm = ({ mode = 'create', file: existingFile }: NoteFormProps) => {
 
   const defaultValues = useMemo<FileDetails>(() => {
     if (mode === 'edit' && existingFile) {
+      const sectionNumber = [existingFile.number, existingFile.sectionCode]
+        .filter(Boolean)
+        .join('.');
+
       return {
         file: null,
         name: existingFile.name,
         description: existingFile.description ?? '',
-        section: existingFile.section,
+        section: [
+          existingFile.prefix,
+          sectionNumber,
+          existingFile.term,
+          existingFile.year,
+        ]
+          .filter(Boolean)
+          .join(' '),
         prefix: '',
         number: '',
         sectionCode: '',

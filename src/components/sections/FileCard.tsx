@@ -4,13 +4,12 @@ import { useThumbnails, type FileData } from '@mkholt/pdf-thumbnail';
 import { Skeleton } from '@mui/material';
 import Image from 'next/image';
 import Link from 'next/link';
-import { useMemo } from 'react';
+import { useMemo, useState } from 'react';
 import { BaseCard } from '@src/components/common/BaseCard';
 import RatingWidget from '@src/components/sections/RatingWidget';
 import SaveButton from '@src/components/sections/SaveButton';
 import type { SelectFileWithAuthorPreview } from '@src/server/db/models';
 import { authClient } from '@src/utils/auth-client';
-import useDebounce from '@src/utils/useDebounce';
 import NoteDeleteButton from './NoteDeleteButton';
 import NoteEditButton from './NoteEditButton';
 import ReportButton from './ReportButton';
@@ -54,19 +53,25 @@ export default function FileCard({ file }: FileCardProps) {
     On mount, isLoading is false and thumbData is null.
     So we do not want to show "Unable to preview" immediately.
 
-    We avoid showing "Unable to preview" immediately on first render,
-    because some runs briefly report !isLoading with no thumbnail yet.
-    A short debounce prevents this false-negative flash.
+    We wait until the first real fetch begins, indicated by isLoading
+    turning true at least once. After that, if loading has finished and we
+    still have no thumbnail data, we can treat it as a preview failure.
+
+    We store that "has started fetching at least once" flag in state,
+    because it affects rendering.
+
+    useThumbnails.error has always been null in testing,
+    so we are not relying on it for error handling here.
   */
 
-  const shouldShowPreviewError =
-    !!thumbnailUrl && !thumbData && thumbnails.length === 0 && !isLoading;
-  const debouncedShowPreviewError = useDebounce(
-    shouldShowPreviewError,
-    shouldShowPreviewError ? 1500 : 0,
-  );
+  const [hasStartedFetching, setHasStartedFetching] = useState(false);
 
-  const showPreviewError = debouncedShowPreviewError && shouldShowPreviewError;
+  if (isLoading && !hasStartedFetching) {
+    setHasStartedFetching(true);
+  }
+
+  const showPreviewError =
+    hasStartedFetching && !thumbData && thumbnails.length === 0 && !isLoading;
 
   const authorDisplay =
     (file.author?.username ??

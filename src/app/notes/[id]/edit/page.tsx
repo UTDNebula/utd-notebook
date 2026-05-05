@@ -36,9 +36,11 @@ export default async function EditNotePage({ params }: EditNotePageProps) {
             description: file.description ?? undefined,
             handwritten: file.handwritten,
             publicUrl: file.publicUrl,
-            section: file.section
-              ? `${file.section.prefix} ${file.section.number}.${file.section.sectionCode} ${file.section.term} ${file.section.year}`
-              : '',
+            prefix: file.section?.prefix,
+            number: file.section?.number,
+            sectionCode: file.section?.sectionCode,
+            term: file.section?.term,
+            year: file.section?.year,
           }}
         />
       </main>
