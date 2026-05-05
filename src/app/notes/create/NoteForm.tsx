@@ -26,11 +26,16 @@ type NoteFormProps =
         description?: string;
         handwritten: boolean;
         publicUrl: string;
+        prefix?: string;
+        number?: string;
+        sectionCode?: string;
+        term?: string;
+        year?: number;
       };
     };
 
 interface FileDetails {
-  file: File | null;
+  file?: File | null;
   name: string;
   description?: string;
   section?: string;
@@ -53,11 +58,22 @@ const NoteForm = ({ mode = 'create', file: existingFile }: NoteFormProps) => {
 
   const defaultValues = useMemo<FileDetails>(() => {
     if (mode === 'edit' && existingFile) {
+      const sectionNumber = [existingFile.number, existingFile.sectionCode]
+        .filter(Boolean)
+        .join('.');
+
       return {
         file: null,
         name: existingFile.name,
         description: existingFile.description ?? '',
-        section: '',
+        section: [
+          existingFile.prefix,
+          sectionNumber,
+          existingFile.term,
+          existingFile.year,
+        ]
+          .filter(Boolean)
+          .join(' '),
         prefix: '',
         number: '',
         sectionCode: '',
@@ -87,7 +103,7 @@ const NoteForm = ({ mode = 'create', file: existingFile }: NoteFormProps) => {
   const form = useAppForm({
     defaultValues,
     onSubmit: async ({ value, formApi }) => {
-      const selectedFile = value.file;
+      const selectedFile = value.file ?? null;
 
       if (mode === 'edit' && existingFile) {
         let fileUrl = existingFile.publicUrl;
@@ -188,12 +204,21 @@ const NoteForm = ({ mode = 'create', file: existingFile }: NoteFormProps) => {
               {(field) => (
                 <FormFile
                   label="File"
-                  value={field.state.value}
+                  value={field.state.value ?? null}
+                  existingFile={
+                    mode === 'edit' && existingFile
+                      ? {
+                          name: existingFile.name,
+                          publicUrl: existingFile.publicUrl,
+                        }
+                      : undefined
+                  }
                   onBlur={field.handleBlur}
                   onChange={(e) => {
                     const file = e.target.files?.[0] ?? null;
                     field.handleChange(file);
                   }}
+                  isError={!field.state.meta.isValid}
                   helperText={
                     !field.state.meta.isValid
                       ? field.state.meta.errors
@@ -246,7 +271,7 @@ const NoteForm = ({ mode = 'create', file: existingFile }: NoteFormProps) => {
                 )}
               </form.AppField>
 
-              {mode === 'create' && (
+              {mode === 'create' ? (
                 <form.AppField name="section">
                   {(field) => (
                     <field.SectionAutocomplete
@@ -264,6 +289,17 @@ const NoteForm = ({ mode = 'create', file: existingFile }: NoteFormProps) => {
                         form.setFieldValue('profFirst', entry?.profFirst ?? '');
                         form.setFieldValue('profLast', entry?.profLast ?? '');
                       }}
+                    />
+                  )}
+                </form.AppField>
+              ) : (
+                <form.AppField name="section">
+                  {(field) => (
+                    <field.TextField
+                      label="Section"
+                      className="w-full"
+                      helperText="Section is locked after note creation"
+                      disabled
                     />
                   )}
                 </form.AppField>
