@@ -4,7 +4,7 @@ import KeyboardArrowDownIcon from '@mui/icons-material/KeyboardArrowDown';
 import KeyboardArrowUpIcon from '@mui/icons-material/KeyboardArrowUp';
 import { Collapse, IconButton } from '@mui/material';
 import Link from 'next/link'; // To link back to specific profiles
-import { useRef, useState } from 'react';
+import { useState } from 'react';
 import NoteEditButton from '@src/components/sections/NoteEditButton';
 import RatingWidget from '@src/components/sections/RatingWidget';
 import SaveButton from '@src/components/sections/SaveButton';
@@ -49,104 +49,70 @@ export default function NoteInfoPanel({
         : name;
 
   return (
-    <div className="absolute top-0 left-0 right-0 z-15 px-20 pointer-events-none">
-      <div className="pointer-events-auto bg-white dark:bg-neutral-800 rounded-b-2xl shadow-lg border-l-4 border-royal dark:border-cornflower-300">
+    <div className="w-full max-w-6xl">
+      <div className="pointer-events-auto bg-white dark:bg-neutral-800 rounded-2xl shadow-lg border-l-4 border-royal dark:border-cornflower-300">
+        {/* Top piece, always visible, has the class, section, note name, and rating */}
+        <div className="flex items-center justify-between px-5 pt-4 pb-2 gap-4">
+          <div className="flex items-center gap-3 min-w-0 flex-1">
+            <SaveButton fileId={fileId} iconOnly />
+            <h1 className="font-bold text-lg leading-tight truncate text-royal dark:text-cornflower-300">
+              {displayTitle}
+            </h1>
+          </div>
+          <div className="flex items-center gap-3 shrink-0">
+            <RatingWidget fileId={fileId} />
+            {isAuthor && <NoteEditButton fileId={fileId} />}
+          </div>
+        </div>
+
+        {/* Bottom piece, collapsible, has author, professor, description, and last modified date */}
         <Collapse in={expanded}>
-          <div className="px-5 pt-4 pb-3">
-            {/* Top row */}
-            <div className="flex items-start justify-between gap-4">
-              {/* Left: save button + [title + author + professor + description] */}
-              <div className="flex items-start gap-3 min-w-0 flex-1">
-                {/* Bigger save button */}
-                <div className="shrink-0">
-                  <SaveButton fileId={fileId} iconOnly />
-                </div>
-
-                {/* All text content aligned to the right of the save button */}
-                <div className="min-w-0 flex-1">
-                  <h1 className="font-bold text-lg leading-tight truncate text-royal dark:text-cornflower-300">
-                    {displayTitle}
-                  </h1>
-                  {authorName && (
-                    <p className="text-sm text-slate-500 dark:text-slate-400 mt-0.5">
-                      Author:{' '}
-                      {authorUsername ? (
-                        <Link
-                          href={`/profile/${authorUsername}`}
-                          className="underline hover:text-slate-900 dark:hover:text-slate-200"
-                        >
-                          {authorName}
-                        </Link>
-                      ) : (
-                        authorName
-                      )}
-                    </p>
-                  )}
-                  {profFirst && profLast && (
-                    <p className="text-sm text-slate-600 dark:text-slate-400 mt-1">
-                      <span className="font-medium text-slate-800 dark:text-slate-200">
-                        Professor:
-                      </span>{' '}
-                      <Link
-                        href={`/notes/${profFirst}/${profLast}`}
-                        className="underline hover:text-slate-900 dark:hover:text-slate-200"
-                      >
-                        {profFirst} {profLast}
-                      </Link>
-                    </p>
-                  )}
-                  <div className="mt-2">
-                    {description ? (
-                      <p className="text-sm text-slate-600 dark:text-slate-400 leading-relaxed mt-2">
-                        {description}
-                      </p>
-                    ) : (
-                      <p className="text-sm text-slate-400 italic mt-2">
-                        No provided description.
-                      </p>
-                    )}
-                  </div>
-                </div>
-              </div>
-
-              {/* Right: rating + last modified */}
-              <div className="flex flex-col items-end shrink-0 gap-0.5">
-                <RatingWidget fileId={fileId} />
-                {updatedAt && (
-                  <span className="text-xs text-slate-600 dark:text-slate-400">
-                    Last modified {updatedAt}
-                  </span>
+          <div className="px-5 pb-4 flex flex-col gap-1">
+            {authorName && (
+              <p className="text-sm font-medium text-slate-800 dark:text-slate-200">
+                Author:{' '}
+                {authorUsername ? (
+                  <Link
+                    href={`/profile/${authorUsername}`}
+                    className="underline hover:text-slate-900 dark:hover:text-slate-200"
+                  >
+                    {authorName}
+                  </Link>
+                ) : (
+                  authorName // Render as plain text if no username to link to
                 )}
-              </div>
-            </div>
-
-            {/* Edit button pinned bottom-right */}
-            {isAuthor && (
-              <div className="flex justify-end mt-3">
-                <NoteEditButton fileId={fileId} />
-              </div>
+              </p>
+            )}
+            {profFirst && profLast && (
+              <p className="text-sm font-medium text-slate-800 dark:text-slate-200">
+                Professor:{' '}
+                <Link
+                  href={`/notes/${profFirst}/${profLast}`}
+                  className="underline hover:text-slate-900 dark:hover:text-slate-200"
+                >
+                  {profFirst} {profLast}
+                </Link>
+              </p>
+            )}
+            {description ? (
+              <p className="text-sm text-slate-600 dark:text-slate-400 leading-relaxed mt-1">
+                {description}
+              </p>
+            ) : (
+              <p className="text-sm text-slate-400 italic mt-1">
+                No provided description.
+              </p>
+            )}
+            {updatedAt && (
+              <span className="text-xs text-slate-600 dark:text-slate-400 mt-1">
+                Last modified {updatedAt}
+              </span>
             )}
           </div>
         </Collapse>
-
-        {/* Collapsed bar — always visible when collapsed */}
-        {!expanded && (
-          <div className="flex items-center justify-between px-4 py-2">
-            <div className="flex items-center gap-3 min-w-0">
-              <SaveButton fileId={fileId} iconOnly />
-              <span className="font-semibold text-base truncate text-royal dark:text-cornflower-300">
-                {displayTitle}
-              </span>
-            </div>
-            <div className="flex items-center gap-2 shrink-0">
-              <RatingWidget fileId={fileId} />
-              {isAuthor && <NoteEditButton fileId={fileId} />}
-            </div>
-          </div>
-        )}
-
-        {/* Centered chevron */}
-        <div className="flex justify-center pb-1">
+        
+        {/* Chevron (the arrow), below collapsible bottom section but always visible*/}
+        <div className="flex justify-center">
           <IconButton
             size="small"
             onClick={() => setExpanded((v) => !v)}
@@ -156,6 +122,7 @@ export default function NoteInfoPanel({
             {expanded ? <KeyboardArrowUpIcon /> : <KeyboardArrowDownIcon />}
           </IconButton>
         </div>
+
       </div>
     </div>
   );
