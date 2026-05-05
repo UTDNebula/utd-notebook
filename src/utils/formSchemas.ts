@@ -68,7 +68,7 @@ const fileSchema = z
   );
 
 export const createFileFormSchema = z.object({
-  file: fileSchema.nullish(),
+  file: fileSchema,
   name: z
     .string()
     .min(3, 'Name must be at least 3 characters')
