@@ -110,7 +110,7 @@ export default function NoteInfoPanel({
             )}
           </div>
         </Collapse>
-        
+
         {/* Chevron (the arrow), below collapsible bottom section but always visible*/}
         <div className="flex justify-center">
           <IconButton
@@ -122,7 +122,6 @@ export default function NoteInfoPanel({
             {expanded ? <KeyboardArrowUpIcon /> : <KeyboardArrowDownIcon />}
           </IconButton>
         </div>
-
       </div>
     </div>
   );
