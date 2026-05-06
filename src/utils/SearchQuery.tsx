@@ -162,7 +162,7 @@ export function decodeSearchQueryLabel(encodedSearchTerm: string): SearchQuery {
   }
 }
 
-export function removeDuplicates(input: SearchQueryWithTitle[]) {
+export function removeDuplicates(input: SearchQuery[]) {
   return input.filter(
     (option, index, self) =>
       index === self.findIndex((entry) => searchQueryEqual(entry, option)),
