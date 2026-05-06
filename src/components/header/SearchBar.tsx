@@ -24,11 +24,11 @@ import React, {
 import untyped_professor_to_alias from '@src/data/professor_to_alias.json';
 import {
   decodeSearchQueryLabel,
+  removeDuplicates,
   searchQueryEqual,
   searchQueryLabel,
   type SearchQuery,
   type SearchQueryWithTitle,
-  removeDuplicates,
 } from '@src/utils/SearchQuery';
 
 const professor_to_alias = untyped_professor_to_alias as {
@@ -431,11 +431,7 @@ export default function SearchBar(props: Props) {
                         onClick={() => onSelect(value)}
                         className="relative"
                       >
-                        <SearchIcon
-                          className={
-                            isPending ? 'opacity-0' : ''
-                          }
-                        />
+                        <SearchIcon className={isPending ? 'opacity-0' : ''} />
                         {isPending && (
                           <CircularProgress
                             size={18}
