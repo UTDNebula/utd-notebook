@@ -27,24 +27,13 @@ import {
   searchQueryEqual,
   searchQueryLabel,
   type SearchQuery,
+  type SearchQueryWithTitle,
+  removeDuplicates,
 } from '@src/utils/SearchQuery';
 
 const professor_to_alias = untyped_professor_to_alias as {
   [key: string]: string;
 };
-
-type SearchQueryWithTitle = SearchQuery & {
-  title?: string;
-  subtitle?: string;
-  isRecent?: boolean;
-};
-
-function removeDuplicates(input: SearchQueryWithTitle[]) {
-  return input.filter(
-    (option, index, self) =>
-      index === self.findIndex((entry) => searchQueryEqual(entry, option)),
-  );
-}
 
 export function getRecentSearches() {
   const searchesText =
@@ -76,12 +65,9 @@ export function updateRecentSearches(newValue: SearchQueryWithTitle[]) {
  * Props type used by the SearchBar component
  */
 interface Props {
-  manageQuery?: 'onSelect';
-  onSelect?: (value: SearchQuery[]) => void;
   className?: string;
   input_className?: string;
   autoFocus?: boolean;
-  isPending?: boolean;
 }
 
 /**
@@ -155,15 +141,7 @@ export default function SearchBar(props: Props) {
       setInputValue(searchQueryLabel(newValue));
     }
 
-    if (typeof props.onSelect !== 'undefined' && newValue) {
-      props.onSelect([newValue]);
-    }
-
-    if (
-      newValue &&
-      (props.manageQuery === 'onSelect' ||
-        typeof props.manageQuery === 'undefined')
-    ) {
+    if (newValue) {
       updateQueries(newValue);
       startTransition(() => {});
     }
@@ -455,10 +433,10 @@ export default function SearchBar(props: Props) {
                       >
                         <SearchIcon
                           className={
-                            isPending || props.isPending ? 'opacity-0' : ''
+                            isPending ? 'opacity-0' : ''
                           }
                         />
-                        {(isPending || props.isPending) && (
+                        {isPending && (
                           <CircularProgress
                             size={18}
                             className="text-royal dark:text-cornflower-300"
