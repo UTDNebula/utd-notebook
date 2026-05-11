@@ -1,4 +1,4 @@
-import { eq, and } from 'drizzle-orm';
+import { and, eq } from 'drizzle-orm';
 import { NextResponse } from 'next/server';
 import autocompleteGraph from 'src/data/autocomplete_graph.json';
 import { db } from '@src/server/db';
@@ -31,7 +31,10 @@ function getCache() {
   return globalThis.__autocompleteCache;
 }
 
-async function checkHasNotesForCourse(prefix: string, number: string): Promise<boolean> {
+async function checkHasNotesForCourse(
+  prefix: string,
+  number: string,
+): Promise<boolean> {
   const result = await db
     .select({ id: section.id })
     .from(section)
@@ -41,12 +44,17 @@ async function checkHasNotesForCourse(prefix: string, number: string): Promise<b
   return result.length > 0;
 }
 
-async function checkHasNotesForProf(profFirst: string, profLast: string): Promise<boolean> {
+async function checkHasNotesForProf(
+  profFirst: string,
+  profLast: string,
+): Promise<boolean> {
   const result = await db
     .select({ id: section.id })
     .from(section)
     .innerJoin(file, eq(file.sectionId, section.id))
-    .where(and(eq(section.profFirst, profFirst), eq(section.profLast, profLast)))
+    .where(
+      and(eq(section.profFirst, profFirst), eq(section.profLast, profLast)),
+    )
     .limit(1);
   return result.length > 0;
 }
@@ -94,7 +102,10 @@ export async function GET(request: Request) {
       if (cached && Date.now() - cached.timestamp < CACHE_TTL_MS) {
         res.hasNotes = cached.hasNotes;
       } else {
-        const hasNotes = await checkHasNotesForProf(res.profFirst, res.profLast);
+        const hasNotes = await checkHasNotesForProf(
+          res.profFirst,
+          res.profLast,
+        );
         res.hasNotes = hasNotes;
         cache.set(key, { hasNotes, timestamp: Date.now() });
       }

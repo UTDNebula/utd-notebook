@@ -1,7 +1,7 @@
 'use client';
 
 import { useMutation } from '@tanstack/react-query';
-import { useRouter, useSearchParams } from 'next/navigation';
+import { useRouter } from 'next/navigation';
 import { useMemo } from 'react';
 import Panel, { PanelSkeleton } from '@src/components/common/Panel';
 import FormFile from '@src/components/form/FormFile';
@@ -26,14 +26,26 @@ type NoteFormProps =
         description?: string;
         handwritten: boolean;
         publicUrl: string;
+        prefix?: string;
+        number?: string;
+        sectionCode?: string;
+        term?: string;
+        year?: number;
       };
     };
 
 interface FileDetails {
-  file: File | null;
+  file?: File | null;
   name: string;
   description?: string;
   section?: string;
+  prefix?: string;
+  number?: string;
+  sectionCode?: string;
+  term?: string;
+  year?: number;
+  profFirst?: string;
+  profLast?: string;
   handwritten: boolean;
 }
 
@@ -43,16 +55,32 @@ const NoteForm = ({ mode = 'create', file: existingFile }: NoteFormProps) => {
   const updateMutation = useMutation(api.file.update.mutationOptions());
   const uploadFile = useUploadToUploadURL();
   const router = useRouter();
-  const searchParams = useSearchParams();
-  const courseQueryParam = searchParams.get('course');
 
   const defaultValues = useMemo<FileDetails>(() => {
     if (mode === 'edit' && existingFile) {
+      const sectionNumber = [existingFile.number, existingFile.sectionCode]
+        .filter(Boolean)
+        .join('.');
+
       return {
         file: null,
         name: existingFile.name,
         description: existingFile.description ?? '',
-        section: '',
+        section: [
+          existingFile.prefix,
+          sectionNumber,
+          existingFile.term,
+          existingFile.year,
+        ]
+          .filter(Boolean)
+          .join(' '),
+        prefix: '',
+        number: '',
+        sectionCode: '',
+        term: '',
+        year: 0,
+        profFirst: '',
+        profLast: '',
         handwritten: existingFile.handwritten,
       };
     }
@@ -60,15 +88,22 @@ const NoteForm = ({ mode = 'create', file: existingFile }: NoteFormProps) => {
       file: null,
       name: '',
       description: '',
-      section: courseQueryParam ?? '',
+      section: '',
+      prefix: '',
+      number: '',
+      sectionCode: '',
+      term: '',
+      year: 0,
+      profFirst: '',
+      profLast: '',
       handwritten: false,
     };
-  }, [mode, existingFile, courseQueryParam]);
+  }, [mode, existingFile]);
 
   const form = useAppForm({
     defaultValues,
     onSubmit: async ({ value, formApi }) => {
-      const { file: selectedFile, section, ...rest } = value;
+      const selectedFile = value.file ?? null;
 
       if (mode === 'edit' && existingFile) {
         let fileUrl = existingFile.publicUrl;
@@ -83,7 +118,9 @@ const NoteForm = ({ mode = 'create', file: existingFile }: NoteFormProps) => {
         return updateMutation.mutateAsync(
           {
             id: existingFile.id,
-            ...rest,
+            name: value.name,
+            description: value.description,
+            handwritten: value.handwritten,
             file: fileUrl,
           },
           {
@@ -94,7 +131,18 @@ const NoteForm = ({ mode = 'create', file: existingFile }: NoteFormProps) => {
 
       // Create
       return createMutation.mutateAsync(
-        { ...rest, section: section ?? '' },
+        {
+          name: value.name,
+          description: value.description,
+          handwritten: value.handwritten,
+          prefix: value.prefix ?? '',
+          number: value.number ?? '',
+          sectionCode: value.sectionCode ?? '',
+          term: (value.term ?? '') as 'Spring' | 'Summer' | 'Fall',
+          year: value.year ?? 0,
+          profFirst: value.profFirst ?? '',
+          profLast: value.profLast ?? '',
+        },
         {
           onSuccess: async (newId) => {
             const isFileDirty = !formApi.getFieldMeta('file')?.isDefaultValue;
@@ -110,7 +158,9 @@ const NoteForm = ({ mode = 'create', file: existingFile }: NoteFormProps) => {
             updateMutation.mutate(
               {
                 id: newId,
-                ...rest,
+                name: value.name,
+                description: value.description,
+                handwritten: value.handwritten,
                 file: url,
               },
               {
@@ -154,12 +204,21 @@ const NoteForm = ({ mode = 'create', file: existingFile }: NoteFormProps) => {
               {(field) => (
                 <FormFile
                   label="File"
-                  value={field.state.value}
+                  value={field.state.value ?? null}
+                  existingFile={
+                    mode === 'edit' && existingFile
+                      ? {
+                          name: existingFile.name,
+                          publicUrl: existingFile.publicUrl,
+                        }
+                      : undefined
+                  }
                   onBlur={field.handleBlur}
                   onChange={(e) => {
                     const file = e.target.files?.[0] ?? null;
                     field.handleChange(file);
                   }}
+                  isError={!field.state.meta.isValid}
                   helperText={
                     !field.state.meta.isValid
                       ? field.state.meta.errors
@@ -212,13 +271,35 @@ const NoteForm = ({ mode = 'create', file: existingFile }: NoteFormProps) => {
                 )}
               </form.AppField>
 
-              {mode === 'create' && (
+              {mode === 'create' ? (
+                <form.AppField name="section">
+                  {(field) => (
+                    <field.SectionAutocomplete
+                      label="Section"
+                      className="w-full"
+                      onSectionSelect={(entry) => {
+                        form.setFieldValue('prefix', entry?.prefix ?? '');
+                        form.setFieldValue('number', entry?.number ?? '');
+                        form.setFieldValue(
+                          'sectionCode',
+                          entry?.sectionCode ?? '',
+                        );
+                        form.setFieldValue('term', entry?.term ?? '');
+                        form.setFieldValue('year', entry?.year ?? 0);
+                        form.setFieldValue('profFirst', entry?.profFirst ?? '');
+                        form.setFieldValue('profLast', entry?.profLast ?? '');
+                      }}
+                    />
+                  )}
+                </form.AppField>
+              ) : (
                 <form.AppField name="section">
                   {(field) => (
                     <field.TextField
                       label="Section"
                       className="w-full"
-                      helperText="Example: CS 1200.001 Fall 2025"
+                      helperText="Section is locked after note creation"
+                      disabled
                     />
                   )}
                 </form.AppField>
