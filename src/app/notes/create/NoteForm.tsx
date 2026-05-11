@@ -34,13 +34,6 @@ interface FileDetails {
   name: string;
   description?: string;
   section?: string;
-  prefix?: string;
-  number?: string;
-  sectionCode?: string;
-  term?: string;
-  year?: number;
-  profFirst?: string;
-  profLast?: string;
   handwritten: boolean;
 }
 
@@ -60,13 +53,6 @@ const NoteForm = ({ mode = 'create', file: existingFile }: NoteFormProps) => {
         name: existingFile.name,
         description: existingFile.description ?? '',
         section: '',
-        prefix: '',
-        number: '',
-        sectionCode: '',
-        term: '',
-        year: 0,
-        profFirst: '',
-        profLast: '',
         handwritten: existingFile.handwritten,
       };
     }
@@ -74,15 +60,7 @@ const NoteForm = ({ mode = 'create', file: existingFile }: NoteFormProps) => {
       file: null,
       name: '',
       description: '',
-<<<<<<< HEAD
       section: courseQueryParam ?? '',
-      prefix: '',
-      number: '',
-      sectionCode: '',
-      term: '',
-      year: 0,
-      profFirst: '',
-      profLast: '',
       handwritten: false,
     };
   }, [mode, existingFile, courseQueryParam]);
@@ -90,7 +68,7 @@ const NoteForm = ({ mode = 'create', file: existingFile }: NoteFormProps) => {
   const form = useAppForm({
     defaultValues,
     onSubmit: async ({ value, formApi }) => {
-      const selectedFile = value.file;
+      const { file: selectedFile, section, ...rest } = value;
 
       if (mode === 'edit' && existingFile) {
         let fileUrl = existingFile.publicUrl;
@@ -105,9 +83,7 @@ const NoteForm = ({ mode = 'create', file: existingFile }: NoteFormProps) => {
         return updateMutation.mutateAsync(
           {
             id: existingFile.id,
-            name: value.name,
-            description: value.description,
-            handwritten: value.handwritten,
+            ...rest,
             file: fileUrl,
           },
           {
@@ -118,18 +94,7 @@ const NoteForm = ({ mode = 'create', file: existingFile }: NoteFormProps) => {
 
       // Create
       return createMutation.mutateAsync(
-        {
-          name: value.name,
-          description: value.description,
-          handwritten: value.handwritten,
-          prefix: value.prefix ?? '',
-          number: value.number ?? '',
-          sectionCode: value.sectionCode ?? '',
-          term: (value.term ?? '') as 'Spring' | 'Summer' | 'Fall',
-          year: value.year ?? 0,
-          profFirst: value.profFirst ?? '',
-          profLast: value.profLast ?? '',
-        },
+        { ...rest, section: section ?? '' },
         {
           onSuccess: async (newId) => {
             const isFileDirty = !formApi.getFieldMeta('file')?.isDefaultValue;
@@ -145,9 +110,7 @@ const NoteForm = ({ mode = 'create', file: existingFile }: NoteFormProps) => {
             updateMutation.mutate(
               {
                 id: newId,
-                name: value.name,
-                description: value.description,
-                handwritten: value.handwritten,
+                ...rest,
                 file: url,
               },
               {
@@ -252,21 +215,10 @@ const NoteForm = ({ mode = 'create', file: existingFile }: NoteFormProps) => {
               {mode === 'create' && (
                 <form.AppField name="section">
                   {(field) => (
-                    <field.SectionAutocomplete
+                    <field.TextField
                       label="Section"
                       className="w-full"
-                      onSectionSelect={(entry) => {
-                        form.setFieldValue('prefix', entry?.prefix ?? '');
-                        form.setFieldValue('number', entry?.number ?? '');
-                        form.setFieldValue(
-                          'sectionCode',
-                          entry?.sectionCode ?? '',
-                        );
-                        form.setFieldValue('term', entry?.term ?? '');
-                        form.setFieldValue('year', entry?.year ?? 0);
-                        form.setFieldValue('profFirst', entry?.profFirst ?? '');
-                        form.setFieldValue('profLast', entry?.profLast ?? '');
-                      }}
+                      helperText="Example: CS 1200.001 Fall 2025"
                     />
                   )}
                 </form.AppField>
