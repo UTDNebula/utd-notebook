@@ -11,6 +11,12 @@ export type SearchQueryWithTotalStudents = SearchQuery & {
   total_students?: number;
 };
 
+export type SearchQueryWithTitle = SearchQuery & {
+  title?: string;
+  subtitle?: string;
+  isRecent?: boolean;
+};
+
 export type Professor = {
   profFirst: string;
   profLast: string;
@@ -153,4 +159,11 @@ export function decodeSearchQueryLabel(encodedSearchTerm: string): SearchQuery {
       profLast: encodedSearchTermParts[encodedSearchTermParts.length - 1],
     };
   }
+}
+
+export function removeDuplicates<T extends SearchQuery>(array: T[]): T[] {
+  return array.filter(
+    (item, index) =>
+      array.findIndex((other) => searchQueryEqual(item, other)) === index,
+  );
 }

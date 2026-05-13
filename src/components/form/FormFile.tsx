@@ -10,6 +10,8 @@ interface FormFileProps {
   onChange: (e: React.ChangeEvent<HTMLInputElement>) => void;
   helperText?: string;
   className?: string;
+  existingFile?: { name: string; publicUrl: string };
+  isError?: boolean;
 }
 
 const FormFile = ({
@@ -19,10 +21,14 @@ const FormFile = ({
   onChange,
   helperText,
   className,
+  existingFile,
+  isError,
 }: FormFileProps) => {
   return (
     <div className={className}>
-      <div className="w-full lg:h-96 max-lg:h-48 flex flex-col justify-center items-center gap-2 p-8 rounded-md bg-cornflower-50 dark:bg-cornflower-950 has-[:hover]:bg-cornflower-100 dark:has-[:hover]:bg-cornflower-900 transition-colors relative">
+      <div
+        className={`w-full lg:h-96 max-lg:h-48 flex flex-col justify-center items-center gap-2 p-8 rounded-md bg-cornflower-50 dark:bg-cornflower-950 has-[:hover]:bg-cornflower-100 dark:has-[:hover]:bg-cornflower-900 transition-colors relative ${isError ? 'border-2 border-red-500' : ''}`}
+      >
         {label && (
           <p className="text-xs font-bold text-slate-800 dark:text-slate-200">
             {label}
@@ -32,6 +38,16 @@ const FormFile = ({
           <p className="text-xs text-slate-800 dark:text-slate-200">
             {file.name}
           </p>
+        ) : existingFile ? (
+          <>
+            <CloudUploadIcon />
+            <p className="text-xs font-bold text-slate-800 dark:text-slate-200">
+              Current: {existingFile.name}
+            </p>
+            <p className="text-xs font-bold text-slate-800 dark:text-slate-200">
+              Drag or choose a new PDF to replace
+            </p>
+          </>
         ) : (
           <>
             <CloudUploadIcon />
@@ -52,7 +68,7 @@ const FormFile = ({
         />
       </div>
       {helperText && (
-        <FormHelperText error className="">
+        <FormHelperText error={isError} className="">
           {helperText}
         </FormHelperText>
       )}
