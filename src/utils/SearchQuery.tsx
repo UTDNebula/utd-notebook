@@ -167,4 +167,3 @@ export function removeDuplicates<T extends SearchQuery>(array: T[]): T[] {
       array.findIndex((other) => searchQueryEqual(item, other)) === index,
   );
 }
-
