@@ -75,9 +75,7 @@ const FormFile = ({
 
   return (
     <div className={className}>
-      <div
-        className={`w-full lg:h-96 max-lg:h-48 flex flex-col justify-center items-center gap-2 p-8 rounded-md bg-cornflower-50 dark:bg-cornflower-950 has-[:hover]:bg-cornflower-100 dark:has-[:hover]:bg-cornflower-900 transition-colors relative ${isError ? 'border-2 border-red-500' : ''}`}
-      >
+      <div className="w-full lg:h-96 max-lg:h-48 flex flex-col justify-center items-center gap-2 p-8 rounded-md bg-cornflower-50 dark:bg-cornflower-950 has-[:hover]:bg-cornflower-100 dark:has-[:hover]:bg-cornflower-900 transition-colors relative">
         {label && (
           <p className="text-xs font-bold text-slate-800 dark:text-slate-200">
             {label}
@@ -87,16 +85,6 @@ const FormFile = ({
           <p className="text-xs text-slate-800 dark:text-slate-200">
             {selectedFileName}
           </p>
-        ) : existingFile ? (
-          <>
-            <CloudUploadIcon />
-            <p className="text-xs font-bold text-slate-800 dark:text-slate-200">
-              Current: {existingFile.name}
-            </p>
-            <p className="text-xs font-bold text-slate-800 dark:text-slate-200">
-              Drag or choose a new PDF to replace
-            </p>
-          </>
         ) : (
           <>
             <CloudUploadIcon />

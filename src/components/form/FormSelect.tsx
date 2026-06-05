@@ -56,7 +56,6 @@ export default function FormSelect({
         size="small"
         error={!field.state.meta.isValid}
         label={label}
-        displayEmpty
         {...props}
       >
         {children}
