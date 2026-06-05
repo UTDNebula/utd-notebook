@@ -18,16 +18,19 @@ type FormSectionAutocompleteProps = {
   label: string;
   className?: string;
   onSectionSelect?: (entry: SectionEntry | null) => void;
+  defaultValue?: string;
 };
 
 export function FormSectionAutocomplete({
   label,
   className,
   onSectionSelect,
+  defaultValue,
 }: FormSectionAutocompleteProps) {
   const field = useFieldContext<string>();
   const api = useTRPC();
-  const [inputValue, setInputValue] = useState('');
+  const [inputValue, setInputValue] = useState(defaultValue ?? '');
+  console.log(inputValue);
   const [selectedEntry, setSelectedEntry] = useState<SectionEntry | null>(null);
   const debouncedInput = useDebounce(inputValue, 300);
 
@@ -78,6 +81,7 @@ export function FormSectionAutocomplete({
         onSectionSelect?.(newValue);
       }}
       onBlur={field.handleBlur}
+      clearOnBlur={false}
       filterOptions={(x) => x}
       noOptionsText={
         debouncedInput.length < 2

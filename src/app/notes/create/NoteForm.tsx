@@ -1,7 +1,7 @@
 'use client';
 
 import { useMutation } from '@tanstack/react-query';
-import { useRouter } from 'next/navigation';
+import { useRouter, useSearchParams } from 'next/navigation';
 import { useMemo } from 'react';
 import Panel, { PanelSkeleton } from '@src/components/common/Panel';
 import FormFile from '@src/components/form/FormFile';
@@ -55,6 +55,8 @@ const NoteForm = ({ mode = 'create', file: existingFile }: NoteFormProps) => {
   const updateMutation = useMutation(api.file.update.mutationOptions());
   const uploadFile = useUploadToUploadURL();
   const router = useRouter();
+  const searchParams = useSearchParams();
+  const defaultQuery = searchParams.get('q');
 
   const defaultValues = useMemo<FileDetails>(() => {
     if (mode === 'edit' && existingFile) {
@@ -277,6 +279,7 @@ const NoteForm = ({ mode = 'create', file: existingFile }: NoteFormProps) => {
                     <field.SectionAutocomplete
                       label="Section"
                       className="w-full"
+                      defaultValue={defaultQuery ?? undefined}
                       onSectionSelect={(entry) => {
                         form.setFieldValue('prefix', entry?.prefix ?? '');
                         form.setFieldValue('number', entry?.number ?? '');
