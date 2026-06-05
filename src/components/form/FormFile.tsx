@@ -19,8 +19,6 @@ interface FormFileProps {
   helperText?: string;
   isError?: boolean;
   className?: string;
-  existingFile?: { name: string; publicUrl: string };
-  isError?: boolean;
 }
 
 const FormFile = ({
@@ -32,8 +30,6 @@ const FormFile = ({
   helperText,
   isError = false,
   className,
-  existingFile,
-  isError,
 }: FormFileProps) => {
   const selectedFilePreviewUrl = useMemo(
     () => (file ? URL.createObjectURL(file) : null),
