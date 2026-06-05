@@ -159,9 +159,7 @@ export default function SearchBar(props: Props) {
   function updateQueries(term: SearchQuery) {
     if (term.prefix && term.number) {
       if (term.hasNotes === false) {
-        router.push(
-          `/notes/create?q=${searchQueryLabel(term)}`,
-        );
+        router.push(`/notes/create?q=${searchQueryLabel(term)}`);
         return;
       }
 
@@ -535,16 +533,16 @@ export default function SearchBar(props: Props) {
           <li key={key} {...otherProps}>
             {
               // If option isSearchQuery and isRecent is declared & is true
-              typeof option !== 'string' ? option.isRecent == true ? (
-                <HistoryToggleOffIcon className="text-gray-400 self-start mr-2 mt-0.5" />
-              ) : (
-                option.hasNotes ? (
+              typeof option !== 'string' ? (
+                option.isRecent == true ? (
+                  <HistoryToggleOffIcon className="text-gray-400 self-start mr-2 mt-0.5" />
+                ) : option.hasNotes ? (
                   <ArticleIcon className="text-gray-400 self-start mr-2 mt-0.5" />
                 ) : (
                   <AddIcon className="text-gray-400 self-start mr-2 mt-0.5" />
                 )
-              )
-            : null}
+              ) : null
+            }
             <div>
               <div>
                 {parts.map((part, index) => (
