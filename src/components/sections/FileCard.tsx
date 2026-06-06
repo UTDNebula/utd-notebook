@@ -131,7 +131,7 @@ export default function FileCard({ file }: FileCardProps) {
       </div>
 
       <p className="px-4 pb-2 text-xs font-medium text-slate-600 dark:text-slate-400">
-        Uploaded by{' '}
+        By{' '}
         {file.author?.username ? (
           <Link
             href={`/profile/${file.author.username}`}

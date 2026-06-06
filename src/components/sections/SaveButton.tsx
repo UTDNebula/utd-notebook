@@ -2,7 +2,7 @@
 
 import BookmarkIcon from '@mui/icons-material/Bookmark';
 import BookmarkBorderIcon from '@mui/icons-material/BookmarkBorder';
-import { Button, IconButton } from '@mui/material';
+import { Button } from '@mui/material';
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import { useRouter } from 'next/navigation';
 import { setSnackbar } from '@src/components/global/Snackbar';
@@ -11,13 +11,9 @@ import { authClient } from '@src/utils/auth-client';
 
 type SaveButtonProps = {
   fileId: string;
-  iconOnly?: boolean;
 };
 
-export default function SaveButton({
-  fileId,
-  iconOnly = false,
-}: SaveButtonProps) {
+export default function SaveButton({ fileId }: SaveButtonProps) {
   const api = useTRPC();
   const queryClient = useQueryClient();
   const router = useRouter();
@@ -97,22 +93,6 @@ export default function SaveButton({
 
     toggleMutation.mutate({ fileId });
   };
-
-  if (iconOnly) {
-    return (
-      <IconButton
-        onClick={handleClick}
-        aria-label={isSaved ? 'Unsave note' : 'Save note'}
-        className="text-royal dark:text-cornflower-300 p-1.5"
-      >
-        {isSaved ? (
-          <BookmarkIcon className="text-4xl" />
-        ) : (
-          <BookmarkBorderIcon className="text-4xl" />
-        )}
-      </IconButton>
-    );
-  }
 
   return (
     <Button
