@@ -1,6 +1,7 @@
 import { notFound } from 'next/navigation';
+import { BaseCard } from '@src/components/common/BaseCard';
 import Header from '@src/components/header/Header';
-import RatingWidget from '@src/components/sections/RatingWidget';
+import NoteInfoPanel from '@src/components/sections/NoteInfoPanel';
 import { api } from '@src/trpc/server';
 
 type NotePageProps = {
@@ -13,54 +14,21 @@ export default async function NotePage({ params }: NotePageProps) {
   if (!file) notFound();
 
   return (
-    <>
+    <div className="flex flex-col h-full">
       <Header />
-      <main>
-        <h1>{file.name}</h1>
-        <p>{file.description || 'No provided description.'}</p>
+      <main className="p-4 pt-0 flex w-full h-full flex-col items-center gap-4">
+        {/* Info panel pinned to the top, floats over the PDF */}
+        <NoteInfoPanel file={file} />
 
-        <section>
-          <p>
-            <strong>Course:</strong> {file.section?.prefix}{' '}
-            {file.section?.number}
-          </p>
-          <p>
-            <strong>Section: </strong> {file.section?.sectionCode}
-          </p>
-          <p>
-            <strong>Professor:</strong> {file.section?.profFirst}{' '}
-            {file.section?.profLast}
-          </p>
-          <p>
-            <strong>Author:</strong>{' '}
-            {file.author
-              ? `${file.author.firstName} ${file.author.lastName}`
-              : 'Unknown'}
-          </p>
-          <p>
-            <strong>Last Updated:</strong>{' '}
-            {file.updatedAt?.toLocaleDateString()}
-          </p>
-        </section>
-
-        <section>
-          <RatingWidget fileId={id} />
-        </section>
-
-        <section>
-          <h2>PDF</h2>
-          {file.publicUrl ? (
-            <iframe
-              src={file.publicUrl}
-              title={file.name}
-              width="100%"
-              height="800px"
-            />
-          ) : (
-            <p>PDF not available yet.</p>
-          )}
-        </section>
+        {/* Scrollable area with white card background for the PDF */}
+        <BaseCard className="h-full min-h-[50vh] w-full overflow-hidden max-w-6xl">
+          <iframe
+            src={file.publicUrl}
+            title={file.name}
+            className="h-full w-full border-0"
+          />
+        </BaseCard>
       </main>
-    </>
+    </div>
   );
 }

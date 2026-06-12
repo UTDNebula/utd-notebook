@@ -74,6 +74,35 @@ export type SelectFileWithUserMetadata = z.infer<
   typeof selectFileWithUserMetadata
 >;
 
+export const selectFileWithAuthorPreview = selectFile.extend({
+  author: selectUserMetadata.pick({
+    username: true,
+    firstName: true,
+    lastName: true,
+  }),
+});
+
+export type SelectFileWithAuthorPreview = z.infer<
+  typeof selectFileWithAuthorPreview
+>;
+
+/* =========================
+   FILE WITH USER METADATA AND SECTION
+========================= */
+
+export const selectFileWithUserMetadataAndSection = selectFile.extend({
+  author: selectUserMetadata.pick({
+    username: true,
+    firstName: true,
+    lastName: true,
+  }),
+  section: selectSection.nullable(),
+});
+
+export type SelectFileWithUserMetadataAndSection = z.infer<
+  typeof selectFileWithUserMetadataAndSection
+>;
+
 /* =========================
    SECTION WITH FILES
 ========================= */
@@ -94,16 +123,4 @@ export const sectionWithFilesWithUserMetadata = selectSection.extend({
 
 export type SectionWithFilesWithUserMetadata = z.infer<
   typeof sectionWithFilesWithUserMetadata
->;
-
-export const selectFileWithAuthorPreview = selectFile.extend({
-  author: selectUserMetadata.pick({
-    username: true,
-    firstName: true,
-    lastName: true,
-  }),
-});
-
-export type SelectFileWithAuthorPreview = z.infer<
-  typeof selectFileWithAuthorPreview
 >;

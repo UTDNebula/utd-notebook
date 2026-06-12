@@ -80,12 +80,7 @@ export default function FileCard({ file }: FileCardProps) {
 
   return (
     <BaseCard variant="interactive" className="flex h-full flex-col">
-      <Link
-        href={file.publicUrl}
-        target="_blank"
-        rel="noreferrer"
-        className="flex grow flex-col"
-      >
+      <Link href={`/notes/${file.id}`} className="flex grow flex-col">
         <div className="overflow-hidden rounded-t-lg border-b border-neutral-200 bg-white dark:border-neutral-600 dark:bg-neutral-700">
           {thumbData ? (
             <div className="relative aspect-[3/4] w-full">
@@ -136,7 +131,7 @@ export default function FileCard({ file }: FileCardProps) {
       </div>
 
       <p className="px-4 pb-2 text-xs font-medium text-slate-600 dark:text-slate-400">
-        Uploaded by{' '}
+        By{' '}
         {file.author?.username ? (
           <Link
             href={`/profile/${file.author.username}`}
