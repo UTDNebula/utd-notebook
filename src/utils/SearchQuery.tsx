@@ -4,6 +4,7 @@ export type SearchQuery = {
   profFirst?: string;
   profLast?: string;
   sectionNumber?: string;
+  hasNotes?: boolean;
 };
 
 export type SearchQueryWithTotalStudents = SearchQuery & {
