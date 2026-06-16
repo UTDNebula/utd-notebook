@@ -2,39 +2,14 @@
 
 import { useMutation } from '@tanstack/react-query';
 import { useRouter, useSearchParams } from 'next/navigation';
-import { useMemo } from 'react';
 import Panel, { PanelSkeleton } from '@src/components/common/Panel';
 import FormFile from '@src/components/form/FormFile';
 import { useTRPC } from '@src/trpc/react';
 import { useAppForm } from '@src/utils/form';
-import {
-  createFileFormSchema,
-  editFileFormSchema,
-} from '@src/utils/formSchemas';
+import { createFileFormSchema } from '@src/utils/formSchemas';
 import { useUploadToUploadURL } from '@src/utils/uploadFile';
 
-type NoteFormProps =
-  | {
-      mode?: 'create';
-      file?: undefined;
-    }
-  | {
-      mode: 'edit';
-      file: {
-        id: string;
-        name: string;
-        description?: string;
-        handwritten: boolean;
-        publicUrl: string;
-        prefix?: string;
-        number?: string;
-        sectionCode?: string;
-        term?: string;
-        year?: number;
-      };
-    };
-
-interface FileDetails {
+export type FileDetails = {
   file?: File | null;
   name: string;
   description?: string;
@@ -47,9 +22,24 @@ interface FileDetails {
   profFirst?: string;
   profLast?: string;
   handwritten: boolean;
-}
+};
 
-const NoteForm = ({ mode = 'create', file: existingFile }: NoteFormProps) => {
+const defaultValues: FileDetails = {
+  file: null,
+  name: '',
+  description: '',
+  section: '',
+  prefix: '',
+  number: '',
+  sectionCode: '',
+  term: '',
+  year: 0,
+  profFirst: '',
+  profLast: '',
+  handwritten: false,
+};
+
+const NoteForm = () => {
   const api = useTRPC();
   const createMutation = useMutation(api.file.create.mutationOptions());
   const updateMutation = useMutation(api.file.update.mutationOptions());
@@ -58,78 +48,10 @@ const NoteForm = ({ mode = 'create', file: existingFile }: NoteFormProps) => {
   const searchParams = useSearchParams();
   const defaultQuery = searchParams.get('q');
 
-  const defaultValues = useMemo<FileDetails>(() => {
-    if (mode === 'edit' && existingFile) {
-      const sectionNumber = [existingFile.number, existingFile.sectionCode]
-        .filter(Boolean)
-        .join('.');
-
-      return {
-        file: null,
-        name: existingFile.name,
-        description: existingFile.description ?? '',
-        section: [
-          existingFile.prefix,
-          sectionNumber,
-          existingFile.term,
-          existingFile.year,
-        ]
-          .filter(Boolean)
-          .join(' '),
-        prefix: '',
-        number: '',
-        sectionCode: '',
-        term: '',
-        year: 0,
-        profFirst: '',
-        profLast: '',
-        handwritten: existingFile.handwritten,
-      };
-    }
-    return {
-      file: null,
-      name: '',
-      description: '',
-      section: '',
-      prefix: '',
-      number: '',
-      sectionCode: '',
-      term: '',
-      year: 0,
-      profFirst: '',
-      profLast: '',
-      handwritten: false,
-    };
-  }, [mode, existingFile]);
-
   const form = useAppForm({
     defaultValues,
     onSubmit: async ({ value, formApi }) => {
       const selectedFile = value.file ?? null;
-
-      if (mode === 'edit' && existingFile) {
-        let fileUrl = existingFile.publicUrl;
-        const isFileDirty = !formApi.getFieldMeta('file')?.isDefaultValue;
-        if (isFileDirty && selectedFile) {
-          fileUrl = await uploadFile.mutateAsync({
-            file: selectedFile,
-            fileName: existingFile.id,
-          });
-        }
-
-        return updateMutation.mutateAsync(
-          {
-            id: existingFile.id,
-            name: value.name,
-            description: value.description,
-            handwritten: value.handwritten,
-            file: fileUrl,
-          },
-          {
-            onSuccess: () => router.push(`/notes/${existingFile.id}`),
-          },
-        );
-      }
 
       // Create
       return createMutation.mutateAsync(
@@ -174,10 +96,7 @@ const NoteForm = ({ mode = 'create', file: existingFile }: NoteFormProps) => {
       );
     },
     validators: {
-      onChange:
-        mode === 'create'
-          ? createFileFormSchema
-          : editFileFormSchema.omit({ id: true }),
+      onChange: createFileFormSchema,
     },
   });
 
@@ -191,12 +110,8 @@ const NoteForm = ({ mode = 'create', file: existingFile }: NoteFormProps) => {
       className="w-full max-w-6xl"
     >
       <Panel
-        heading={mode === 'create' ? 'Create New Note' : 'Edit Note'}
-        description={
-          mode === 'create'
-            ? 'Upload a new note here to help future students.'
-            : 'Update your note details.'
-        }
+        heading="Create New Note"
+        description="Upload a new note here to help future students."
       >
         {/* responsive layout */}
         <div className="flex flex-col gap-6 lg:flex-row lg:items-start">
@@ -207,14 +122,7 @@ const NoteForm = ({ mode = 'create', file: existingFile }: NoteFormProps) => {
                 <FormFile
                   label="File"
                   value={field.state.value ?? null}
-                  existingFile={
-                    mode === 'edit' && existingFile
-                      ? {
-                          name: existingFile.name,
-                          publicUrl: existingFile.publicUrl,
-                        }
-                      : undefined
-                  }
+                  existingFile={undefined}
                   onBlur={field.handleBlur}
                   onChange={(e) => {
                     const file = e.target.files?.[0] ?? null;
@@ -273,40 +181,28 @@ const NoteForm = ({ mode = 'create', file: existingFile }: NoteFormProps) => {
                 )}
               </form.AppField>
 
-              {mode === 'create' ? (
-                <form.AppField name="section">
-                  {(field) => (
-                    <field.SectionAutocomplete
-                      label="Section"
-                      className="w-full"
-                      defaultValue={defaultQuery ?? undefined}
-                      onSectionSelect={(entry) => {
-                        form.setFieldValue('prefix', entry?.prefix ?? '');
-                        form.setFieldValue('number', entry?.number ?? '');
-                        form.setFieldValue(
-                          'sectionCode',
-                          entry?.sectionCode ?? '',
-                        );
-                        form.setFieldValue('term', entry?.term ?? '');
-                        form.setFieldValue('year', entry?.year ?? 0);
-                        form.setFieldValue('profFirst', entry?.profFirst ?? '');
-                        form.setFieldValue('profLast', entry?.profLast ?? '');
-                      }}
-                    />
-                  )}
-                </form.AppField>
-              ) : (
-                <form.AppField name="section">
-                  {(field) => (
-                    <field.TextField
-                      label="Section"
-                      className="w-full"
-                      helperText="Section is locked after note creation"
-                      disabled
-                    />
-                  )}
-                </form.AppField>
-              )}
+              <form.AppField name="section">
+                {(field) => (
+                  <field.SectionAutocomplete
+                    label="Section"
+                    className="w-full"
+                    defaultValue={defaultQuery ?? undefined}
+                    onSectionSelect={(entry) => {
+                      form.setFieldValue('prefix', entry?.prefix ?? '');
+                      form.setFieldValue('number', entry?.number ?? '');
+                      form.setFieldValue(
+                        'sectionCode',
+                        entry?.sectionCode ?? '',
+                      );
+                      form.setFieldValue('term', entry?.term ?? '');
+                      form.setFieldValue('year', entry?.year ?? 0);
+                      form.setFieldValue('profFirst', entry?.profFirst ?? '');
+                      form.setFieldValue('profLast', entry?.profLast ?? '');
+                    }}
+                  />
+                )}
+              </form.AppField>
+
               <form.AppField name="handwritten">
                 {(field) => (
                   <field.Checkbox label="Handwritten"></field.Checkbox>

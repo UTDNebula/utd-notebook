@@ -4,7 +4,7 @@ import Header from '@src/components/header/Header';
 import { auth } from '@src/server/auth';
 import { api } from '@src/trpc/server';
 import { signInRoute } from '@src/utils/redirect';
-import NoteForm from '../../create/NoteForm';
+import EditNoteForm from './EditNoteForm';
 
 type EditNotePageProps = {
   params: Promise<{ id: string }>;
@@ -28,8 +28,7 @@ export default async function EditNotePage({ params }: EditNotePageProps) {
     <>
       <Header />
       <main className="flex w-full flex-col items-center p-4">
-        <NoteForm
-          mode="edit"
+        <EditNoteForm
           file={{
             id: file.id,
             name: file.name,
