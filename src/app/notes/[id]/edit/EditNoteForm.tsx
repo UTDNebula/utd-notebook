@@ -18,6 +18,7 @@ interface NoteFormProps {
     description?: string;
     handwritten: boolean;
     publicUrl: string;
+    updatedAt: Date;
     prefix?: string;
     number?: string;
     sectionCode?: string;
@@ -114,6 +115,7 @@ const NoteForm = ({ file: existingFile }: NoteFormProps) => {
                   existingFile={{
                     name: existingFile.name,
                     publicUrl: existingFile.publicUrl,
+                    updatedAt: existingFile.updatedAt,
                   }}
                   onBlur={field.handleBlur}
                   onChange={(e) => {

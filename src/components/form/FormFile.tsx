@@ -5,6 +5,7 @@ import CloudUploadIcon from '@mui/icons-material/CloudUpload';
 import { FormHelperText, Skeleton } from '@mui/material';
 import Image from 'next/image';
 import { useEffect, useMemo } from 'react';
+import { addVersionToFile } from '@src/utils/fileCacheBust';
 import useDebounce from '@src/utils/useDebounce';
 
 interface FormFileProps {
@@ -13,6 +14,7 @@ interface FormFileProps {
   existingFile?: {
     name: string;
     publicUrl: string;
+    updatedAt: Date;
   };
   onBlur: () => void;
   onChange: (e: React.ChangeEvent<HTMLInputElement>) => void;
@@ -50,7 +52,15 @@ const FormFile = ({
     }
 
     if (existingFile) {
-      return [{ file: existingFile.publicUrl, name: existingFile.name }];
+      return [
+        {
+          file: addVersionToFile(
+            existingFile.publicUrl,
+            existingFile.updatedAt.getTime(),
+          ),
+          name: existingFile.name,
+        },
+      ];
     }
 
     return [];
