@@ -25,13 +25,13 @@ export default function NoteInfoPanel({ file }: NoteInfoPanelProps) {
 
   return (
     <Panel
-      className="w-full py-2 border-l-4 border-royal dark:border-cornflower-300 rounded-t-none gap-0"
+      className="border-royal dark:border-cornflower-300 w-full gap-0 rounded-t-none border-l-4 py-2"
       smallPadding
     >
       <div className="flex flex-col">
         {/* Top piece, always visible, has the name and buttons */}
         <div className="flex flex-wrap items-center gap-2">
-          <div className="flex items-center w-full md:w-auto flex-grow gap-2">
+          <div className="flex w-full flex-grow items-center gap-2 md:w-auto">
             <IconButton
               onClick={() => setExpanded((v) => !v)}
               aria-label={
@@ -48,7 +48,7 @@ export default function NoteInfoPanel({ file }: NoteInfoPanelProps) {
               {file.name}
             </Typography>
           </div>
-          <div className="w-full md:w-auto flex-shrink-0 flex md:ml-auto justify-end flex-wrap items-center gap-3">
+          <div className="flex w-full flex-shrink-0 flex-wrap items-center justify-end gap-3 md:ml-auto md:w-auto">
             <RatingWidget fileId={file.id} />
             {isAuthor && <NoteEditButton fileId={file.id} />}
             {isAuthor && <NoteDeleteButton fileId={file.id} />}
@@ -67,7 +67,7 @@ export default function NoteInfoPanel({ file }: NoteInfoPanelProps) {
 
         {/* Bottom piece, collapsible, has author, professor, description, and last modified date */}
         <Collapse in={expanded}>
-          <div className="pb-2 px-3 flex flex-col gap-1">
+          <div className="flex flex-col gap-1 px-3 pb-2">
             <p className="text-sm font-medium text-slate-800 dark:text-slate-200">
               By{' '}
               {
@@ -102,15 +102,15 @@ export default function NoteInfoPanel({ file }: NoteInfoPanelProps) {
               </p>
             )}
             {file.description ? (
-              <p className="text-sm text-slate-600 dark:text-slate-400 leading-relaxed mt-1">
+              <p className="mt-1 text-sm leading-relaxed text-slate-600 dark:text-slate-400">
                 {file.description}
               </p>
             ) : (
-              <p className="text-sm text-slate-400 italic mt-1">
+              <p className="mt-1 text-sm text-slate-400 italic">
                 No provided description.
               </p>
             )}
-            <span className="text-xs text-slate-600 dark:text-slate-400 mt-1">
+            <span className="mt-1 text-xs text-slate-600 dark:text-slate-400">
               Last modified{' '}
               {file.updatedAt.toLocaleDateString('en-US', {
                 day: 'numeric',

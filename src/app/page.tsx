@@ -9,7 +9,7 @@ const Home = () => {
       <div className="absolute inset-0 z-0">
         <div className="relative h-screen">
           <div className={`absolute inset-0 ${HOME_PAGE_GRADIENT_CLASS}`} />
-          <div className="absolute inset-0 dark:bg-slightly-darken" />
+          <div className="dark:bg-slightly-darken absolute inset-0" />
         </div>
       </div>
 
@@ -43,7 +43,7 @@ const Home = () => {
               UTD NOTEBOOK
             </h1>
 
-            <p className="mb-10 text-center text-white text-base md:text-lg text-shadow-[0_0_4px_rgb(0_0_0_/_0.4)]">
+            <p className="mb-10 text-center text-base text-white text-shadow-[0_0_4px_rgb(0_0_0_/_0.4)] md:text-lg">
               Share and access course notes. By students, for students.
             </p>
             <SearchBar autoFocus />

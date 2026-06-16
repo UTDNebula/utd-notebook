@@ -99,7 +99,7 @@ export default function SaveButton({ fileId }: SaveButtonProps) {
       variant="contained"
       size="small"
       onClick={handleClick}
-      className="normal-case bg-white hover:bg-neutral-200 dark:bg-neutral-800 dark:hover:bg-neutral-700 text-haiti dark:text-white"
+      className="text-haiti bg-white normal-case hover:bg-neutral-200 dark:bg-neutral-800 dark:text-white dark:hover:bg-neutral-700"
       startIcon={isSaved ? <BookmarkIcon /> : <BookmarkBorderIcon />}
     >
       {isSaved ? 'Saved' : 'Save'}

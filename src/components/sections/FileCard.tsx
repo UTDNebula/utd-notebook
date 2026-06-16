@@ -126,7 +126,7 @@ export default function FileCard({ file }: FileCardProps) {
         </div>
       </Link>
 
-      <div className="mx-4 mb-2 mt-0">
+      <div className="mx-4 mt-0 mb-2">
         <RatingWidget fileId={file.id} />
       </div>
 
