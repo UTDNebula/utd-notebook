@@ -26,7 +26,7 @@
     "@emotion/react": "^11.14.0",
     "@emotion/styled": "^11.14.1",
     "@ianvs/prettier-plugin-sort-imports": "^4.7.1",
-    "@mkholt/pdf-thumbnail": "^2.1.0",
+    "@mkholt/pdf-thumbnail": "^2.0.0",
     "@mui/icons-material": "^9.1.1",
     "@mui/material": "^9.1.1",
     "@mui/material-nextjs": "^9.1.1",
