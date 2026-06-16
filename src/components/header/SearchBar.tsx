@@ -417,54 +417,55 @@ export default function SearchBar(props: Props) {
         setInputValue(newInputValue);
         loadNewOptions(newInputValue);
       }}
-      renderInput={(params) => {
-        params.inputProps.onKeyDown = handleKeyDown;
-
-        return (
-          <TextField
-            {...params}
-            variant="outlined"
-            slotProps={{
-              input: {
-                ...params.InputProps,
-                endAdornment: (
-                  <InputAdornment position="end" key="search-icon">
-                    <Tooltip
-                      title="Select a course or professor before searching"
-                      placement="top"
-                      open={openErrorTooltip}
-                      onOpen={() => setErrorTooltip(true)}
-                      onClose={() => setErrorTooltip(false)}
-                      disableFocusListener
-                      disableHoverListener
-                      disableTouchListener
+      renderInput={(params) => (
+        <TextField
+          {...params}
+          variant="outlined"
+          slotProps={{
+            ...params.slotProps,
+            htmlInput: {
+              ...params.slotProps?.htmlInput,
+              onKeyDown: handleKeyDown,
+            },
+            input: {
+              ...params.slotProps.input,
+              endAdornment: (
+                <InputAdornment position="end" key="search-icon">
+                  <Tooltip
+                    title="Select a course or professor before searching"
+                    placement="top"
+                    open={openErrorTooltip}
+                    onOpen={() => setErrorTooltip(true)}
+                    onClose={() => setErrorTooltip(false)}
+                    disableFocusListener
+                    disableHoverListener
+                    disableTouchListener
+                  >
+                    <IconButton
+                      size="small"
+                      onClick={() => onSelect(value)}
+                      className="relative"
                     >
-                      <IconButton
-                        size="small"
-                        onClick={() => onSelect(value)}
-                        className="relative"
-                      >
-                        <SearchIcon className={isPending ? 'opacity-0' : ''} />
-                        {isPending && (
-                          <CircularProgress
-                            size={18}
-                            className="text-royal dark:text-cornflower-300"
-                          />
-                        )}
-                      </IconButton>
-                    </Tooltip>
-                  </InputAdornment>
-                ),
-                className:
-                  'rounded-full bg-white dark:bg-neutral-700 ' +
-                  (props.input_className ?? ''),
-              },
-            }}
-            placeholder="Search for courses or professors"
-            autoFocus={props.autoFocus}
-          />
-        );
-      }}
+                      <SearchIcon className={isPending ? 'opacity-0' : ''} />
+                      {isPending && (
+                        <CircularProgress
+                          size={18}
+                          className="text-royal dark:text-cornflower-300"
+                        />
+                      )}
+                    </IconButton>
+                  </Tooltip>
+                </InputAdornment>
+              ),
+              className:
+                'rounded-full bg-white dark:bg-neutral-700 ' +
+                (props.input_className ?? ''),
+            },
+          }}
+          placeholder="Search for courses or professors"
+          autoFocus={props.autoFocus}
+        />
+      )}
       // For handling spaces, when options are already loaded
       onInput={(event) => {
         const rawValue = (event.target as HTMLInputElement).value;

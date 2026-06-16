@@ -2,7 +2,7 @@
 
 import CloseIcon from '@mui/icons-material/Close';
 import MenuIcon from '@mui/icons-material/Menu';
-import { Drawer, IconButton, Tooltip } from '@mui/material';
+import { Drawer, IconButton } from '@mui/material';
 import { useState } from 'react';
 import type { ContentComponentColor } from '@src/components/header/BaseHeader';
 import { type personalCats } from '@src/constants/categories';
@@ -21,27 +21,25 @@ const NewSidebar = ({
 
   return (
     <>
-      <Tooltip title="Menu" enterDelay={0} arrow>
-        <IconButton
-          onClick={() => setOpen(true)}
-          className={`z-50 ${homepage ? ' drop-shadow-[0_0_4px_rgb(0_0_0_/_0.4)]' : ''}`}
-          size="large"
-          // title='Menu'
-        >
-          <MenuIcon
-            fontSize="inherit"
-            className={`${
-              hamburgerColor?.startsWith('light') ? 'fill-white' : 'fill-haiti'
-            } ${
-              hamburgerColor === 'lightDark'
-                ? 'dark:fill-haiti'
-                : hamburgerColor === 'darkLight'
-                  ? 'dark:fill-white'
-                  : ''
-            }`}
-          />
-        </IconButton>
-      </Tooltip>
+      <IconButton
+        onClick={() => setOpen(true)}
+        className={`z-50 ${homepage ? ' drop-shadow-[0_0_4px_rgb(0_0_0_/_0.4)]' : ''}`}
+        size="large"
+        // title='Menu'
+      >
+        <MenuIcon
+          fontSize="inherit"
+          className={`${
+            hamburgerColor?.startsWith('light') ? 'fill-white' : 'fill-haiti'
+          } ${
+            hamburgerColor === 'lightDark'
+              ? 'dark:fill-haiti'
+              : hamburgerColor === 'darkLight'
+                ? 'dark:fill-white'
+                : ''
+          }`}
+        />
+      </IconButton>
       <Drawer
         open={open}
         onClose={() => setOpen(false)}

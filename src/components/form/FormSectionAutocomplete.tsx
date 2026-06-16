@@ -109,12 +109,13 @@ export function FormSectionAutocomplete({
           }
           className="w-full"
           slotProps={{
+            ...params.slotProps,
             input: {
-              ...params.InputProps,
+              ...params.slotProps.input,
               endAdornment: (
                 <>
                   {isLoading ? <CircularProgress size={20} /> : null}
-                  {params.InputProps.endAdornment}
+                  {params.slotProps.input.endAdornment}
                 </>
               ),
             },

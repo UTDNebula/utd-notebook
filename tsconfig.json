@@ -17,6 +17,7 @@
     "incremental": true,
     "noUncheckedIndexedAccess": true,
     "paths": {
+      "*": ["./*"],
       "@src/*": ["./src/*"],
       "@components/*": ["./src/components/*"],
       "@pages/*": ["./src/pages/*"],
