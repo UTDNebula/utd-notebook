@@ -372,7 +372,7 @@ export default function SearchBar(props: Props) {
       className={
         'w-full max-w-xs md:max-w-sm lg:max-w-md ' + (props.className ?? '')
       }
-      onHighlightChange={(option) => {
+      onHighlightChange={(_, option) => {
         setHighlightedOption(option !== null);
       }}
       getOptionLabel={(option) => {
@@ -400,7 +400,9 @@ export default function SearchBar(props: Props) {
       ) => {
         // Should never happen
         if (typeof newValue === 'string') {
-          setInputValue(newValue);
+          if (options[0]) {
+            updateValue(options[0]);
+          }
           return;
         }
         if (newValue === null) {
