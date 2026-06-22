@@ -41,6 +41,21 @@ async function fetchSections(
   }
 }
 
+function canonicalizeQuery(
+  query: NoteQuery,
+  sections: SectionWithFilesWithUserMetadata[],
+): NoteQuery {
+  if (sections.length === 0) return query;
+  const s = sections[0]!;
+  if (query.type === 'professor') {
+    return { ...query, profFirst: s.profFirst, profLast: s.profLast };
+  }
+  if (query.type === 'courseAndProfessor') {
+    return { ...query, profFirst: s.profFirst, profLast: s.profLast };
+  }
+  return query;
+}
+
 function totalFileCount(sections: SectionWithFilesWithUserMetadata[]): number {
   return sections.reduce((sum, s) => sum + s.files.length, 0);
 }
@@ -145,6 +160,7 @@ export default async function NotesPage({
   }
 
   const sections = await fetchSections(query);
+  const displayQuery = canonicalizeQuery(query, sections);
   const filteredSections = filterSections(
     sections,
     resolvedSearchParams.handwritten,
@@ -154,10 +170,10 @@ export default async function NotesPage({
   return (
     <>
       <SectionHeader
-        title={noteQueryToTitle(query)}
-        description={noteQueryToDescription(query)}
+        title={noteQueryToTitle(displayQuery)}
+        description={noteQueryToDescription(displayQuery)}
         metaLabel={`${fileCount} note${fileCount === 1 ? '' : 's'}`}
-        breadcrumbs={buildBreadcrumbs(query)}
+        breadcrumbs={buildBreadcrumbs(displayQuery)}
       />
 
       <HandwrittenFilter />
@@ -170,18 +186,19 @@ export default async function NotesPage({
       ) : (
         <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
           {/* Links to course+prof combo pages */}
-          {(query.type === 'course' || query.type === 'professor') && (
+          {(displayQuery.type === 'course' ||
+            displayQuery.type === 'professor') && (
             <>
               {(() => {
                 const links =
-                  query.type === 'course'
-                    ? getProfessorLinks(filteredSections, query)
-                    : getCourseLinks(filteredSections, query);
+                  displayQuery.type === 'course'
+                    ? getProfessorLinks(filteredSections, displayQuery)
+                    : getCourseLinks(filteredSections, displayQuery);
                 if (links.length <= 1) return null;
                 return (
                   <div className="col-span-full">
                     <h2 className="mb-3 text-lg font-semibold">
-                      {query.type === 'course'
+                      {displayQuery.type === 'course'
                         ? 'Filter by professor'
                         : 'Filter by course'}
                     </h2>
