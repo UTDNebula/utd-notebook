@@ -203,9 +203,7 @@ export async function GET(request: Request) {
             .sort((a, b) => b - a)[0] ?? 0;
 
         const popularityBonus =
-          result.totalStudents > 0
-            ? -Math.log10(result.totalStudents + 1)
-            : 0;
+          result.totalStudents > 0 ? -Math.log10(result.totalStudents + 1) : 0;
 
         return {
           distance:

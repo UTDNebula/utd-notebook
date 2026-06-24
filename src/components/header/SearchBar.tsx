@@ -1,5 +1,7 @@
 'use client';
 
+import AddIcon from '@mui/icons-material/Add';
+import ArticleIcon from '@mui/icons-material/Article';
 import HistoryToggleOffIcon from '@mui/icons-material/HistoryToggleOff';
 import SearchIcon from '@mui/icons-material/Search';
 import {
@@ -156,6 +158,12 @@ export default function SearchBar(props: Props) {
   // Update route with what's in value
   function updateQueries(term: SearchQuery) {
     if (term.prefix && term.number) {
+      if (term.hasNotes === false) {
+        router.push(`/notes/create?q=${searchQueryLabel(term)}`);
+        return;
+      }
+
+      // Navigate to notes page based on search term
       router.push(
         `/notes/${term.prefix.toLowerCase()}/${term.number.toLowerCase()}`,
       );
@@ -163,6 +171,11 @@ export default function SearchBar(props: Props) {
     }
 
     if (term.profFirst && term.profLast) {
+      if (term.hasNotes === false) {
+        router.push(`/notes/create?q=${searchQueryLabel(term)}`);
+        return;
+      }
+
       router.push(
         `/notes/${term.profFirst.toLowerCase()}/${term.profLast.toLowerCase()}`,
       );
@@ -520,11 +533,15 @@ export default function SearchBar(props: Props) {
           <li key={key} {...otherProps}>
             {
               // If option isSearchQuery and isRecent is declared & is true
-              typeof option !== 'string' && option.isRecent == true ? (
-                <HistoryToggleOffIcon className="text-gray-400 self-start mr-2 mt-0.5" />
-              ) : (
-                <SearchIcon className="text-gray-400 self-start mr-2 mt-0.5" />
-              )
+              typeof option !== 'string' ? (
+                option.isRecent == true ? (
+                  <HistoryToggleOffIcon className="text-gray-400 self-start mr-2 mt-0.5" />
+                ) : option.hasNotes ? (
+                  <ArticleIcon className="text-gray-400 self-start mr-2 mt-0.5" />
+                ) : (
+                  <AddIcon className="text-gray-400 self-start mr-2 mt-0.5" />
+                )
+              ) : null
             }
             <div>
               <div>
