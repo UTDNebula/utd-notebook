@@ -1,7 +1,7 @@
 'use client';
 
 import type { ReactNode } from 'react';
-import Panel from '@src/components/common/Panel';
+import Panel from '@src/nebula-library/components/Panel';
 import FilesGrid from '@src/components/sections/FilesGrid';
 import type { SelectFileWithAuthorPreview } from '@src/server/db/models';
 

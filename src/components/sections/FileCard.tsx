@@ -5,7 +5,7 @@ import { Skeleton } from '@mui/material';
 import Image from 'next/image';
 import Link from 'next/link';
 import { useMemo, useState } from 'react';
-import { BaseCard } from '@src/components/common/BaseCard';
+import { BaseCard } from '@src/nebula-library/components/BaseCard';
 import RatingWidget from '@src/components/sections/RatingWidget';
 import SaveButton from '@src/components/sections/SaveButton';
 import type { SelectFileWithAuthorPreview } from '@src/server/db/models';

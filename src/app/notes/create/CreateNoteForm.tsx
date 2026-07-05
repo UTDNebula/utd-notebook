@@ -2,7 +2,7 @@
 
 import { useMutation } from '@tanstack/react-query';
 import { useRouter, useSearchParams } from 'next/navigation';
-import Panel, { PanelSkeleton } from '@src/components/common/Panel';
+import Panel, { PanelSkeleton } from '@src/nebula-library/components/Panel';
 import FormFile from '@src/components/form/FormFile';
 import { useTRPC } from '@src/trpc/react';
 import { useAppForm } from '@src/utils/form';

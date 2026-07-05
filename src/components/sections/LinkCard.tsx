@@ -1,5 +1,5 @@
 import Link from 'next/link';
-import { BaseCard } from '@src/components/common/BaseCard';
+import { BaseCard } from '@src/nebula-library/components/BaseCard';
 
 type LinkCardProps = {
   href: string;

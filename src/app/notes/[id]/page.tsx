@@ -1,5 +1,5 @@
 import { notFound } from 'next/navigation';
-import { BaseCard } from '@src/components/common/BaseCard';
+import { BaseCard } from '@src/nebula-library/components/BaseCard';
 import Header from '@src/components/header/Header';
 import NoteInfoPanel from '@src/components/sections/NoteInfoPanel';
 import { api } from '@src/trpc/server';

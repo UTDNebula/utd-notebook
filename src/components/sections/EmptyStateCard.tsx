@@ -1,6 +1,6 @@
 import type { SvgIconComponent } from '@mui/icons-material';
 import FolderOffIcon from '@mui/icons-material/FolderOff';
-import { BaseCard } from '@src/components/common/BaseCard';
+import { BaseCard } from '@src/nebula-library/components/BaseCard';
 
 type EmptyStateCardProps = {
   title: string;

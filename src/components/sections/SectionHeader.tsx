@@ -1,4 +1,4 @@
-import { BaseCard } from '@src/components/common/BaseCard';
+import { BaseCard } from '@src/nebula-library/components/BaseCard';
 import Breadcrumbs, { type BreadcrumbItem } from './Breadcrumbs';
 
 type SectionHeaderProps = {
