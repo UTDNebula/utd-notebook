@@ -16,6 +16,7 @@ const eslintConfig = defineConfig([
     'next-env.d.ts',
     'styleguide/build/**',
     'styleguide.config.js',
+    'src/nebula-library/**',
   ]),
   // Allow HTML <img> elements in Next.JS generated image metadata files
   {
