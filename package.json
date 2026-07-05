@@ -60,7 +60,8 @@
     "sharp": "^0.35.1",
     "superjson": "^2.2.6",
     "zod": "^4.4.3",
-    "zustand": "^5.0.14"
+    "zustand": "^5.0.14",
+    "nebula-library": "file:src/nebula-library"
   },
   "devDependencies": {
     "@tailwindcss/postcss": "^4.3.1",
