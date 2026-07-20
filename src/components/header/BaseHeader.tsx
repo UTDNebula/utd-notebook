@@ -3,9 +3,9 @@
 import ArrowBackIcon from '@mui/icons-material/ArrowBack';
 import SearchIcon from '@mui/icons-material/Search';
 import { IconButton } from '@mui/material';
+import gradientBG from '@public/background.png';
 import Image from 'next/image';
 import Link from 'next/link';
-import gradientBG from 'public/background.png';
 import { createContext, useContext, useState, type ReactNode } from 'react';
 import { UTDNotebookLogoStandalone } from '@src/icons/UTDNotebookLogo';
 import { ProfileDropDown } from './ProfileDropDown';

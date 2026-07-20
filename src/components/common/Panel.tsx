@@ -1,6 +1,6 @@
 import { Skeleton, Typography } from '@mui/material';
 import React, { type ReactNode } from 'react';
-import { BaseCard } from '@src/nebula-library/components/BaseCard';
+import { BaseCard } from '@nebula-library/components/BaseCard';
 
 interface PanelPropsBase {
   heading?: ReactNode;

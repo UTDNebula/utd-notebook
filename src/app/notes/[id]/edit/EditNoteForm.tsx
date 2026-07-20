@@ -3,9 +3,9 @@
 import { useMutation } from '@tanstack/react-query';
 import { useRouter } from 'next/navigation';
 import { useMemo } from 'react';
+import Panel, { PanelSkeleton } from '@nebula-library/components/Panel';
 import type { FileDetails } from '@src/app/notes/create/CreateNoteForm';
 import FormFile from '@src/components/form/FormFile';
-import Panel, { PanelSkeleton } from '@src/nebula-library/components/Panel';
 import { useTRPC } from '@src/trpc/react';
 import { useAppForm } from '@src/utils/form';
 import { editFileFormSchema } from '@src/utils/formSchemas';

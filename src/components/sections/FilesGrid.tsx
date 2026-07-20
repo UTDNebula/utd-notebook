@@ -1,5 +1,5 @@
 import type { ReactNode } from 'react';
-import { BaseCard } from '@src/nebula-library/components/BaseCard';
+import { BaseCard } from '@nebula-library/components/BaseCard';
 import type {
   SectionWithFilesWithUserMetadata,
   SelectFileWithAuthorPreview,

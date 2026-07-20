@@ -1,8 +1,8 @@
 'use client';
 
 import type { ReactNode } from 'react';
+import Panel from '@nebula-library/components/Panel';
 import FilesGrid from '@src/components/sections/FilesGrid';
-import Panel from '@src/nebula-library/components/Panel';
 import type { SelectFileWithAuthorPreview } from '@src/server/db/models';
 
 type NotesProps = {

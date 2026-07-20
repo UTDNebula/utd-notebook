@@ -5,12 +5,12 @@ import OpenInNewIcon from '@mui/icons-material/OpenInNew';
 import { Collapse, IconButton, Typography } from '@mui/material';
 import Link from 'next/link'; // To link back to specific profiles
 import { useState } from 'react';
+import Panel from '@nebula-library/components/Panel';
 import NoteDeleteButton from '@src/components/sections/NoteDeleteButton';
 import NoteEditButton from '@src/components/sections/NoteEditButton';
 import RatingWidget from '@src/components/sections/RatingWidget';
 import ReportButton from '@src/components/sections/ReportButton';
 import SaveButton from '@src/components/sections/SaveButton';
-import Panel from '@src/nebula-library/components/Panel';
 import type { SelectFileWithUserMetadataAndSection } from '@src/server/db/models';
 import { authClient } from '@src/utils/auth-client';
 
