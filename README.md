@@ -29,6 +29,13 @@ Start by cloning the repository to your local machine.
 git clone https://github.com/UTDNebula/utd-notebook.git --recurse-submodules
 ```
 
+> [!NOTE]
+> If you already cloned the repository but don't have the `src/nebula-library` folder, run the following command:
+>
+> ```bash
+> git submodule update --init --recursive
+> ```
+
 Next, navigate to the project directory and install the dependencies.
 
 ```bash
@@ -40,15 +47,21 @@ Make sure you have a `.env` file in the root of the project. If you do not, copy
 
 #### Environment Variables
 
-This project uses [BetterAuth](https://better-auth.com) for authentication. BetterAuth, with their built-in [providers](https://better-auth.com/docs/introduction), makes it easy for users to use preexisting logins. Currently, we are using Discord and Google as OAuth Providers, so you will need to create a Client ID and Client Secret for [Google](https://better-auth.com/docs/authentication/google) and [Discord](https://better-auth.com/docs/authentication/discord) respectively (or remove the providers if you'd like).
+This project uses [Better Auth](https://www.better-auth.com/) for authentication. Better Auth, with their built-in [providers](https://www.better-auth.com/docs/authentication/google), makes it easy for users to use preexisting logins. Currently, we are using Discord and Google as OAuth Providers, so you will need to create a Client ID and Client Secret for [Google](https://www.better-auth.com/docs/authentication/google) and [Discord](https://www.better-auth.com/docs/authentication/discord) respectively (or remove the providers if you'd like).
 
 Once you have your Client ID and Client Secrets, add them to your `.env` file.
 
 The `BETTER_AUTH_URL` variable should be set to `http://localhost:3000` for local development.
+The `BETTER_AUTH_SECRET` variable should be set to a random string of characters. You can generate one [using this website](https://randomkeygen.com/).
+or by running the following command in your terminal.
+
+```bash
+openssl rand -hex 32
+```
 
 UTD Notebook uses an ORM called [Drizzle](https://orm.drizzle.team/) to interact with the database. In order to connect to the database, you will need to add the `DATABASE_URL` variable to your `.env` file. Your project lead will give this to you upon request.
 
-The Nebula API is used for image storage. The `NEBULA_API_URL` variable should be set to `https://api.utdnebula.com/` and the `NEBULA_API_STORAGE_BUCKET` variable to `jupiter`. An API key and storage key should be requested from the project lead for the `NEBULA_API_KEY` and `NEBULA_API_STORAGE_KEY` variables.
+The Nebula API is used for file storage. The `NEBULA_API_URL` variable should be set to `https://api.utdnebula.com/` and the `NEBULA_API_STORAGE_BUCKET` variable to `notebook`. An API key and storage key should be requested from the project lead for the `NEBULA_API_KEY` and `NEBULA_API_STORAGE_KEY` variables.
 
 Finally, start the development server.
 
@@ -64,40 +77,54 @@ When working on a new feature, please create a new branch with the following nam
 git checkout -b feature/<feature-name>
 ```
 
-When you are ready to merge your branch into the `develop` branch, please create a pull request and request a review from the Jupiter Dev Team.
+When you are ready to merge your branch into the `develop` branch, please create a pull request and request a review from the Notebook Dev Team.
 Please include details about what issue you are addressing with the pull request, what changes you made, and any other relevant information.
 
-#### Nebula Library
+### Nebula Library
 
-When working in the `src/nebula-library` folder you are working in a shared component library. Follow these steps to create a secondary Pull Request (PR) for your library changes.
+When working in the `src/nebula-library` folder, you are working in a shared component library that is part of a nested Git repository. Follow these steps to create a secondary **pull request** (PR) for your library changes:
 
-##### 1. Checkout a Branch
+#### 1. Checkout a branch
 
 ```bash
 cd src/nebula-library
+# Replace <feature-name> with a branch name
 git checkout -b feature/<feature-name>
 ```
 
-##### 2. Make Your Changes
+#### 2. Make your changes in the `src/nebula-library` folder
 
-##### 3. Push Your Changes
+#### 3. Push your changes
 
 ```bash
 git push
 cd ../..
 ```
 
-##### 4. Make a Pull Request
+#### 4. Make a pull request in the `nebula-library` repository
 
 Make a PR from your branch into `main` at [github.com/UTDNebula/nebula-library](https://github.com/UTDNebula/nebula-library) and request your project lead as a reviewer.
 
 Wait for your PR to be approved.
 
-In the meantime you can make a normal PR for Clubs. It's checks and build may not pass without your changes in `src/nebula-library` so you can switch the branch and push with `git submodule set-branch --branch feature/<feature-name> src/nebula-library`. Just make sure to switch back to `main` in the next step.
+> [!TIP]
+> In the meantime, you can make a regular PR on the [UTD Notebook repository](https://github.com/UTDNebula/utd-notebook). Its checks and build may not pass without your changes in `src/nebula-library`, so you can switch the branch and push with the following commands:
+>
+> ```bash
+> # Replace <feature-name> with the feature name you used in step 1
+> git submodule set-branch --branch feature/<feature-name> src/nebula-library
+> git push
+> ```
+>
+> If you do this, just make sure to run the following command before the next step:
+>
+> ```bash
+> git submodule set-branch --default src/nebula-library
+> ```
 
-##### 5. After Your PR is Merged
+#### 5. After your `nebula-library` pull request is merged…
 
-Pull your changes from the library and push them to Clubs. Then make a PR on Clubs.
+Pull your changes from the library and push them to Notebook. Then make a regular PR on Notebook.
 
 ```bash
 git submodule update --recursive --remote
