@@ -27,7 +27,9 @@ interface EditNoteFormProps {
   };
 }
 
-export default function EditNoteForm({ file: existingFile }: EditNoteFormProps) {
+export default function EditNoteForm({
+  file: existingFile,
+}: EditNoteFormProps) {
   const api = useTRPC();
   const updateMutation = useMutation(api.file.update.mutationOptions());
   const uploadFile = useUploadToUploadURL();
@@ -206,7 +208,7 @@ export default function EditNoteForm({ file: existingFile }: EditNoteFormProps) 
       </Panel>
     </form>
   );
-};
+}
 
 export const EditNoteFormSkeleton = () => {
   return (

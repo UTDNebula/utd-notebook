@@ -223,7 +223,7 @@ export default function CreateNoteForm() {
       </Panel>
     </form>
   );
-};
+}
 
 export const CreateNoteFormSkeleton = () => {
   return (
