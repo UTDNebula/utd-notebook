@@ -39,7 +39,7 @@ const defaultValues: FileDetails = {
   handwritten: false,
 };
 
-const NoteForm = () => {
+export default function CreateNoteForm() {
   const api = useTRPC();
   const createMutation = useMutation(api.file.create.mutationOptions());
   const updateMutation = useMutation(api.file.update.mutationOptions());
@@ -225,9 +225,7 @@ const NoteForm = () => {
   );
 };
 
-export default NoteForm;
-
-export const NoteFormSkeleton = () => {
+export const CreateNoteFormSkeleton = () => {
   return (
     <div className="flex flex-col gap-4 max-w-full">
       <PanelSkeleton />

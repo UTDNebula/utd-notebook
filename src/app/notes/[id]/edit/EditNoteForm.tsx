@@ -11,7 +11,7 @@ import { useAppForm } from '@src/utils/form';
 import { editFileFormSchema } from '@src/utils/formSchemas';
 import { useUploadToUploadURL } from '@src/utils/uploadFile';
 
-interface NoteFormProps {
+interface EditNoteFormProps {
   file: {
     id: string;
     name: string;
@@ -27,7 +27,7 @@ interface NoteFormProps {
   };
 }
 
-const NoteForm = ({ file: existingFile }: NoteFormProps) => {
+export default function EditNoteForm({ file: existingFile }: EditNoteFormProps) {
   const api = useTRPC();
   const updateMutation = useMutation(api.file.update.mutationOptions());
   const uploadFile = useUploadToUploadURL();
@@ -208,9 +208,7 @@ const NoteForm = ({ file: existingFile }: NoteFormProps) => {
   );
 };
 
-export default NoteForm;
-
-export const NoteFormSkeleton = () => {
+export const EditNoteFormSkeleton = () => {
   return (
     <div className="flex flex-col gap-4 max-w-full">
       <PanelSkeleton />
