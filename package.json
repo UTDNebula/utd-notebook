@@ -16,10 +16,10 @@
     "drizzle:generate": "dotenv drizzle-kit generate",
     "drizzle:push": "dotenv drizzle-kit push",
     "drizzle:studio": "dotenv drizzle-kit studio",
-    "fetchdata": "ts-node -O \"{\\\"module\\\":\\\"commonjs\\\"}\" src/scripts/fetchAggregatedData.ts",
-    "buildautocomplete": "ts-node -O \"{\\\"module\\\":\\\"commonjs\\\"}\" src/scripts/generateAutocompleteGraph.ts",
-    "buildcoursenames": "ts-node -O \"{\\\"module\\\":\\\"commonjs\\\"}\" src/scripts/generateCourseNameTable.ts",
-    "buildsections": "ts-node -O \"{\\\"module\\\":\\\"commonjs\\\"}\" src/scripts/generateSectionsData.ts"
+    "fetchdata": "tsx src/scripts/fetchAggregatedData.ts",
+    "buildautocomplete": "tsx src/scripts/generateAutocompleteGraph.ts",
+    "buildcoursenames": "tsx src/scripts/generateCourseNameTable.ts",
+    "buildsections": "tsx src/scripts/generateSectionsData.ts"
   },
   "dependencies": {
     "@auth/drizzle-adapter": "^1.11.2",
@@ -89,7 +89,7 @@
     "tailwindcss": "^4.3.1",
     "tailwindcss-animate": "^1.0.7",
     "ts-jest": "^29.4.11",
-    "ts-node": "^10.9.1",
+    "tsx": "^4.23.12",
     "typescript": "^6.0.3"
   },
   "overrides": {
