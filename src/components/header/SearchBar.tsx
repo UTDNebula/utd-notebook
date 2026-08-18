@@ -535,11 +535,11 @@ export default function SearchBar(props: Props) {
               // If option isSearchQuery and isRecent is declared & is true
               typeof option !== 'string' ? (
                 option.isRecent == true ? (
-                  <HistoryToggleOffIcon className="text-gray-400 self-start mr-2 mt-0.5" />
+                  <HistoryToggleOffIcon className="mt-0.5 mr-2 self-start text-gray-400" />
                 ) : option.hasNotes ? (
-                  <ArticleIcon className="text-gray-400 self-start mr-2 mt-0.5" />
+                  <ArticleIcon className="mt-0.5 mr-2 self-start text-gray-400" />
                 ) : (
-                  <AddIcon className="text-gray-400 self-start mr-2 mt-0.5" />
+                  <AddIcon className="mt-0.5 mr-2 self-start text-gray-400" />
                 )
               ) : null
             }

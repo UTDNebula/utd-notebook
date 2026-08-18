@@ -24,7 +24,7 @@ const NewSidebar = ({
       <Tooltip title="Menu" enterDelay={0} arrow>
         <IconButton
           onClick={() => setOpen(true)}
-          className={`z-50 ${homepage ? ' drop-shadow-[0_0_4px_rgb(0_0_0_/_0.4)]' : ''}`}
+          className={`z-50 ${homepage ? 'drop-shadow-[0_0_4px_rgb(0_0_0_/_0.4)]' : ''}`}
           size="large"
           // title='Menu'
         >

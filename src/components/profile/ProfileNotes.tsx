@@ -46,7 +46,7 @@ export default function ProfileNotes({
       <Panel
         className={`relative overflow-clip ${HOME_PAGE_GRADIENT_CLASS} p-0 shadow-xl`}
       >
-        <div className="absolute inset-0 dark:bg-slightly-darken" />
+        <div className="dark:bg-slightly-darken absolute inset-0" />
         <div className="z-10 border-b border-white/20 px-6 py-5">
           <div className="flex items-center gap-4 max-sm:flex-col-reverse max-sm:items-start sm:flex-row">
             <Avatar
@@ -58,10 +58,10 @@ export default function ProfileNotes({
             </Avatar>
 
             <div className="flex flex-col gap-2 text-shadow-[0_0_8px_rgb(0_0_0_/_0.4)]">
-              <h1 className="font-display text-4xl font-semibold max-sm:text-center text-white">
+              <h1 className="font-display text-4xl font-semibold text-white max-sm:text-center">
                 {displayName}
               </h1>
-              <span className="text-xl max-sm:text-lg max-sm:text-center text-white opacity-80">
+              <span className="text-xl text-white opacity-80 max-sm:text-center max-sm:text-lg">
                 @{username}
               </span>
             </div>
@@ -76,7 +76,7 @@ export default function ProfileNotes({
             defaultValue={tab}
             indicatorColor="primary"
             textColor="inherit"
-            className="[&_.MuiTab-root]:min-h-0 [&_.MuiTab-root]:text-sm [&_.MuiTab-root]:normal-case [&_.MuiTab-root]:text-slate-200 [&_.MuiTab-root:hover]:opacity-100 [&_.MuiTab-root.Mui-selected]:text-white [&_.MuiTab-root.Mui-selected]:font-medium [&_.MuiTab-root.Mui-selected]:drop-shadow-[0_0_10px_rgba(0,0,0,0.2)] [&_.MuiTabs-flexContainer]:gap-4"
+            className="[&_.MuiTab-root]:min-h-0 [&_.MuiTab-root]:text-sm [&_.MuiTab-root]:text-slate-200 [&_.MuiTab-root]:normal-case [&_.MuiTab-root.Mui-selected]:font-medium [&_.MuiTab-root.Mui-selected]:text-white [&_.MuiTab-root.Mui-selected]:drop-shadow-[0_0_10px_rgba(0,0,0,0.2)] [&_.MuiTab-root:hover]:opacity-100 [&_.MuiTabs-flexContainer]:gap-4"
             sx={{
               '& .MuiTabs-indicator': {
                 backgroundColor: '#ffffff',
@@ -94,7 +94,7 @@ export default function ProfileNotes({
         heading={activeHeading}
         notes={activeNotes}
         noFilesMessage={
-          <div className="w-full py-12 flex flex-col items-center justify-center border-2 border-dashed border-slate-200 dark:border-slate-800 rounded-xl text-md font-medium text-slate-600 dark:text-slate-400">
+          <div className="text-md flex w-full flex-col items-center justify-center rounded-xl border-2 border-dashed border-slate-200 py-12 font-medium text-slate-600 dark:border-slate-800 dark:text-slate-400">
             {emptyMessage}
           </div>
         }
