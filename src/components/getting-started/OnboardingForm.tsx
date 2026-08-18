@@ -8,6 +8,7 @@ import StepLabel from '@mui/material/StepLabel';
 import Stepper from '@mui/material/Stepper';
 import { useTheme } from '@mui/material/styles';
 import useMediaQuery from '@mui/system/useMediaQuery';
+import { useStore } from '@tanstack/react-form';
 import { useMutation } from '@tanstack/react-query';
 import { useRouter } from 'next/navigation';
 import { MouseEvent, useCallback, useState } from 'react';
@@ -120,6 +121,9 @@ export default function OnboardingForm({
     },
     validators: { onChange: accountOnboardingSchema },
   });
+  const fieldMeta = useStore(form.store, (state) => state.fieldMeta);
+  const isFieldsValid = useStore(form.store, (state) => state.isFieldsValid);
+  const isSubmitting = useStore(form.store, (state) => state.isSubmitting);
 
   /*
    * Steps
@@ -168,7 +172,7 @@ export default function OnboardingForm({
     }
   }, []);
 
-  const validateFields = () => {
+  const validateFields = async () => {
     const step = steps[activeStep.current];
     if (typeof step === 'undefined') {
       return true;
@@ -177,8 +181,10 @@ export default function OnboardingForm({
     if (typeof fields === 'undefined') {
       return true;
     }
-    console.log(fields);
-    fields.forEach((step) => form.validateField(step, 'change'));
+    const errors = await Promise.all(
+      fields.map((step) => form.validateField(step, 'change')),
+    );
+    return errors.every((fieldErrors) => fieldErrors.length === 0);
   };
 
   const currentFieldsValid = () => {
@@ -190,13 +196,16 @@ export default function OnboardingForm({
     if (typeof fields === 'undefined') {
       return true;
     }
-    return fields.every((step) => form.state.fieldMeta[step]?.isValid ?? true);
+    return fields.every((step) => fieldMeta[step]?.isValid ?? true);
   };
 
-  const handleNext = (event: MouseEvent<HTMLButtonElement>) => {
+  const handleNext = async (event: MouseEvent<HTMLButtonElement>) => {
     // Validates mounted fields and prevents user from navigating if there exist errors
-    validateFields();
-    if (!currentFieldsValid()) return;
+    const isCurrentStepValid = await validateFields();
+    if (!isCurrentStepValid) {
+      event.preventDefault();
+      return;
+    }
 
     if (activeStep.current < steps.length - (hasFinish ? 2 : 1)) {
       // Prevents submit button from activating prematurely when navigating
@@ -225,7 +234,7 @@ export default function OnboardingForm({
     <Button
       className={`normal-case ${activeStep.current === steps.length - 1 ? 'invisible' : ''}`}
       loadingPosition="start"
-      color={!form.state.isFieldsValid ? 'inherit' : 'primary'}
+      color={!isFieldsValid ? 'inherit' : 'primary'}
       onClick={handleBack}
       disabled={
         activeStep.current === 0 || activeStep.current === steps.length - 1
@@ -245,7 +254,7 @@ export default function OnboardingForm({
       variant="contained"
       className="normal-case"
       disabled={!currentFieldsValid()}
-      loading={form.state.isSubmitting}
+      loading={isSubmitting}
       loadingPosition="start"
       color={!currentFieldsValid() ? 'inherit' : 'primary'}
       onClick={handleNext}
@@ -285,10 +294,10 @@ export default function OnboardingForm({
                   >
                     <StepButton
                       color="inherit"
-                      onClick={() => {
+                      onClick={async () => {
                         // Validates mounted fields and prevents user from navigating if there exist errors
-                        validateFields();
-                        if (!currentFieldsValid()) return;
+                        const isCurrentStepValid = await validateFields();
+                        if (!isCurrentStepValid) return;
 
                         setActiveStep((prev) => ({
                           current: index,
