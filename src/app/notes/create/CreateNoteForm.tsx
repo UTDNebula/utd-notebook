@@ -212,7 +212,7 @@ export default function CreateNoteForm() {
           </div>
         </div>
 
-        <div className="flex flex-wrap justify-end items-center gap-2">
+        <div className="flex flex-wrap items-center justify-end gap-2">
           <form.AppForm>
             <form.ResetButton />
           </form.AppForm>
@@ -227,7 +227,7 @@ export default function CreateNoteForm() {
 
 export const CreateNoteFormSkeleton = () => {
   return (
-    <div className="flex flex-col gap-4 max-w-full">
+    <div className="flex max-w-full flex-col gap-4">
       <PanelSkeleton />
     </div>
   );

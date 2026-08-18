@@ -15,14 +15,14 @@ export default async function NotePage({ params }: NotePageProps) {
   if (!file) notFound();
 
   return (
-    <div className="flex flex-col h-full">
+    <div className="flex h-full flex-col">
       <Header />
-      <main className="p-4 pt-0 flex w-full h-full flex-col items-center gap-4">
+      <main className="flex h-full w-full flex-col items-center gap-4 p-4 pt-0">
         {/* Info panel pinned to the top, floats over the PDF */}
         <NoteInfoPanel file={file} />
 
         {/* Scrollable area with white card background for the PDF */}
-        <BaseCard className="h-full min-h-[50vh] w-full overflow-hidden max-w-6xl">
+        <BaseCard className="h-full min-h-[50vh] w-full max-w-6xl overflow-hidden">
           <iframe
             src={addVersionToFile(file.publicUrl, file.updatedAt.getTime())}
             title={file.name}
