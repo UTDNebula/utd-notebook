@@ -10,6 +10,7 @@ import RatingWidget from '@src/components/sections/RatingWidget';
 import SaveButton from '@src/components/sections/SaveButton';
 import type { SelectFileWithAuthorPreview } from '@src/server/db/models';
 import { authClient } from '@src/utils/auth-client';
+import { addVersionToFile } from '@src/utils/fileCacheBust';
 import NoteDeleteButton from './NoteDeleteButton';
 import NoteEditButton from './NoteEditButton';
 import ReportButton from './ReportButton';
@@ -35,7 +36,10 @@ export default function FileCard({ file }: FileCardProps) {
   const { data: session } = authClient.useSession();
   const isAuthor = session?.user?.id === file.authorId;
 
-  const thumbnailUrl = file.publicUrl;
+  const thumbnailUrl = addVersionToFile(
+    file.publicUrl,
+    file.updatedAt.getTime(),
+  );
 
   const files = useMemo<FileData[]>(
     () => [{ file: thumbnailUrl, name: file.name }],

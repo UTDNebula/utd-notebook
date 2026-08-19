@@ -23,8 +23,7 @@ export default async function Page() {
           src={'/background.png'}
           alt="background"
           fill
-          objectFit="cover"
-          className="-z-20 select-none"
+          className="-z-20 object-cover select-none"
           draggable={false}
         />
         <div className="dark:bg-slightly-darken absolute inset-0" />
