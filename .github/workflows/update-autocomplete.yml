@@ -30,7 +30,7 @@ jobs:
         with:
           node-version: '22'
 
-      - name: Install for ts-node
+      - name: Install dependencies
         run: npm install
 
       - name: Add API Key

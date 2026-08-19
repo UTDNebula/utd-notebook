@@ -11,7 +11,7 @@ import { useAppForm } from '@src/utils/form';
 import { editFileFormSchema } from '@src/utils/formSchemas';
 import { useUploadToUploadURL } from '@src/utils/uploadFile';
 
-interface NoteFormProps {
+interface EditNoteFormProps {
   file: {
     id: string;
     name: string;
@@ -27,7 +27,9 @@ interface NoteFormProps {
   };
 }
 
-const NoteForm = ({ file: existingFile }: NoteFormProps) => {
+export default function EditNoteForm({
+  file: existingFile,
+}: EditNoteFormProps) {
   const api = useTRPC();
   const updateMutation = useMutation(api.file.update.mutationOptions());
   const uploadFile = useUploadToUploadURL();
@@ -195,7 +197,7 @@ const NoteForm = ({ file: existingFile }: NoteFormProps) => {
           </div>
         </div>
 
-        <div className="flex flex-wrap justify-end items-center gap-2">
+        <div className="flex flex-wrap items-center justify-end gap-2">
           <form.AppForm>
             <form.ResetButton />
           </form.AppForm>
@@ -206,13 +208,11 @@ const NoteForm = ({ file: existingFile }: NoteFormProps) => {
       </Panel>
     </form>
   );
-};
+}
 
-export default NoteForm;
-
-export const NoteFormSkeleton = () => {
+export const EditNoteFormSkeleton = () => {
   return (
-    <div className="flex flex-col gap-4 max-w-full">
+    <div className="flex max-w-full flex-col gap-4">
       <PanelSkeleton />
     </div>
   );

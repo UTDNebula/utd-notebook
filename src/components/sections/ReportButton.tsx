@@ -15,7 +15,7 @@ export default function ReportButton({ fileId }: ReportButtonProps) {
       href={`/report?fileId=${encodeURIComponent(fileId)}`}
       variant="contained"
       size="small"
-      className="normal-case bg-white hover:bg-neutral-200 dark:bg-neutral-800 dark:hover:bg-neutral-700 text-haiti dark:text-white"
+      className="text-haiti bg-white normal-case hover:bg-neutral-200 dark:bg-neutral-800 dark:text-white dark:hover:bg-neutral-700"
       startIcon={<FlagOutlinedIcon />}
     >
       Report

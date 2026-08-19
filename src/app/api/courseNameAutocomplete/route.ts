@@ -3,8 +3,10 @@ import untypedCourseNameTable from '@src/data/course_name_table.json';
 import type { GenericFetchedData } from '@src/utils/GenericFetchedData';
 import { type SearchQuery } from '@src/utils/SearchQuery';
 
+type TableEntry = SearchQuery & { totalStudents: number };
+
 const courseNameTable = untypedCourseNameTable as {
-  [key: string]: SearchQuery[];
+  [key: string]: TableEntry[];
 };
 
 //find all the prefixes in the course name table
@@ -200,12 +202,16 @@ export async function GET(request: Request) {
             })
             .sort((a, b) => b - a)[0] ?? 0;
 
+        const popularityBonus =
+          result.totalStudents > 0 ? -Math.log10(result.totalStudents + 1) : 0;
+
         return {
           distance:
             (smartNumberMatch < 0 ? 0 : distanceMetric) + // if checking course number, ignore distance metric
             2 * smartWordCapture + // double weight for word capture
             prefixPriority +
-            smartNumberMatch,
+            smartNumberMatch +
+            5 * popularityBonus,
           title: title,
           result: result,
         };
