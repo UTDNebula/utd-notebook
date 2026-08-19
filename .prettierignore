@@ -1,3 +1,4 @@
 src/server/db/migrations/*
 next-env.d.ts
 data
+src/nebula-library/*

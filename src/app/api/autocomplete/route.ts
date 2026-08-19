@@ -1,6 +1,6 @@
 import { and, eq } from 'drizzle-orm';
 import { NextResponse } from 'next/server';
-import autocompleteGraph from 'src/data/autocomplete_graph.json';
+import autocompleteGraph from '@src/data/autocomplete_graph.json';
 import { db } from '@src/server/db';
 import { file } from '@src/server/db/schema/file';
 import { section } from '@src/server/db/schema/section';

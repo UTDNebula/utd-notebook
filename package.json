@@ -51,6 +51,7 @@
     "drizzle-orm": "^0.45.2",
     "drizzle-zod": "^0.8.3",
     "graphology": "^0.26.0",
+    "nebula-library": "file:src/nebula-library",
     "next": "^16.3.1",
     "postgres": "^3.4.9",
     "react": "^19.2.7",
@@ -87,6 +88,7 @@
     "tailwindcss": "^4.3.1",
     "tailwindcss-animate": "^1.0.7",
     "ts-jest": "^29.4.11",
+    "ts-node": "^10.9.2",
     "tsx": "^4.23.12",
     "typescript": "^6.0.3"
   },
