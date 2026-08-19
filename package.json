@@ -22,17 +22,16 @@
     "buildsections": "tsx src/scripts/generateSectionsData.ts"
   },
   "dependencies": {
-    "@auth/drizzle-adapter": "^1.11.2",
     "@emotion/react": "^11.14.0",
     "@emotion/styled": "^11.14.1",
     "@ianvs/prettier-plugin-sort-imports": "^4.7.1",
-    "@mkholt/pdf-thumbnail": "^2.0.0",
+    "@mkholt/pdf-thumbnail": "2.0.0",
     "@mui/icons-material": "^9.1.1",
     "@mui/material": "^9.1.1",
     "@mui/material-nextjs": "^9.1.1",
     "@mui/x-date-pickers": "^9.5.0",
     "@neondatabase/serverless": "^1.1.0",
-    "@next/third-parties": "^16.2.9",
+    "@next/third-parties": "^16.3.1",
     "@sentry/nextjs": "^10.58.0",
     "@tanstack/match-sorter-utils": "^8.8.4",
     "@tanstack/react-devtools": "^0.10.5",
@@ -46,18 +45,17 @@
     "@trpc/server": "^11.17.0",
     "@trpc/tanstack-react-query": "^11.17.0",
     "autosuggest-highlight": "^3.3.4",
-    "better-auth": "^1.6.19",
+    "better-auth": "^1.7.1",
     "date-fns": "^4.4.0",
     "dotenv": "^17.4.2",
     "drizzle-orm": "^0.45.2",
     "drizzle-zod": "^0.8.3",
     "graphology": "^0.26.0",
-    "next": "^16.2.9",
-    "next-auth": "^4.24.14",
+    "next": "^16.3.1",
     "postgres": "^3.4.9",
     "react": "^19.2.7",
     "react-dom": "^19.2.7",
-    "sharp": "^0.35.1",
+    "sharp": "^0.35.3",
     "superjson": "^2.2.6",
     "zod": "^4.4.3",
     "zustand": "^5.0.14"
@@ -77,13 +75,13 @@
     "dotenv-cli": "^11.0.0",
     "drizzle-kit": "^0.31.10",
     "eslint": "^9.39.2",
-    "eslint-config-next": "^16.2.9",
+    "eslint-config-next": "^16.3.1",
     "eslint-config-prettier": "^10.1.8",
     "eslint-plugin-jsx-a11y": "^6.10.2",
     "eslint-plugin-react": "^7.37.5",
     "eslint-plugin-react-hooks": "^7.1.1",
     "jest": "^30.4.2",
-    "postcss": "^8.5.15",
+    "postcss": "^8.5.26",
     "prettier": "^3.8.4",
     "prettier-plugin-tailwindcss": "^0.8.0",
     "tailwindcss": "^4.3.1",
@@ -93,6 +91,9 @@
     "typescript": "^6.0.3"
   },
   "overrides": {
+    "@mkholt/pdf-thumbnail": {
+      "pdfjs-dist": "6.2.108"
+    },
     "drizzle-zod": {
       "zod": "^4.0.5"
     }
