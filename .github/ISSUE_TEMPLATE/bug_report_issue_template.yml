@@ -1,6 +1,6 @@
 name: 🪲 Bug Report
 description: File a bug report
-labels: ["Bug"]
+labels: ['Bug']
 body:
   - type: markdown
     attributes:
@@ -43,6 +43,6 @@ body:
       description: What environment were you using when you encountered this bug?
       value: |
         Browser: 
-        Operating System: 
+        Operating System:
     validations:
       required: true
