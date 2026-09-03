@@ -1,4 +1,4 @@
-import { BaseCard } from '@src/components/common/BaseCard';
+import { BaseCard } from '@nebula-library/components/BaseCard';
 import Breadcrumbs, { type BreadcrumbItem } from './Breadcrumbs';
 
 type SectionHeaderProps = {
@@ -21,7 +21,7 @@ export default function SectionHeader({
   const detailItems = (detailBreadcrumbs ?? []).filter(Boolean);
 
   return (
-    <div className="flex flex-row justify-between items-center gap-4">
+    <div className="flex flex-row items-center justify-between gap-4">
       <div className="flex flex-col gap-2">
         {breadcrumbs.length > 0 ? (
           <Breadcrumbs items={breadcrumbs} />
@@ -35,7 +35,7 @@ export default function SectionHeader({
           {title}
         </h1>
         {description && (
-          <p className="max-w-2xl text-sm text-slate-800 dark:text-slate-200 md:text-base">
+          <p className="max-w-2xl text-sm text-slate-800 md:text-base dark:text-slate-200">
             {description}
           </p>
         )}
@@ -45,7 +45,7 @@ export default function SectionHeader({
       {metaLabel && (
         <BaseCard className="w-fit px-4 py-2">
           <div className="flex items-center gap-2 text-sm font-semibold">
-            <span className="h-2 w-2 rounded-full bg-royal dark:bg-cornflower-300" />
+            <span className="bg-royal dark:bg-cornflower-300 h-2 w-2 rounded-full" />
             <span>{metaLabel}</span>
           </div>
         </BaseCard>

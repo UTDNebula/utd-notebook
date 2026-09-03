@@ -14,6 +14,7 @@ interface ProfessorData {
 
 interface SectionData {
   professors: ProfessorData[];
+  total_students?: number;
 }
 
 interface AcademicSessionData {
@@ -33,12 +34,18 @@ interface PrefixData {
 // tell compiler that aggregatedData DOES have data member
 const aggregatedData = aggregatedDataRaw as { data: PrefixData[] };
 
-export type TableType = { [key: string]: SearchQuery[] };
+export type TableEntry = SearchQuery & { totalStudents: number };
+export type TableType = { [key: string]: TableEntry[] };
 
 const table: TableType = {};
 
-function addCourse(title: string, prefix: string, number: string) {
-  const courseObject: SearchQuery = { prefix, number };
+function addCourse(
+  title: string,
+  prefix: string,
+  number: string,
+  totalStudents: number,
+) {
+  const courseObject: TableEntry = { prefix, number, totalStudents };
 
   if (!Object.prototype.hasOwnProperty.call(table, title)) {
     table[title] = [courseObject];
@@ -57,10 +64,30 @@ for (let prefixItr = 0; prefixItr < aggregatedData.data.length; prefixItr++) {
   ) {
     const courseNumberData = prefixData.course_numbers[courseNumberItr];
     if (!courseNumberData) continue; //handle blank data
+    let totalStudents = 0;
+    for (
+      let academicSessionItr = 0;
+      academicSessionItr < courseNumberData.academic_sessions.length;
+      academicSessionItr++
+    ) {
+      const academicSessionData =
+        courseNumberData.academic_sessions[academicSessionItr];
+      if (!academicSessionData) continue;
+      for (
+        let sectionItr = 0;
+        sectionItr < academicSessionData.sections.length;
+        sectionItr++
+      ) {
+        const sectionData = academicSessionData.sections[sectionItr];
+        if (!sectionData) continue;
+        totalStudents += sectionData.total_students ?? 0;
+      }
+    }
     addCourse(
       courseNumberData.title,
       prefixData.subject_prefix,
       courseNumberData.course_number,
+      totalStudents,
     );
   }
 }

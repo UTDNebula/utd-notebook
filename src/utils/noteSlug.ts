@@ -57,7 +57,7 @@ export function noteQueryToTitle(query: NoteQuery): string {
     case 'professor':
       return `${query.profFirst} ${query.profLast}`;
     case 'courseAndProfessor':
-      return `${query.prefix} ${query.number} — ${query.profFirst} ${query.profLast}`;
+      return `${query.prefix} ${query.number}, ${query.profFirst} ${query.profLast}`;
   }
 }
 

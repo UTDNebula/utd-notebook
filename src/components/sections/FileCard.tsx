@@ -5,13 +5,15 @@ import { Skeleton } from '@mui/material';
 import Image from 'next/image';
 import Link from 'next/link';
 import { useMemo, useState } from 'react';
-import { BaseCard } from '@src/components/common/BaseCard';
+import { BaseCard } from '@nebula-library/components/BaseCard';
 import RatingWidget from '@src/components/sections/RatingWidget';
 import SaveButton from '@src/components/sections/SaveButton';
 import type { SelectFileWithAuthorPreview } from '@src/server/db/models';
 import { authClient } from '@src/utils/auth-client';
+import { addVersionToFile } from '@src/utils/fileCacheBust';
 import NoteDeleteButton from './NoteDeleteButton';
 import NoteEditButton from './NoteEditButton';
+import ReportButton from './ReportButton';
 
 type FileCardProps = {
   file: SelectFileWithAuthorPreview;
@@ -34,7 +36,10 @@ export default function FileCard({ file }: FileCardProps) {
   const { data: session } = authClient.useSession();
   const isAuthor = session?.user?.id === file.authorId;
 
-  const thumbnailUrl = file.publicUrl;
+  const thumbnailUrl = addVersionToFile(
+    file.publicUrl,
+    file.updatedAt.getTime(),
+  );
 
   const files = useMemo<FileData[]>(
     () => [{ file: thumbnailUrl, name: file.name }],
@@ -79,12 +84,7 @@ export default function FileCard({ file }: FileCardProps) {
 
   return (
     <BaseCard variant="interactive" className="flex h-full flex-col">
-      <Link
-        href={file.publicUrl}
-        target="_blank"
-        rel="noreferrer"
-        className="flex grow flex-col"
-      >
+      <Link href={`/notes/${file.id}`} className="flex grow flex-col">
         <div className="overflow-hidden rounded-t-lg border-b border-neutral-200 bg-white dark:border-neutral-600 dark:bg-neutral-700">
           {thumbData ? (
             <div className="relative aspect-[3/4] w-full">
@@ -130,12 +130,12 @@ export default function FileCard({ file }: FileCardProps) {
         </div>
       </Link>
 
-      <div className="mx-4 mb-2 mt-0">
+      <div className="mx-4 mt-0 mb-2">
         <RatingWidget fileId={file.id} />
       </div>
 
       <p className="px-4 pb-2 text-xs font-medium text-slate-600 dark:text-slate-400">
-        Uploaded by{' '}
+        By{' '}
         {file.author?.username ? (
           <Link
             href={`/profile/${file.author.username}`}
@@ -151,6 +151,7 @@ export default function FileCard({ file }: FileCardProps) {
       <div className="m-4 mt-0 flex flex-row items-center space-x-2">
         {isAuthor && <NoteEditButton fileId={file.id} />}
         {isAuthor && <NoteDeleteButton fileId={file.id} />}
+        {!isAuthor && <ReportButton fileId={file.id} />}
         <SaveButton fileId={file.id} />
       </div>
     </BaseCard>

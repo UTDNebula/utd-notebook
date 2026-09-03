@@ -1,5 +1,5 @@
 import Link from 'next/link';
-import { BaseCard } from '@src/components/common/BaseCard';
+import { BaseCard } from '@nebula-library/components/BaseCard';
 
 type LinkCardProps = {
   href: string;
@@ -37,7 +37,7 @@ export default function LinkCard({
         )}
 
         {meta && (
-          <div className="mt-auto text-xs font-semibold text-royal dark:text-cornflower-300">
+          <div className="text-royal dark:text-cornflower-300 mt-auto text-xs font-semibold">
             {meta}
           </div>
         )}

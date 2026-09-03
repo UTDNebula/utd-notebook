@@ -159,7 +159,7 @@ const OnboardingFormStep = withForm({
     } else if (step?.variant === 'start') {
       FormStepData = (
         <div className="flex flex-col gap-6">
-          <div className="flex flex-col gap-2 ml-3.5">
+          <div className="ml-3.5 flex flex-col gap-2">
             <Typography
               variant="h1"
               className="font-display text-4xl font-bold"
@@ -175,7 +175,7 @@ const OnboardingFormStep = withForm({
     } else if (step?.variant === 'finish') {
       FormStepData = (
         <div className="flex flex-col gap-6">
-          <div className="flex flex-col gap-2 ml-3.5">
+          <div className="ml-3.5 flex flex-col gap-2">
             <Typography
               variant="h1"
               className="font-display text-4xl font-bold"

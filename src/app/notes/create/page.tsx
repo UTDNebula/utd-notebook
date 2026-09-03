@@ -4,7 +4,7 @@ import { redirect } from 'next/navigation';
 import Header from '@src/components/header/Header';
 import { auth } from '@src/server/auth';
 import { signInRoute } from '@src/utils/redirect';
-import NoteForm from './NoteForm';
+import CreateNoteForm from './CreateNoteForm';
 
 export const metadata: Metadata = {
   title: 'Create New Note',
@@ -23,8 +23,8 @@ export default async function Page() {
   return (
     <>
       <Header />
-      <main className="p-4 flex w-full flex-col items-center">
-        <NoteForm />
+      <main className="flex w-full flex-col items-center p-4">
+        <CreateNoteForm />
       </main>
     </>
   );

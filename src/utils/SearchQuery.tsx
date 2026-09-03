@@ -4,10 +4,17 @@ export type SearchQuery = {
   profFirst?: string;
   profLast?: string;
   sectionNumber?: string;
+  hasNotes?: boolean;
 };
 
 export type SearchQueryWithTotalStudents = SearchQuery & {
   total_students?: number;
+};
+
+export type SearchQueryWithTitle = SearchQuery & {
+  title?: string;
+  subtitle?: string;
+  isRecent?: boolean;
 };
 
 export type Professor = {
@@ -92,7 +99,9 @@ export function decodeSearchQueryLabel(encodedSearchTerm: string): SearchQuery {
   if (/^([A-Z]{2,4})$/.test(encodedSearchTermParts[0]!)) {
     // If it is just the prefix, return that
     if (encodedSearchTermParts.length == 1) {
-      return { prefix: encodedSearchTermParts[0] };
+      return {
+        prefix: encodedSearchTermParts[0],
+      };
     }
     // Is the second part a course number only
     if (/^([0-9A-Z]{4})$/.test(encodedSearchTermParts[1]!)) {
@@ -152,4 +161,11 @@ export function decodeSearchQueryLabel(encodedSearchTerm: string): SearchQuery {
       profLast: encodedSearchTermParts[encodedSearchTermParts.length - 1],
     };
   }
+}
+
+export function removeDuplicates(input: SearchQuery[]) {
+  return input.filter(
+    (option, index, self) =>
+      index === self.findIndex((entry) => searchQueryEqual(entry, option)),
+  );
 }

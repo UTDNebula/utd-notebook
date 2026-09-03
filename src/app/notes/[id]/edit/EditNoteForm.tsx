@@ -3,127 +3,95 @@
 import { useMutation } from '@tanstack/react-query';
 import { useRouter } from 'next/navigation';
 import { useMemo } from 'react';
-import Panel, { PanelSkeleton } from '@src/components/common/Panel';
+import Panel, { PanelSkeleton } from '@nebula-library/components/Panel';
+import type { FileDetails } from '@src/app/notes/create/CreateNoteForm';
 import FormFile from '@src/components/form/FormFile';
 import { useTRPC } from '@src/trpc/react';
 import { useAppForm } from '@src/utils/form';
-import {
-  createFileFormSchema,
-  editFileFormSchema,
-} from '@src/utils/formSchemas';
+import { editFileFormSchema } from '@src/utils/formSchemas';
 import { useUploadToUploadURL } from '@src/utils/uploadFile';
 
-type NoteFormProps =
-  | {
-      mode?: 'create';
-      file?: undefined;
-    }
-  | {
-      mode: 'edit';
-      file: {
-        id: string;
-        name: string;
-        description?: string;
-        handwritten: boolean;
-        publicUrl: string;
-      };
-    };
-
-interface FileDetails {
-  file: File | null;
-  name: string;
-  description?: string;
-  section?: string;
-  handwritten: boolean;
+interface EditNoteFormProps {
+  file: {
+    id: string;
+    name: string;
+    description?: string;
+    handwritten: boolean;
+    publicUrl: string;
+    updatedAt: Date;
+    prefix?: string;
+    number?: string;
+    sectionCode?: string;
+    term?: string;
+    year?: number;
+  };
 }
 
-const NoteForm = ({ mode = 'create', file: existingFile }: NoteFormProps) => {
+export default function EditNoteForm({
+  file: existingFile,
+}: EditNoteFormProps) {
   const api = useTRPC();
-  const createMutation = useMutation(api.file.create.mutationOptions());
   const updateMutation = useMutation(api.file.update.mutationOptions());
   const uploadFile = useUploadToUploadURL();
   const router = useRouter();
 
   const defaultValues = useMemo<FileDetails>(() => {
-    if (mode === 'edit' && existingFile) {
-      return {
-        file: null,
-        name: existingFile.name,
-        description: existingFile.description ?? '',
-        section: '',
-        handwritten: existingFile.handwritten,
-      };
-    }
+    const sectionNumber = [existingFile.number, existingFile.sectionCode]
+      .filter(Boolean)
+      .join('.');
+
     return {
       file: null,
-      name: '',
-      description: '',
-      section: '',
-      handwritten: false,
+      name: existingFile.name,
+      description: existingFile.description ?? '',
+      section: [
+        existingFile.prefix,
+        sectionNumber,
+        existingFile.term,
+        existingFile.year,
+      ]
+        .filter(Boolean)
+        .join(' '),
+      prefix: '',
+      number: '',
+      sectionCode: '',
+      term: '',
+      year: 0,
+      profFirst: '',
+      profLast: '',
+      handwritten: existingFile.handwritten,
     };
-  }, [mode, existingFile]);
+  }, [existingFile]);
 
   const form = useAppForm({
     defaultValues,
     onSubmit: async ({ value, formApi }) => {
-      const { file: selectedFile, section, ...rest } = value;
+      const selectedFile = value.file ?? null;
 
-      if (mode === 'edit' && existingFile) {
-        let fileUrl = existingFile.publicUrl;
-        const isFileDirty = !formApi.getFieldMeta('file')?.isDefaultValue;
-        if (isFileDirty && selectedFile) {
-          fileUrl = await uploadFile.mutateAsync({
-            file: selectedFile,
-            fileName: existingFile.id,
-          });
-        }
-
-        return updateMutation.mutateAsync(
-          {
-            id: existingFile.id,
-            ...rest,
-            file: fileUrl,
-          },
-          {
-            onSuccess: () => router.push(`/notes/${existingFile.id}`),
-          },
-        );
+      let fileUrl = existingFile.publicUrl;
+      const isFileDirty = !formApi.getFieldMeta('file')?.isDefaultValue;
+      if (isFileDirty && selectedFile) {
+        fileUrl = await uploadFile.mutateAsync({
+          file: selectedFile,
+          fileName: existingFile.id,
+        });
       }
 
-      // Create
-      return createMutation.mutateAsync(
-        { ...rest, section: section ?? '' },
+      return updateMutation.mutateAsync(
         {
-          onSuccess: async (newId) => {
-            const isFileDirty = !formApi.getFieldMeta('file')?.isDefaultValue;
-            if (!isFileDirty) {
-              router.push(`/notes/${newId}`);
-              return;
-            }
-
-            const url = await uploadFile.mutateAsync({
-              file: selectedFile,
-              fileName: newId,
-            });
-            updateMutation.mutate(
-              {
-                id: newId,
-                ...rest,
-                file: url,
-              },
-              {
-                onSuccess: () => router.push(`/notes/${newId}`),
-              },
-            );
-          },
+          id: existingFile.id,
+          name: value.name,
+          description: value.description,
+          handwritten: value.handwritten,
+          file: fileUrl,
+        },
+        {
+          onSuccess: () => router.push(`/notes/${existingFile.id}`),
         },
       );
     },
     validators: {
-      onChange:
-        mode === 'create'
-          ? createFileFormSchema
-          : editFileFormSchema.omit({ id: true }),
+      onChange: editFileFormSchema.omit({ id: true }),
     },
   });
 
@@ -136,14 +104,7 @@ const NoteForm = ({ mode = 'create', file: existingFile }: NoteFormProps) => {
       }}
       className="w-full max-w-6xl"
     >
-      <Panel
-        heading={mode === 'create' ? 'Create New Note' : 'Edit Note'}
-        description={
-          mode === 'create'
-            ? 'Upload a new note here to help future students.'
-            : 'Update your note details.'
-        }
-      >
+      <Panel heading="Edit Note" description="Update your note details.">
         {/* responsive layout */}
         <div className="flex flex-col gap-6 lg:flex-row lg:items-start">
           {/* LEFT: file upload */}
@@ -152,12 +113,18 @@ const NoteForm = ({ mode = 'create', file: existingFile }: NoteFormProps) => {
               {(field) => (
                 <FormFile
                   label="File"
-                  value={field.state.value}
+                  value={field.state.value ?? null}
+                  existingFile={{
+                    name: existingFile.name,
+                    publicUrl: existingFile.publicUrl,
+                    updatedAt: existingFile.updatedAt,
+                  }}
                   onBlur={field.handleBlur}
                   onChange={(e) => {
                     const file = e.target.files?.[0] ?? null;
                     field.handleChange(file);
                   }}
+                  isError={!field.state.meta.isValid}
                   helperText={
                     !field.state.meta.isValid
                       ? field.state.meta.errors
@@ -210,17 +177,17 @@ const NoteForm = ({ mode = 'create', file: existingFile }: NoteFormProps) => {
                 )}
               </form.AppField>
 
-              {mode === 'create' && (
-                <form.AppField name="section">
-                  {(field) => (
-                    <field.TextField
-                      label="Section"
-                      className="w-full"
-                      helperText="Example: CS 1200.001 Fall 2025"
-                    />
-                  )}
-                </form.AppField>
-              )}
+              <form.AppField name="section">
+                {(field) => (
+                  <field.TextField
+                    label="Section"
+                    className="w-full"
+                    helperText="Section is locked after note creation"
+                    disabled
+                  />
+                )}
+              </form.AppField>
+
               <form.AppField name="handwritten">
                 {(field) => (
                   <field.Checkbox label="Handwritten"></field.Checkbox>
@@ -230,7 +197,7 @@ const NoteForm = ({ mode = 'create', file: existingFile }: NoteFormProps) => {
           </div>
         </div>
 
-        <div className="flex flex-wrap justify-end items-center gap-2">
+        <div className="flex flex-wrap items-center justify-end gap-2">
           <form.AppForm>
             <form.ResetButton />
           </form.AppForm>
@@ -241,13 +208,11 @@ const NoteForm = ({ mode = 'create', file: existingFile }: NoteFormProps) => {
       </Panel>
     </form>
   );
-};
+}
 
-export default NoteForm;
-
-export const NoteFormSkeleton = () => {
+export const EditNoteFormSkeleton = () => {
   return (
-    <div className="flex flex-col gap-4 max-w-full">
+    <div className="flex max-w-full flex-col gap-4">
       <PanelSkeleton />
     </div>
   );

@@ -10,7 +10,6 @@ import {
   MenuItem,
   MenuList,
   Popover,
-  Tooltip,
   Typography,
 } from '@mui/material';
 import Link from 'next/link';
@@ -24,7 +23,7 @@ type Props = {
 };
 
 export const ProfileDropDown = ({ shadow = false }: Props) => {
-  const { data: session } = authClient.useSession();
+  const { data: session, isPending } = authClient.useSession();
   const [anchorEl, setAnchorEl] = useState<HTMLElement | null>(null);
   const open = Boolean(anchorEl);
 
@@ -47,22 +46,20 @@ export const ProfileDropDown = ({ shadow = false }: Props) => {
 
   return (
     <>
-      <Tooltip title="Settings" enterDelay={0} arrow>
-        <Avatar
-          alt={session?.user.name ?? undefined}
-          src={session?.user.image ?? undefined}
-          onClick={(e) => {
-            if (session !== null) {
-              setAnchorEl(open ? null : e.currentTarget);
-            } else {
-              setShowRegisterModal(true);
-            }
-          }}
-          component="button"
-          className={`cursor-pointer ${shadow ? 'drop-shadow-[0_0_4px_rgb(0_0_0_/_0.4)]' : ''}`}
-        />
-      </Tooltip>
-      {session && (
+      <Avatar
+        alt={isPending ? undefined : session?.user.name}
+        src={isPending ? undefined : (session?.user.image ?? undefined)}
+        onClick={(e) => {
+          if (session !== null) {
+            setAnchorEl(open ? null : e.currentTarget);
+          } else {
+            setShowRegisterModal(true);
+          }
+        }}
+        component="button"
+        className={`cursor-pointer ${shadow ? 'drop-shadow-[0_0_4px_rgb(0_0_0_/_0.4)]' : ''}`}
+      />
+      {!isPending && session && (
         <Popover
           open={open}
           anchorEl={anchorEl}
@@ -73,12 +70,12 @@ export const ProfileDropDown = ({ shadow = false }: Props) => {
         >
           <Card>
             <MenuList>
-              <MenuItem divider component={Link} href="/settings">
+              <MenuItem divider component={Link} href="/profile">
                 <ListItemIcon>
                   <Avatar
                     alt={session.user.name}
                     src={session.user.image ?? undefined}
-                    className="w-6 h-6"
+                    className="h-6 w-6"
                   />
                 </ListItemIcon>
                 <div>
