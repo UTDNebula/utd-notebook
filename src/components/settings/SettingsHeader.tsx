@@ -17,7 +17,7 @@ export default function SettingsHeader({ user }: SettingsHeaderProps) {
             <h1 className="font-display text-4xl font-semibold text-white max-sm:text-center">
               Settings
             </h1>
-            <span className="text-xl text-white opacity-80 max-sm:text-center max-sm:text-lg">
+            <span className="text-xl max-sm:text-lg max-sm:text-center text-white opacity-80">
               Manage your username and account preferences
             </span>
           </div>
