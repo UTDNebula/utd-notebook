@@ -24,6 +24,8 @@ const NewSidebar = ({
       <Tooltip title="Menu" enterDelay={0} arrow>
         <IconButton
           onClick={() => setOpen(true)}
+          aria-label="OPEN NAV SIDEBAR"
+          aria-expanded={open}
           className={`z-50 ${homepage ? ' drop-shadow-[0_0_4px_rgb(0_0_0_/_0.4)]' : ''}`}
           size="large"
           // title='Menu'
@@ -56,6 +58,7 @@ const NewSidebar = ({
         <NavMenu userCapabilites={userCapabilities} />
         <IconButton
           onClick={() => setOpen(false)}
+          aria-label="CLOSE NAV SIDEBAR"
           className="absolute top-4 right-4"
         >
           <CloseIcon />
