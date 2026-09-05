@@ -2,13 +2,20 @@
 
 import LogoutIcon from '@mui/icons-material/Logout';
 import SettingsIcon from '@mui/icons-material/Settings';
-import { Avatar, Card, ListItemIcon, ListItemText, MenuItem, MenuList, Popover, Typography } from '@mui/material';
+import { Avatar,
+  Card,
+  ListItemIcon,
+  ListItemText,
+  MenuItem,
+  MenuList,
+  Popover,
+  Typography
+} from '@mui/material';
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
 import { useEffect, useState } from 'react';
 import { useRegisterModal } from '@src/components/global/RegisterModalProvider';
 import { authClient } from '@src/utils/auth-client';
-
 
 type Props = {
   shadow?: boolean;
