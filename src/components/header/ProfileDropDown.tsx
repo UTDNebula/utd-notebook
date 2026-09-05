@@ -2,14 +2,15 @@
 
 import LogoutIcon from '@mui/icons-material/Logout';
 import SettingsIcon from '@mui/icons-material/Settings';
-import { Avatar,
+import {
+  Avatar,
   Card,
   ListItemIcon,
   ListItemText,
   MenuItem,
   MenuList,
   Popover,
-  Typography
+  Typography,
 } from '@mui/material';
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
