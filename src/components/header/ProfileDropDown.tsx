@@ -49,7 +49,7 @@ export const ProfileDropDown = ({ shadow = false }: Props) => {
       <Avatar
         alt={isPending ? undefined : session?.user.name}
         src={isPending ? undefined : (session?.user.image ?? undefined)}
-        aria-label={session == null ? "Sign In/Sign Up" : session?.user.name }
+        aria-label={session == null ? 'Sign In/Sign Up' : session?.user.name}
         onClick={(e) => {
           if (session !== null) {
             setAnchorEl(open ? null : e.currentTarget);
