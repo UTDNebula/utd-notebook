@@ -55,6 +55,7 @@ export default function NoteInfoPanel({ file }: NoteInfoPanelProps) {
             {!isAuthor && <ReportButton fileId={file.id} />}
             <SaveButton fileId={file.id} />
             <IconButton
+              aria-label="Open PDF in a new tab"
               LinkComponent={Link}
               href={file.publicUrl}
               target="_blank"
