@@ -16,9 +16,19 @@ export const metadata: Metadata = {
   },
 };
 
-export default async function Page() {
-  const session = await auth.api.getSession({ headers: await headers() });
-  if (!session) redirect(await signInRoute('notes/create'));
+export default async function Page({
+  searchParams,
+}: {
+  searchParams: Promise<{ q?: string }>;
+}) {
+  const [{ q }, session] = await Promise.all([
+    searchParams,
+    auth.api.getSession({ headers: await headers() }),
+  ]);
+  if (!session) {
+    const query = q ? `?${new URLSearchParams({ q })}` : '';
+    redirect(await signInRoute(`notes/create${query}`));
+  }
 
   return (
     <>
