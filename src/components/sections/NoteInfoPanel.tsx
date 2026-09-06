@@ -51,7 +51,7 @@ export default function NoteInfoPanel({ file }: NoteInfoPanelProps) {
           <div className="flex w-full flex-shrink-0 flex-wrap items-center justify-end gap-3 md:ml-auto md:w-auto">
             <RatingWidget fileId={file.id} />
             {isAuthor && <NoteEditButton fileId={file.id} />}
-            {isAuthor && <NoteDeleteButton fileId={file.id} />}
+            {isAuthor && <NoteDeleteButton fileId={file.id} redirectTo="/" />}
             {!isAuthor && <ReportButton fileId={file.id} />}
             <SaveButton fileId={file.id} />
             <IconButton
