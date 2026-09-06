@@ -36,6 +36,9 @@ export function parseNoteSlug(slug: string[]): NoteQuery | null {
         profLast,
       };
     }
+    else if (profTokens.length === 1) {
+      return null;
+    }
 
     return { type: 'course', prefix, number };
   }
