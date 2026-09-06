@@ -35,8 +35,7 @@ export function parseNoteSlug(slug: string[]): NoteQuery | null {
         profFirst,
         profLast,
       };
-    }
-    else if (profTokens.length === 1) {
+    } else if (profTokens.length === 1) {
       return null;
     }
 
