@@ -7,9 +7,16 @@ import { useRouter } from 'next/navigation';
 import type { MouseEvent } from 'react';
 import { useState } from 'react';
 import Confirmation from '@src/components/Confirmation';
+import { setSnackbar } from '@src/components/global/Snackbar';
 import { useTRPC } from '@src/trpc/react';
 
-export default function NoteDeleteButton({ fileId }: { fileId: string }) {
+export default function NoteDeleteButton({
+  fileId,
+  redirectTo,
+}: {
+  fileId: string;
+  redirectTo?: string;
+}) {
   const [open, setOpen] = useState(false);
   const api = useTRPC();
   const router = useRouter();
@@ -49,7 +56,16 @@ export default function NoteDeleteButton({ fileId }: { fileId: string }) {
             {
               onSuccess: () => {
                 setOpen(false);
-                router.refresh();
+                setSnackbar({
+                  message: 'Note deleted successfully',
+                  type: 'success',
+                  autoHideDuration: true,
+                });
+                if (redirectTo) {
+                  router.replace(redirectTo);
+                } else {
+                  router.refresh();
+                }
               },
             },
           );
