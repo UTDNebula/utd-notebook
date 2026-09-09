@@ -65,7 +65,7 @@ const fileSchema = z
   )
   .refine(
     (file) => !file || file.size <= MAX_FILE_SIZE,
-    'Max image size is 5MB',
+    'Max PDF size is 5MB',
   );
 
 export const createFileFormSchema = z.object({
