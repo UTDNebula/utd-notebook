@@ -11,6 +11,7 @@ import SaveButton from '@src/components/sections/SaveButton';
 import type { SelectFileWithAuthorPreview } from '@src/server/db/models';
 import { authClient } from '@src/utils/auth-client';
 import { addVersionToFile } from '@src/utils/fileCacheBust';
+import { getNoteFileUrl } from '@src/utils/noteFile';
 import NoteDeleteButton from './NoteDeleteButton';
 import NoteEditButton from './NoteEditButton';
 import ReportButton from './ReportButton';
@@ -37,7 +38,7 @@ export default function FileCard({ file }: FileCardProps) {
   const isAuthor = session?.user?.id === file.authorId;
 
   const thumbnailUrl = addVersionToFile(
-    file.publicUrl,
+    getNoteFileUrl(file.id),
     file.updatedAt.getTime(),
   );
 

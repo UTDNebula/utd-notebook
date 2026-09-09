@@ -6,14 +6,15 @@ import { FormHelperText, Skeleton } from '@mui/material';
 import Image from 'next/image';
 import { useEffect, useMemo } from 'react';
 import { addVersionToFile } from '@src/utils/fileCacheBust';
+import { getNoteFileUrl } from '@src/utils/noteFile';
 import useDebounce from '@src/utils/useDebounce';
 
 interface FormFileProps {
   label?: string;
   value: File | null;
   existingFile?: {
+    id: string;
     name: string;
-    publicUrl: string;
     updatedAt: Date;
   };
   onBlur: () => void;
@@ -55,7 +56,7 @@ const FormFile = ({
       return [
         {
           file: addVersionToFile(
-            existingFile.publicUrl,
+            getNoteFileUrl(existingFile.id),
             existingFile.updatedAt.getTime(),
           ),
           name: existingFile.name,

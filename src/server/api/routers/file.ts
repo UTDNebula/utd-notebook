@@ -4,6 +4,7 @@ import { z } from 'zod';
 import { file as files } from '@src/server/db/schema/file';
 import { section as sections } from '@src/server/db/schema/section';
 import { createFileSchema, editFileSchema } from '@src/utils/formSchemas';
+import { getNoteFileUrl } from '@src/utils/noteFile';
 import { callStorageAPI } from '@src/utils/storage';
 import { createTRPCRouter, protectedProcedure, publicProcedure } from '../trpc';
 
@@ -160,7 +161,7 @@ export const fileRouter = createTRPCRouter({
   update: protectedProcedure
     .input(editFileSchema)
     .mutation(async ({ input, ctx }) => {
-      const { id, file: publicUrl, ...data } = input;
+      const { id, ...data } = input;
       const userId = ctx.session.user.id;
 
       const file = await ctx.db.query.file.findFirst({
@@ -180,7 +181,7 @@ export const fileRouter = createTRPCRouter({
         .update(files)
         .set({
           ...data,
-          publicUrl,
+          publicUrl: getNoteFileUrl(id),
           updatedAt: new Date(),
         })
         .where(eq(files.id, id))

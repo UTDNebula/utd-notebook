@@ -13,6 +13,7 @@ import ReportButton from '@src/components/sections/ReportButton';
 import SaveButton from '@src/components/sections/SaveButton';
 import type { SelectFileWithUserMetadataAndSection } from '@src/server/db/models';
 import { authClient } from '@src/utils/auth-client';
+import { getNoteFileUrl } from '@src/utils/noteFile';
 
 type NoteInfoPanelProps = {
   file: SelectFileWithUserMetadataAndSection;
@@ -56,8 +57,10 @@ export default function NoteInfoPanel({ file }: NoteInfoPanelProps) {
             <SaveButton fileId={file.id} />
             <IconButton
               LinkComponent={Link}
-              href={file.publicUrl}
+              href={getNoteFileUrl(file.id)}
               target="_blank"
+              rel="noopener noreferrer"
+              aria-label="Open PDF"
               size="small"
             >
               <OpenInNewIcon fontSize="small" />

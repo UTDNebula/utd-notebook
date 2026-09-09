@@ -1,5 +1,6 @@
 import { z } from 'zod';
 import { studentClassificationEnum } from '@src/server/db/schema/user';
+import { MAX_NOTE_BYTES, NOTE_MIME_TYPE, noteIdSchema } from './noteFile';
 
 const usernameSchema = z
   .string()
@@ -53,8 +54,8 @@ export const accountOnboardingSchema = z.object({
 
 export type AccountOnboardingSchema = z.infer<typeof accountOnboardingSchema>;
 
-export const MAX_FILE_SIZE = 5 * 1024 * 1024;
-export const ACCEPTED_FILE_TYPES = ['application/pdf'];
+export const MAX_FILE_SIZE = MAX_NOTE_BYTES;
+export const ACCEPTED_FILE_TYPES = [NOTE_MIME_TYPE];
 
 const fileSchema = z
   .file('File required')
@@ -112,9 +113,8 @@ export const editFileFormSchema = z.object({
   handwritten: z.boolean(),
 });
 
-export const editFileSchema = z.object({
-  id: z.string(),
-  file: z.url(),
+export const editFileSchema = z.strictObject({
+  id: noteIdSchema,
   name: z
     .string()
     .min(3, 'Name must be at least 3 characters')
