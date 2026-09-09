@@ -85,10 +85,7 @@ const fileSchema = z
     (file) => !file || ACCEPTED_FILE_TYPES.includes(file.type),
     'Only PDF format is supported',
   )
-  .refine(
-    (file) => !file || file.size <= MAX_FILE_SIZE,
-    'Max PDF size is 5MB',
-  );
+  .refine((file) => !file || file.size <= MAX_FILE_SIZE, 'Max PDF size is 5MB');
 
 export const createFileFormSchema = z.object({
   file: fileSchema,
