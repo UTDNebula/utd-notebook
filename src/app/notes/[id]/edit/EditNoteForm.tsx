@@ -17,7 +17,6 @@ interface EditNoteFormProps {
     name: string;
     description?: string;
     handwritten: boolean;
-    publicUrl: string;
     updatedAt: Date;
     prefix?: string;
     number?: string;
@@ -68,10 +67,9 @@ export default function EditNoteForm({
     onSubmit: async ({ value, formApi }) => {
       const selectedFile = value.file ?? null;
 
-      let fileUrl = existingFile.publicUrl;
       const isFileDirty = !formApi.getFieldMeta('file')?.isDefaultValue;
       if (isFileDirty && selectedFile) {
-        fileUrl = await uploadFile.mutateAsync({
+        await uploadFile.mutateAsync({
           file: selectedFile,
           fileName: existingFile.id,
         });
@@ -83,7 +81,6 @@ export default function EditNoteForm({
           name: value.name,
           description: value.description,
           handwritten: value.handwritten,
-          file: fileUrl,
         },
         {
           onSuccess: () => router.push(`/notes/${existingFile.id}`),
@@ -115,8 +112,8 @@ export default function EditNoteForm({
                   label="File"
                   value={field.state.value ?? null}
                   existingFile={{
+                    id: existingFile.id,
                     name: existingFile.name,
-                    publicUrl: existingFile.publicUrl,
                     updatedAt: existingFile.updatedAt,
                   }}
                   onBlur={field.handleBlur}

@@ -1,16 +1,34 @@
 import { TRPCError } from '@trpc/server';
 import { z } from 'zod';
+import { NOTE_MIME_TYPE, noteIdSchema } from '@src/utils/noteFile';
 import { callStorageAPI, getUploadURL } from '@src/utils/storage';
 import { createTRPCRouter, protectedProcedure, publicProcedure } from '../trpc';
 
 const getDeleteSchema = z.object({
-  objectId: z.string(),
+  objectId: noteIdSchema,
 });
 
 const createUploadSchema = z.object({
-  objectId: z.string(),
-  mime: z.string(),
+  objectId: noteIdSchema,
+  mime: z.literal(NOTE_MIME_TYPE),
 });
+
+const ownedFileProcedure = protectedProcedure
+  .input(getDeleteSchema)
+  .use(async ({ ctx, input, next }) => {
+    const file = await ctx.db.query.file.findFirst({
+      where: (file, { eq }) => eq(file.id, input.objectId),
+      columns: { authorId: true },
+    });
+    if (!file || file.authorId !== ctx.session.user.id) {
+      throw new TRPCError({
+        code: 'FORBIDDEN',
+        message: 'You do not own this note.',
+      });
+    }
+    return next();
+  });
+
 export const storageRouter = createTRPCRouter({
   get: publicProcedure.input(getDeleteSchema).query(async ({ input }) => {
     const data = await callStorageAPI('GET', input.objectId);
@@ -23,7 +41,7 @@ export const storageRouter = createTRPCRouter({
     }
     return data;
   }),
-  delete: protectedProcedure.input(getDeleteSchema).query(async ({ input }) => {
+  delete: ownedFileProcedure.mutation(async ({ input }) => {
     const data = await callStorageAPI('DELETE', input.objectId);
     if (data.message !== 'success') {
       throw new TRPCError({
@@ -34,9 +52,9 @@ export const storageRouter = createTRPCRouter({
     }
     return data;
   }),
-  createUpload: protectedProcedure
+  createUpload: ownedFileProcedure
     .input(createUploadSchema)
-    .query(async ({ input }) => {
+    .mutation(async ({ input }) => {
       const data = await getUploadURL(input.objectId, input.mime);
       if (data.message !== 'success') {
         throw new TRPCError({

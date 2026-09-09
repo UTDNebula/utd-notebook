@@ -1,12 +1,12 @@
 'use client';
 
-import { useMutation, useQueryClient } from '@tanstack/react-query';
+import { useMutation } from '@tanstack/react-query';
 import { useTRPC } from '@src/trpc/react';
 import { ACCEPTED_FILE_TYPES, MAX_FILE_SIZE } from './formSchemas';
 
 export function useUploadToUploadURL() {
   const api = useTRPC();
-  const queryClient = useQueryClient();
+  const createUpload = useMutation(api.storage.createUpload.mutationOptions());
 
   return useMutation({
     mutationFn: async ({
@@ -29,12 +29,10 @@ export function useUploadToUploadURL() {
       }
 
       const [uploadUrlResponse, arrayBuffer] = await Promise.all([
-        queryClient.fetchQuery(
-          api.storage.createUpload.queryOptions({
-            objectId: fileName,
-            mime: file.type,
-          }),
-        ),
+        createUpload.mutateAsync({
+          objectId: fileName,
+          mime: 'application/pdf',
+        }),
         file.arrayBuffer(),
       ]);
 
@@ -58,18 +56,6 @@ export function useUploadToUploadURL() {
       if (!uploadResponse.ok) {
         throw new Error('Failed to upload file.');
       }
-
-      const fileResponse = await queryClient.fetchQuery(
-        api.storage.get.queryOptions({
-          objectId: fileName,
-        }),
-      );
-
-      if (fileResponse.message !== 'success') {
-        throw new Error('Failed to get file URL.');
-      }
-
-      return fileResponse.data.public_url;
     },
   });
 }

@@ -4,6 +4,7 @@ import Header from '@src/components/header/Header';
 import NoteInfoPanel from '@src/components/sections/NoteInfoPanel';
 import { api } from '@src/trpc/server';
 import { addVersionToFile } from '@src/utils/fileCacheBust';
+import { getNoteFileUrl } from '@src/utils/noteFile';
 
 type NotePageProps = {
   params: Promise<{ id: string }>;
@@ -24,7 +25,11 @@ export default async function NotePage({ params }: NotePageProps) {
         {/* Scrollable area with white card background for the PDF */}
         <BaseCard className="h-full min-h-[50vh] w-full max-w-6xl overflow-hidden">
           <iframe
-            src={addVersionToFile(file.publicUrl, file.updatedAt.getTime())}
+            src={addVersionToFile(
+              getNoteFileUrl(file.id),
+              file.updatedAt.getTime(),
+            )}
+            referrerPolicy="no-referrer"
             title={file.name}
             className="h-full w-full border-0"
           />

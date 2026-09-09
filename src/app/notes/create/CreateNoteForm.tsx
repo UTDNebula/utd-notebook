@@ -75,7 +75,7 @@ export default function CreateNoteForm() {
               return;
             }
 
-            const url = await uploadFile.mutateAsync({
+            await uploadFile.mutateAsync({
               file: selectedFile,
               fileName: newId,
             });
@@ -85,7 +85,6 @@ export default function CreateNoteForm() {
                 name: value.name,
                 description: value.description,
                 handwritten: value.handwritten,
-                file: url,
               },
               {
                 onSuccess: () => router.push(`/notes/${newId}`),
