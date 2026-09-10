@@ -3,6 +3,7 @@ import {
   NOTE_MIME_TYPE,
   noteIdSchema,
 } from '@src/utils/noteFile';
+import { callStorageAPI } from '@src/utils/storage';
 
 const errorResponse = (message: string, status: number) =>
   new Response(message, {
@@ -21,19 +22,27 @@ export async function GET(
   const parsed = noteIdSchema.safeParse((await params).id);
   if (!parsed.success) return errorResponse('File not found.', 404);
 
-  const bucket = process.env.NEBULA_API_STORAGE_BUCKET;
-  if (!bucket) return errorResponse('File storage is unavailable.', 503);
+  if (!process.env.NEBULA_API_STORAGE_BUCKET)
+    return errorResponse('File storage is unavailable.', 503);
 
   try {
+    const meta = await callStorageAPI('GET', parsed.data);
+    if (
+      meta.message !== 'success' ||
+      meta.data.content_type !== NOTE_MIME_TYPE
+    ) {
+      return errorResponse(
+        'This note has no valid PDF. Please upload it again.',
+        404,
+      );
+    }
+
     // Ignore legacy publicUrl values and never follow redirects to other sites.
-    const upstream = await fetch(
-      `https://storage.googleapis.com/${encodeURIComponent(bucket)}/${parsed.data}`,
-      {
-        redirect: 'error',
-        cache: 'no-store',
-        signal: AbortSignal.timeout(15000),
-      },
-    );
+    const upstream = await fetch(meta.data.public_url, {
+      redirect: 'error',
+      cache: 'no-store',
+      signal: AbortSignal.timeout(15000),
+    });
     const contentType = upstream.headers
       .get('content-type')
       ?.split(';')[0]
