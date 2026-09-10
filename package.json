@@ -93,9 +93,6 @@
     "typescript": "^6.0.3"
   },
   "overrides": {
-    "@mkholt/pdf-thumbnail": {
-      "pdfjs-dist": "6.2.108"
-    },
     "drizzle-zod": {
       "zod": "^4.0.5"
     }
