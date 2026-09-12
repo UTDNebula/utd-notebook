@@ -23,7 +23,7 @@ export function FormAutocompleteFreeSolo({
       size="small"
       value={field.state.value}
       onBlur={field.handleBlur}
-      onChange={(_e, newValue) => field.handleChange(newValue ?? '')}
+      onInputChange={(_e, newValue) => field.handleChange(newValue ?? '')}
       filterSelectedOptions
       renderInput={(params) => (
         <StyledTextField

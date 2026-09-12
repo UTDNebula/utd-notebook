@@ -26,7 +26,7 @@ export const accountSettingsSchema = z.object({
       iss.input === '' ? 'College major is required' : 'Invalid college major',
   }),
   // Considers empty strings valid...hopefully not an issue?
-  // Better fix would be using preprocess() to turn empty strings into null,
+  // Better strat would be using preprocess() to turn empty strings into null,
   // but I can't get typescript to recognize the output type as string | null,
   // which causes errors in UserInfo.tsx and OnboardingForm.tsx.
   minor: z.union([
