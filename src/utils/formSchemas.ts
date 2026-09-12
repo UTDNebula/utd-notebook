@@ -1,4 +1,5 @@
 import { z } from 'zod';
+import { majors, minors } from '@src/constants/utdDegrees';
 import { studentClassificationEnum } from '@src/server/db/schema/user';
 import { MAX_NOTE_BYTES, NOTE_MIME_TYPE, noteIdSchema } from './noteFile';
 
@@ -20,8 +21,14 @@ export type EditUsernameSchema = z.infer<typeof editUsernameSchema>;
 export const accountSettingsSchema = z.object({
   firstName: z.string().min(1, 'First name is required'),
   lastName: z.string().min(1, 'Last name is required'),
-  major: z.string().min(1, 'College major is required'),
-  minor: z.string().nullable(),
+  major: z.enum(majors, {
+    error: (iss) =>
+      iss.input === '' ? 'College major is required' : 'Invalid college major',
+  }),
+  minor: z.preprocess(
+    (val) => (val === '' ? null : val),
+    z.enum(minors, 'Invalid college minor').nullable(),
+  ),
   studentClassification: z.enum(studentClassificationEnum.enumValues),
   graduationDate: z.date().nullable(),
   contactEmail: z
@@ -38,8 +45,20 @@ export type AccountSettingsSchema = z.infer<typeof accountSettingsSchema>;
 export const accountOnboardingSchema = z.object({
   firstName: z.string().min(1, 'Name is required'),
   lastName: z.string().optional(),
-  major: z.string().optional(),
-  minor: z.string().nullable().optional(),
+  major: z
+    .enum(majors, {
+      error: (iss) =>
+        iss.input === ''
+          ? 'College major is required'
+          : 'Invalid college major',
+    })
+    .optional(),
+  minor: z
+    .preprocess(
+      (val) => (val === '' ? null : val),
+      z.enum(minors, 'Invalid college minor').nullable(),
+    )
+    .optional(),
   studentClassification: z.enum(studentClassificationEnum.enumValues),
   graduationDate: z.date({ error: 'Graduation date is required' }).nullable(),
   contactEmail: z
