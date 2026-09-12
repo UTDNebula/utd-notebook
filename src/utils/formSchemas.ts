@@ -25,10 +25,14 @@ export const accountSettingsSchema = z.object({
     error: (iss) =>
       iss.input === '' ? 'College major is required' : 'Invalid college major',
   }),
-  minor: z.preprocess(
-    (val) => (val === '' ? null : val),
+  // Considers empty strings valid...hopefully not an issue?
+  // Better strat would be using preprocess() to turn empty strings into null,
+  // but I can't get typescript to recognize the output type as string | null,
+  // which causes errors in UserInfo.tsx and OnboardingForm.tsx.
+  minor: z.union([
     z.enum(minors, 'Invalid college minor').nullable(),
-  ),
+    z.string().max(0, 'Invalid college minor').nullable(),
+  ]),
   studentClassification: z.enum(studentClassificationEnum.enumValues),
   graduationDate: z.date().nullable(),
   contactEmail: z
@@ -53,12 +57,11 @@ export const accountOnboardingSchema = z.object({
           : 'Invalid college major',
     })
     .optional(),
-  minor: z
-    .preprocess(
-      (val) => (val === '' ? null : val),
-      z.enum(minors, 'Invalid college minor').nullable(),
-    )
-    .optional(),
+  // See comment at accountSettingsSchema minor
+  minor: z.union([
+    z.enum(minors, 'Invalid college minor').nullable(),
+    z.string().max(0, 'Invalid college minor').nullable(),
+  ]),
   studentClassification: z.enum(studentClassificationEnum.enumValues),
   graduationDate: z.date({ error: 'Graduation date is required' }).nullable(),
   contactEmail: z
