@@ -4,8 +4,8 @@ import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import { useRouter } from 'next/navigation';
 import { useRef } from 'react';
 import StyledRating from '@src/components/common/Rating';
-import { useRegisterModal } from '@src/components/global/RegisterModalProvider';
-import { setSnackbar } from '@src/components/global/Snackbar';
+import { useRegisterModal } from '@src/lib/modules/registerModal/RegisterModalProvider';
+import { setSnackbar } from '@src/lib/modules/snackbar/Snackbar';
 import { useTRPC } from '@src/lib/trpc/react';
 import { authClient } from '@src/lib/utils/auth-client';
 

@@ -1,12 +1,8 @@
 'use client';
 
 import Link from 'next/link';
-import {
-  mainCats,
-  moreCats,
-  type personalCats,
-} from '@src/constants/categories';
 import { UTDNotebookLogoCombination } from '@src/lib/icons/UTDNotebookLogo';
+import { mainCats, moreCats, type personalCats } from './categories';
 import SidebarItems from './SidebarItems';
 
 type NavMenuProps = {

@@ -2,8 +2,8 @@ import { headers } from 'next/headers';
 import Image from 'next/image';
 import Link from 'next/link';
 import { redirect } from 'next/navigation';
-import { RegisterModalContents } from '@src/components/global/RegisterModal';
 import { UTDNotebookLogoStandalone } from '@src/lib/icons/UTDNotebookLogo';
+import { RegisterModalContents } from '@src/lib/modules/registerModal/RegisterModal';
 import { auth } from '@src/server/auth';
 
 export default async function Auth(props: {

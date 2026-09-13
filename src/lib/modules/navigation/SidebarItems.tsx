@@ -2,7 +2,7 @@
 
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
-import { IconMap, routeMap, type allCats } from '@src/constants/categories';
+import { IconMap, routeMap, type allCats } from './categories';
 
 const SidebarItems = ({ cat }: { cat: allCats[number] }) => {
   const Icon = IconMap[cat];

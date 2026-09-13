@@ -6,8 +6,11 @@ import { useStore } from '@tanstack/react-form';
 import { useMutation, useQuery } from '@tanstack/react-query';
 import { useEffect, useState } from 'react';
 import Panel from '@nebula-library/components/Panel';
-import { setSnackbar, SnackbarPresets } from '@src/components/global/Snackbar';
 import { useAppForm } from '@src/lib/components/form/form';
+import {
+  setSnackbar,
+  SnackbarPresets,
+} from '@src/lib/modules/snackbar/Snackbar';
 import { useTRPC } from '@src/lib/trpc/react';
 import useDebounce from '@src/lib/utils/useDebounce';
 import { SelectUserMetadata } from '@src/server/db/models';

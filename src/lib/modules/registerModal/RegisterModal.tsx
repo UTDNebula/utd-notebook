@@ -5,7 +5,7 @@ import IconButton from '@mui/material/IconButton';
 import Modal, { ModalProps } from '@mui/material/Modal';
 import Typography from '@mui/material/Typography';
 import React from 'react';
-import ProviderButton from '@src/app/auth/ProviderButtons';
+import ProviderButton from './ProviderButtons';
 
 type RegisterModalProps = Omit<ModalProps, 'children'> & {
   open: boolean;
