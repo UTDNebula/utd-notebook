@@ -2,6 +2,11 @@
 
 _What am I_
 
+## Developer documentation
+
+Start with the [developer wiki home](docs/Home.md) for architecture, project
+structure, and the contribution workflow.
+
 ## Contributing
 
 We are always open to contributions to the project. If you would like to contribute and want some guidance on where to start,
