@@ -5,6 +5,7 @@ import EmptyStateCard from '@src/lib/components/EmptyStateCard';
 import { api } from '@src/lib/trpc/server';
 import { signInRoute } from '@src/lib/utils/redirect';
 import { auth } from '@src/server/auth';
+import { isOnboarded } from '@src/server/onboarding';
 import ReportForm from '@src/systems/moderation/components/ReportForm';
 import FileCard from '@src/systems/notes/components/FileCard';
 import Header from '@src/systems/search/components/Header';
@@ -24,6 +25,10 @@ export default async function ReportPage({ searchParams }: ReportPageProps) {
   ]);
 
   if (!session) redirect(await signInRoute('report'));
+
+  if (!(await isOnboarded(session.user.id))) {
+    redirect('/get-started');
+  }
 
   if (!fileId) {
     return (
