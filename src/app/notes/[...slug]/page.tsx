@@ -1,10 +1,10 @@
-import EmptyStateCard from '@src/components/sections/EmptyStateCard';
 import FilesGrid from '@src/components/sections/FilesGrid';
 import HandwrittenFilter from '@src/components/sections/Filters';
 import LinkCard from '@src/components/sections/LinkCard';
 import SectionHeader from '@src/components/sections/SectionHeader';
+import EmptyStateCard from '@src/lib/components/EmptyStateCard';
+import { api } from '@src/lib/trpc/server';
 import type { SectionWithFilesWithUserMetadata } from '@src/server/db/models';
-import { api } from '@src/trpc/server';
 import {
   noteQueryToDescription,
   noteQueryToTitle,

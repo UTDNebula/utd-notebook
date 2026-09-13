@@ -6,8 +6,8 @@ import { Button } from '@mui/material';
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import { useRouter } from 'next/navigation';
 import { setSnackbar } from '@src/components/global/Snackbar';
-import { useTRPC } from '@src/trpc/react';
-import { authClient } from '@src/utils/auth-client';
+import { useTRPC } from '@src/lib/trpc/react';
+import { authClient } from '@src/lib/utils/auth-client';
 
 type SaveButtonProps = {
   fileId: string;

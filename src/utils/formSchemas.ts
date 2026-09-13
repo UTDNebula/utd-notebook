@@ -1,7 +1,10 @@
 import { z } from 'zod';
-import { majors, minors } from '@src/constants/utdDegrees';
+import {
+  MAX_NOTE_BYTES,
+  NOTE_MIME_TYPE,
+  noteIdSchema,
+} from '@src/lib/note-files/noteFile';
 import { studentClassificationEnum } from '@src/server/db/schema/user';
-import { MAX_NOTE_BYTES, NOTE_MIME_TYPE, noteIdSchema } from './noteFile';
 
 const usernameSchema = z
   .string()

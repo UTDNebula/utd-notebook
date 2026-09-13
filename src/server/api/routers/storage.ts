@@ -1,7 +1,7 @@
 import { TRPCError } from '@trpc/server';
 import { z } from 'zod';
-import { NOTE_MIME_TYPE, noteIdSchema } from '@src/utils/noteFile';
-import { callStorageAPI, getUploadURL } from '@src/utils/storage';
+import { NOTE_MIME_TYPE, noteIdSchema } from '@src/lib/note-files/noteFile';
+import { callStorageAPI, getUploadURL } from '@src/server/storage';
 import { createTRPCRouter, protectedProcedure, publicProcedure } from '../trpc';
 
 const getDeleteSchema = z.object({

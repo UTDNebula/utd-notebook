@@ -5,9 +5,9 @@ import CloudUploadIcon from '@mui/icons-material/CloudUpload';
 import { FormHelperText, Skeleton } from '@mui/material';
 import Image from 'next/image';
 import { useEffect, useMemo } from 'react';
-import { addVersionToFile } from '@src/utils/fileCacheBust';
-import { getNoteFileUrl } from '@src/utils/noteFile';
-import useDebounce from '@src/utils/useDebounce';
+import { getNoteFileUrl } from '@src/lib/note-files/noteFile';
+import { addVersionToFile } from '@src/lib/utils/fileCacheBust';
+import useDebounce from '@src/lib/utils/useDebounce';
 
 interface FormFileProps {
   label?: string;

@@ -1,9 +1,9 @@
 import { and, eq, ilike } from 'drizzle-orm';
 import { z } from 'zod';
 import sectionsData from '@src/data/sections_data.json';
+import { normalizePrefix } from '@src/lib/sections/section';
+import type { SectionEntry } from '@src/lib/sections/sectionEntry';
 import { section } from '@src/server/db/schema/section';
-import { normalizePrefix } from '@src/utils/section';
-import type { SectionEntry } from '@src/utils/sectionEntry';
 import { createTRPCRouter, publicProcedure } from '../trpc';
 
 // Already sorted by year desc, term desc at build time (generateSectionsData.ts)

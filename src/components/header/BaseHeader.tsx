@@ -7,7 +7,7 @@ import gradientBG from '@public/background.png';
 import Image from 'next/image';
 import Link from 'next/link';
 import { createContext, useContext, useState, type ReactNode } from 'react';
-import { UTDNotebookLogoStandalone } from '@src/icons/UTDNotebookLogo';
+import { UTDNotebookLogoStandalone } from '@src/lib/icons/UTDNotebookLogo';
 import { ProfileDropDown } from './ProfileDropDown';
 
 /**

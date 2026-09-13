@@ -3,8 +3,8 @@ import { headers } from 'next/headers';
 import { redirect } from 'next/navigation';
 import Header from '@src/components/header/Header';
 import SettingsForm from '@src/components/settings/SettingsForm';
+import { signInRoute } from '@src/lib/utils/redirect';
 import { auth } from '@src/server/auth';
-import { signInRoute } from '@src/utils/redirect';
 
 export const metadata: Metadata = {
   title: 'Settings',

@@ -2,8 +2,8 @@ import type { Metadata } from 'next';
 import { headers } from 'next/headers';
 import { redirect } from 'next/navigation';
 import Header from '@src/components/header/Header';
+import { signInRoute } from '@src/lib/utils/redirect';
 import { auth } from '@src/server/auth';
-import { signInRoute } from '@src/utils/redirect';
 import CreateNoteForm from './CreateNoteForm';
 
 export const metadata: Metadata = {

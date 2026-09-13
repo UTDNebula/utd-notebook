@@ -3,9 +3,9 @@ import Image from 'next/image';
 import { redirect } from 'next/navigation';
 import OnboardingForm from '@src/components/getting-started/OnboardingForm';
 import Header from '@src/components/header/Header';
+import { api } from '@src/lib/trpc/server';
+import { signInRoute } from '@src/lib/utils/redirect';
 import { auth } from '@src/server/auth';
-import { api } from '@src/trpc/server';
-import { signInRoute } from '@src/utils/redirect';
 
 export default async function Page() {
   const session = await auth.api.getSession({ headers: await headers() });

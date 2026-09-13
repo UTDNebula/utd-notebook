@@ -16,7 +16,7 @@ import Link from 'next/link';
 import { useRouter } from 'next/navigation';
 import { useEffect, useState } from 'react';
 import { useRegisterModal } from '@src/components/global/RegisterModalProvider';
-import { authClient } from '@src/utils/auth-client';
+import { authClient } from '@src/lib/utils/auth-client';
 
 type Props = {
   shadow?: boolean;
