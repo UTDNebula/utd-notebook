@@ -19,7 +19,7 @@ import { WizardStepObject } from '@src/lib/components/form/FormWizard';
 import {
   accountOnboardingSchema,
   AccountOnboardingSchema,
-} from '@src/lib/schemas/formSchemas';
+} from '@src/lib/schemas/account';
 import { useTRPC } from '@src/lib/trpc/react';
 import { SelectUserMetadata } from '@src/server/db/models';
 import OnboardingFormStep from './OnboardingFormStep';

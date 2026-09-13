@@ -5,7 +5,7 @@ import { useRouter, useSearchParams } from 'next/navigation';
 import Panel, { PanelSkeleton } from '@nebula-library/components/Panel';
 import { useAppForm } from '@src/lib/components/form/form';
 import FormFile from '@src/lib/components/form/FormFile';
-import { createFileFormSchema } from '@src/lib/schemas/formSchemas';
+import { createFileFormSchema } from '@src/lib/schemas/note';
 import { useTRPC } from '@src/lib/trpc/react';
 import { useUploadToUploadURL } from '@src/systems/notes/hooks/useUploadToUploadURL';
 

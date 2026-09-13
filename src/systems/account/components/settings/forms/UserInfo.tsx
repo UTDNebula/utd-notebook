@@ -15,7 +15,7 @@ import {
 import {
   AccountSettingsSchema,
   accountSettingsSchema,
-} from '@src/lib/schemas/formSchemas';
+} from '@src/lib/schemas/account';
 import { useTRPC } from '@src/lib/trpc/react';
 import { SelectUserMetadata } from '@src/server/db/models';
 import { studentClassificationEnum } from '@src/server/db/schema/user';
