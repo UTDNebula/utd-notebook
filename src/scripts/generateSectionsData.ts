@@ -3,8 +3,8 @@ Generate a flat sections data file from aggregated_data.json for section search.
 To create, run: npm run buildsections
 */
 import { writeFileSync } from 'fs';
+import type { SectionEntry } from '@src/lib/sections/sectionEntry';
 import aggregatedDataRaw from '../data/aggregated_data.json';
-import type { SectionEntry } from '../utils/sectionEntry';
 
 interface ProfessorData {
   first_name?: string;

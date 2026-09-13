@@ -4,10 +4,10 @@ import Autocomplete from '@mui/material/Autocomplete';
 import CircularProgress from '@mui/material/CircularProgress';
 import { useQuery } from '@tanstack/react-query';
 import { useState } from 'react';
-import { useTRPC } from '@src/trpc/react';
-import { useFieldContext } from '@src/utils/form';
-import type { SectionEntry } from '@src/utils/sectionEntry';
-import useDebounce from '@src/utils/useDebounce';
+import { useFieldContext } from '@src/lib/components/form/form';
+import type { SectionEntry } from '@src/lib/sections/sectionEntry';
+import { useTRPC } from '@src/lib/trpc/react';
+import useDebounce from '@src/lib/utils/useDebounce';
 import { StyledTextField } from './FormTextField';
 
 function sectionLabel(entry: SectionEntry): string {

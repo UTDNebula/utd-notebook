@@ -1,9 +1,9 @@
 'use server';
 
 import Alert from '@mui/material/Alert';
+import { api } from '@src/lib/trpc/server';
 import { auth } from '@src/server/auth';
 import { SelectUserMetadata } from '@src/server/db/models';
-import { api } from '@src/trpc/server';
 import DeleteAccount from './forms/DeleteAccount';
 import UserInfo from './forms/UserInfo';
 import Username from './forms/Username';

@@ -14,10 +14,10 @@ import { useRouter } from 'next/navigation';
 import { MouseEvent, useCallback, useState } from 'react';
 import { BaseCard } from '@nebula-library/components/BaseCard';
 import Panel from '@nebula-library/components/Panel';
-import { WizardStepObject } from '@src/components/form/FormWizard';
+import { useAppForm } from '@src/lib/components/form/form';
+import { WizardStepObject } from '@src/lib/components/form/FormWizard';
+import { useTRPC } from '@src/lib/trpc/react';
 import { SelectUserMetadata } from '@src/server/db/models';
-import { useTRPC } from '@src/trpc/react';
-import { useAppForm } from '@src/utils/form';
 import {
   accountOnboardingSchema,
   AccountOnboardingSchema,

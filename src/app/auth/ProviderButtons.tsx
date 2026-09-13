@@ -2,8 +2,8 @@
 
 import Button from '@mui/material/Button';
 import Typography from '@mui/material/Typography';
-import AuthIcons from '@src/icons/AuthIcons';
-import { authClient } from '@src/utils/auth-client';
+import AuthIcons from '@src/lib/icons/AuthIcons';
+import { authClient } from '@src/lib/utils/auth-client';
 
 const providerNames = {
   google: 'Google',

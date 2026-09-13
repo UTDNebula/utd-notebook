@@ -1,9 +1,9 @@
 import { headers } from 'next/headers';
 import { notFound, redirect } from 'next/navigation';
 import Header from '@src/components/header/Header';
+import { api } from '@src/lib/trpc/server';
+import { signInRoute } from '@src/lib/utils/redirect';
 import { auth } from '@src/server/auth';
-import { api } from '@src/trpc/server';
-import { signInRoute } from '@src/utils/redirect';
 import EditNoteForm from './EditNoteForm';
 
 type EditNotePageProps = {

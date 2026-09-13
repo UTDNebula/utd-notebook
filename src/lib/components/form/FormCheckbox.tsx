@@ -1,5 +1,5 @@
 import { Checkbox, FormControlLabel } from '@mui/material';
-import { useFieldContext } from '@src/utils/form';
+import { useFieldContext } from '@src/lib/components/form/form';
 
 interface FormCheckboxProps {
   label?: string;

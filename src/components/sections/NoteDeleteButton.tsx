@@ -6,8 +6,8 @@ import { useMutation } from '@tanstack/react-query';
 import { useRouter } from 'next/navigation';
 import type { MouseEvent } from 'react';
 import { useState } from 'react';
-import Confirmation from '@src/components/Confirmation';
-import { useTRPC } from '@src/trpc/react';
+import Confirmation from '@src/lib/components/Confirmation';
+import { useTRPC } from '@src/lib/trpc/react';
 
 export default function NoteDeleteButton({ fileId }: { fileId: string }) {
   const [open, setOpen] = useState(false);

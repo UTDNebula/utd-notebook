@@ -1,4 +1,4 @@
-import '@src/styles/globals.css';
+import '@src/lib/styles/globals.css';
 import { AppRouterCacheProvider } from '@mui/material-nextjs/v15-appRouter';
 import { ThemeProvider } from '@mui/material/styles';
 import { GoogleAnalytics } from '@next/third-parties/google';
@@ -6,9 +6,9 @@ import { type Metadata } from 'next';
 import { Bai_Jamjuree, Inter } from 'next/font/google';
 import { RegisterModalProvider } from '@src/components/global/RegisterModalProvider';
 import { SnackbarProvider } from '@src/components/global/Snackbar';
-import { TRPCReactProvider } from '@src/trpc/react';
-import ClientLocalizationProvider from '@src/utils/localization';
-import theme from '@src/utils/theme';
+import { TRPCReactProvider } from '@src/lib/trpc/react';
+import ClientLocalizationProvider from '@src/lib/utils/localization';
+import theme from '@src/lib/utils/theme';
 
 const inter = Inter({
   subsets: ['latin'],

@@ -6,8 +6,8 @@ import { useRef } from 'react';
 import StyledRating from '@src/components/common/Rating';
 import { useRegisterModal } from '@src/components/global/RegisterModalProvider';
 import { setSnackbar } from '@src/components/global/Snackbar';
-import { useTRPC } from '@src/trpc/react';
-import { authClient } from '@src/utils/auth-client';
+import { useTRPC } from '@src/lib/trpc/react';
+import { authClient } from '@src/lib/utils/auth-client';
 
 type RatingWidgetProps = {
   fileId: string;

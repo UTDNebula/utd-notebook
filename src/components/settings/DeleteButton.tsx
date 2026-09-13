@@ -4,8 +4,8 @@ import DeleteIcon from '@mui/icons-material/Delete';
 import { Button } from '@mui/material';
 import { useRouter } from 'next/navigation';
 import { useState } from 'react';
-import Confirmation from '@src/components/Confirmation';
-import { authClient } from '@src/utils/auth-client';
+import Confirmation from '@src/lib/components/Confirmation';
+import { authClient } from '@src/lib/utils/auth-client';
 
 export default function DeleteButton() {
   const [open, setOpen] = useState(false);

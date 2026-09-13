@@ -1,8 +1,8 @@
 import { headers } from 'next/headers';
 import { redirect } from 'next/navigation';
+import { api } from '@src/lib/trpc/server';
+import { signInRoute } from '@src/lib/utils/redirect';
 import { auth } from '@src/server/auth';
-import { api } from '@src/trpc/server';
-import { signInRoute } from '@src/utils/redirect';
 
 export default async function ProfileLandingPage() {
   const session = await auth.api.getSession({ headers: await headers() });

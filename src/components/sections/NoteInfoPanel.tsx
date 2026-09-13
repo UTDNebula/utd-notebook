@@ -11,9 +11,9 @@ import NoteEditButton from '@src/components/sections/NoteEditButton';
 import RatingWidget from '@src/components/sections/RatingWidget';
 import ReportButton from '@src/components/sections/ReportButton';
 import SaveButton from '@src/components/sections/SaveButton';
+import { getNoteFileUrl } from '@src/lib/note-files/noteFile';
+import { authClient } from '@src/lib/utils/auth-client';
 import type { SelectFileWithUserMetadataAndSection } from '@src/server/db/models';
-import { authClient } from '@src/utils/auth-client';
-import { getNoteFileUrl } from '@src/utils/noteFile';
 
 type NoteInfoPanelProps = {
   file: SelectFileWithUserMetadataAndSection;

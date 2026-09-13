@@ -2,11 +2,11 @@ import type { Metadata } from 'next';
 import { headers } from 'next/headers';
 import { redirect } from 'next/navigation';
 import Header from '@src/components/header/Header';
-import EmptyStateCard from '@src/components/sections/EmptyStateCard';
 import FileCard from '@src/components/sections/FileCard';
+import EmptyStateCard from '@src/lib/components/EmptyStateCard';
+import { api } from '@src/lib/trpc/server';
+import { signInRoute } from '@src/lib/utils/redirect';
 import { auth } from '@src/server/auth';
-import { api } from '@src/trpc/server';
-import { signInRoute } from '@src/utils/redirect';
 import ReportForm from './ReportForm';
 
 export const metadata: Metadata = {

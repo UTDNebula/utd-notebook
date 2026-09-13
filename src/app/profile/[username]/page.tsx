@@ -2,7 +2,7 @@ import { type Metadata } from 'next';
 import { notFound } from 'next/navigation';
 import Header from '@src/components/header/Header';
 import ProfileNotes from '@src/components/profile/ProfileNotes';
-import { api } from '@src/trpc/server';
+import { api } from '@src/lib/trpc/server';
 
 type ProfilePageProps = {
   params: Promise<{

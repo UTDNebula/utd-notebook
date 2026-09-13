@@ -5,9 +5,9 @@ import { useRouter } from 'next/navigation';
 import { useMemo } from 'react';
 import Panel, { PanelSkeleton } from '@nebula-library/components/Panel';
 import type { FileDetails } from '@src/app/notes/create/CreateNoteForm';
-import FormFile from '@src/components/form/FormFile';
-import { useTRPC } from '@src/trpc/react';
-import { useAppForm } from '@src/utils/form';
+import { useAppForm } from '@src/lib/components/form/form';
+import FormFile from '@src/lib/components/form/FormFile';
+import { useTRPC } from '@src/lib/trpc/react';
 import { editFileFormSchema } from '@src/utils/formSchemas';
 import { useUploadToUploadURL } from '@src/utils/uploadFile';
 

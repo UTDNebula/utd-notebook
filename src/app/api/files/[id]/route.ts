@@ -2,8 +2,8 @@ import {
   MAX_NOTE_BYTES,
   NOTE_MIME_TYPE,
   noteIdSchema,
-} from '@src/utils/noteFile';
-import { callStorageAPI } from '@src/utils/storage';
+} from '@src/lib/note-files/noteFile';
+import { callStorageAPI } from '@src/server/storage';
 
 const errorResponse = (message: string, status: number) =>
   new Response(message, {

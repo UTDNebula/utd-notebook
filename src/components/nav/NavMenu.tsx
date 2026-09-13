@@ -6,7 +6,7 @@ import {
   moreCats,
   type personalCats,
 } from '@src/constants/categories';
-import { UTDNotebookLogoCombination } from '@src/icons/UTDNotebookLogo';
+import { UTDNotebookLogoCombination } from '@src/lib/icons/UTDNotebookLogo';
 import SidebarItems from './SidebarItems';
 
 type NavMenuProps = {
