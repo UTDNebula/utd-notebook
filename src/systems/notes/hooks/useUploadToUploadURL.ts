@@ -1,8 +1,11 @@
 'use client';
 
 import { useMutation } from '@tanstack/react-query';
+import {
+  ACCEPTED_FILE_TYPES,
+  MAX_FILE_SIZE,
+} from '@src/lib/schemas/formSchemas';
 import { useTRPC } from '@src/lib/trpc/react';
-import { ACCEPTED_FILE_TYPES, MAX_FILE_SIZE } from '@src/utils/formSchemas';
 
 export function useUploadToUploadURL() {
   const api = useTRPC();

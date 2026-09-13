@@ -12,14 +12,14 @@ import {
   setSnackbar,
   SnackbarPresets,
 } from '@src/lib/modules/snackbar/Snackbar';
+import {
+  AccountSettingsSchema,
+  accountSettingsSchema,
+} from '@src/lib/schemas/formSchemas';
 import { useTRPC } from '@src/lib/trpc/react';
 import { SelectUserMetadata } from '@src/server/db/models';
 import { studentClassificationEnum } from '@src/server/db/schema/user';
 import { majors, minors } from '@src/systems/account/data/utdDegrees';
-import {
-  AccountSettingsSchema,
-  accountSettingsSchema,
-} from '@src/utils/formSchemas';
 
 type UserInfoProps = {
   user: SelectUserMetadata;
