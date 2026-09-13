@@ -7,7 +7,7 @@ import { useMemo } from 'react';
 import Panel from '@nebula-library/components/Panel';
 import { useAppForm } from '@src/lib/components/form/form';
 import { setSnackbar } from '@src/lib/modules/snackbar/Snackbar';
-import { createReportSchema } from '@src/lib/schemas/formSchemas';
+import { createReportSchema } from '@src/lib/schemas/moderation';
 import { useTRPC } from '@src/lib/trpc/react';
 
 type ReportFormProps = {
