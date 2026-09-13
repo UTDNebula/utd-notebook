@@ -1,12 +1,12 @@
 import type { Metadata } from 'next';
 import { headers } from 'next/headers';
 import { redirect } from 'next/navigation';
-import Header from '@src/components/header/Header';
 import EmptyStateCard from '@src/lib/components/EmptyStateCard';
 import { api } from '@src/lib/trpc/server';
 import { signInRoute } from '@src/lib/utils/redirect';
 import { auth } from '@src/server/auth';
 import FileCard from '@src/systems/notes/components/FileCard';
+import Header from '@src/systems/search/components/Header';
 import ReportForm from './ReportForm';
 
 export const metadata: Metadata = {

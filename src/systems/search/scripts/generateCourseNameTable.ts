@@ -92,7 +92,10 @@ for (let prefixItr = 0; prefixItr < aggregatedData.data.length; prefixItr++) {
   }
 }
 
-writeFileSync('src/data/course_name_table.json', JSON.stringify(table));
+writeFileSync(
+  'src/systems/search/data/course_name_table.json',
+  JSON.stringify(table),
+);
 
 console.log('Course name table generation done.');
 
@@ -107,7 +110,7 @@ for (const [title, queries] of Object.entries(table)) {
 }
 
 writeFileSync(
-  'src/data/course_prefix_number_table.json',
+  'src/systems/search/data/course_prefix_number_table.json',
   JSON.stringify(reverseTable),
 );
 
