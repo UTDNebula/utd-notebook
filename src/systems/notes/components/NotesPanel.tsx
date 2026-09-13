@@ -2,8 +2,8 @@
 
 import type { ReactNode } from 'react';
 import Panel from '@nebula-library/components/Panel';
-import FilesGrid from '@src/components/sections/FilesGrid';
 import type { SelectFileWithAuthorPreview } from '@src/server/db/models';
+import FilesGrid from '@src/systems/notes/components/FilesGrid';
 
 type NotesProps = {
   notes: SelectFileWithAuthorPreview[];

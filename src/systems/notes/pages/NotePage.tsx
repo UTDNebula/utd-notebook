@@ -1,10 +1,10 @@
 import { notFound } from 'next/navigation';
 import { BaseCard } from '@nebula-library/components/BaseCard';
 import Header from '@src/components/header/Header';
-import NoteInfoPanel from '@src/components/sections/NoteInfoPanel';
 import { getNoteFileUrl } from '@src/lib/note-files/noteFile';
 import { api } from '@src/lib/trpc/server';
 import { addVersionToFile } from '@src/lib/utils/fileCacheBust';
+import NoteInfoPanel from '@src/systems/notes/components/NoteInfoPanel';
 
 type NotePageProps = {
   params: Promise<{ id: string }>;

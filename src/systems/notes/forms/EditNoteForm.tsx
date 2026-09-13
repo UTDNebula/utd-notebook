@@ -4,12 +4,12 @@ import { useMutation } from '@tanstack/react-query';
 import { useRouter } from 'next/navigation';
 import { useMemo } from 'react';
 import Panel, { PanelSkeleton } from '@nebula-library/components/Panel';
-import type { FileDetails } from '@src/app/notes/create/CreateNoteForm';
 import { useAppForm } from '@src/lib/components/form/form';
 import FormFile from '@src/lib/components/form/FormFile';
 import { useTRPC } from '@src/lib/trpc/react';
+import type { FileDetails } from '@src/systems/notes/forms/CreateNoteForm';
+import { useUploadToUploadURL } from '@src/systems/notes/hooks/useUploadToUploadURL';
 import { editFileFormSchema } from '@src/utils/formSchemas';
-import { useUploadToUploadURL } from '@src/utils/uploadFile';
 
 interface EditNoteFormProps {
   file: {

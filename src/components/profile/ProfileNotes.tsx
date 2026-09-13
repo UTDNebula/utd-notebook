@@ -6,9 +6,9 @@ import Tab from '@mui/material/Tab';
 import Tabs from '@mui/material/Tabs';
 import { useState } from 'react';
 import Panel from '@nebula-library/components/Panel';
-import NotesPanel from '@src/components/form/NotesPanel';
 import { HOME_PAGE_GRADIENT_CLASS } from '@src/lib/styles/gradients';
 import type { SelectFileWithAuthorPreview } from '@src/server/db/models';
+import NotesPanel from '@src/systems/notes/components/NotesPanel';
 
 type ProfileNotesProps = {
   username: string;

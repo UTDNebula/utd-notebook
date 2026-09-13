@@ -4,7 +4,7 @@ import Header from '@src/components/header/Header';
 import { api } from '@src/lib/trpc/server';
 import { signInRoute } from '@src/lib/utils/redirect';
 import { auth } from '@src/server/auth';
-import EditNoteForm from './EditNoteForm';
+import EditNoteForm from '@src/systems/notes/forms/EditNoteForm';
 
 type EditNotePageProps = {
   params: Promise<{ id: string }>;
