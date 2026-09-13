@@ -1,7 +1,7 @@
 import { type Metadata } from 'next';
 import { notFound } from 'next/navigation';
-import ProfileNotes from '@src/components/profile/ProfileNotes';
 import { api } from '@src/lib/trpc/server';
+import ProfileNotes from '@src/systems/account/components/profile/ProfileNotes';
 import Header from '@src/systems/search/components/Header';
 
 type ProfilePageProps = {

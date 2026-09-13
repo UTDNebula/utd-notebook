@@ -1,9 +1,9 @@
 import { type Metadata } from 'next';
 import { headers } from 'next/headers';
 import { redirect } from 'next/navigation';
-import SettingsForm from '@src/components/settings/SettingsForm';
 import { signInRoute } from '@src/lib/utils/redirect';
 import { auth } from '@src/server/auth';
+import SettingsForm from '@src/systems/account/components/settings/SettingsForm';
 import Header from '@src/systems/search/components/Header';
 
 export const metadata: Metadata = {

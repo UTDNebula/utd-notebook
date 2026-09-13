@@ -2,10 +2,10 @@ import Typography from '@mui/material/Typography';
 import { DatePicker } from '@mui/x-date-pickers/DatePicker';
 import Link from 'next/link';
 import { ReactNode } from 'react';
-import { majors, minors } from '@src/constants/utdDegrees';
 import { withForm } from '@src/lib/components/form/form';
 import { WizardStepObject } from '@src/lib/components/form/FormWizard';
 import { studentClassificationEnum } from '@src/server/db/schema/user';
+import { majors, minors } from '@src/systems/account/data/utdDegrees';
 import { AccountOnboardingSchema } from '@src/utils/formSchemas';
 import { stepIds } from './OnboardingForm';
 
