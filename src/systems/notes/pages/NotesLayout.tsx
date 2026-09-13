@@ -1,5 +1,5 @@
 import type { ReactNode } from 'react';
-import Header from '@src/components/header/Header';
+import Header from '@src/systems/search/components/Header';
 
 type NotesLayoutProps = {
   children: ReactNode;

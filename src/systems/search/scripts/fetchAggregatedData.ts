@@ -41,11 +41,11 @@ async function fetchData() {
 
     const data = await response.json();
     writeFileSync(
-      'src/data/aggregated_data.json',
+      'src/systems/search/data/aggregated_data.json',
       JSON.stringify(data, null, 2),
     );
     console.log(
-      'Aggregated data fetched and saved to src/data/aggregated_data.json',
+      'Aggregated data fetched and saved to src/systems/search/data/aggregated_data.json',
     );
   } catch (error) {
     console.error('Failed to fetch data:', error);

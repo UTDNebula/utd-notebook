@@ -1,10 +1,10 @@
 import { headers } from 'next/headers';
 import { notFound, redirect } from 'next/navigation';
-import Header from '@src/components/header/Header';
 import { api } from '@src/lib/trpc/server';
 import { signInRoute } from '@src/lib/utils/redirect';
 import { auth } from '@src/server/auth';
 import EditNoteForm from '@src/systems/notes/forms/EditNoteForm';
+import Header from '@src/systems/search/components/Header';
 
 type EditNotePageProps = {
   params: Promise<{ id: string }>;

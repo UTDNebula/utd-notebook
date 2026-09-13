@@ -113,5 +113,8 @@ entries.sort((a, b) => {
   return (termOrder[b.term] ?? 0) - (termOrder[a.term] ?? 0);
 });
 
-writeFileSync('src/data/sections_data.json', JSON.stringify(entries));
+writeFileSync(
+  'src/systems/search/data/sections_data.json',
+  JSON.stringify(entries),
+);
 console.log(`Sections data generation done. ${entries.length} entries.`);

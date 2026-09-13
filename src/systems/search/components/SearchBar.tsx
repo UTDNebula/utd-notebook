@@ -23,7 +23,7 @@ import React, {
   useTransition,
   type Key,
 } from 'react';
-import untyped_professor_to_alias from '@src/data/professor_to_alias.json';
+import untyped_professor_to_alias from '@src/systems/search/data/professor_to_alias.json';
 import {
   decodeSearchQueryLabel,
   removeDuplicates,
@@ -31,7 +31,7 @@ import {
   searchQueryLabel,
   type SearchQuery,
   type SearchQueryWithTitle,
-} from '@src/utils/SearchQuery';
+} from '@src/systems/search/utils/SearchQuery';
 
 const professor_to_alias = untyped_professor_to_alias as {
   [key: string]: string;

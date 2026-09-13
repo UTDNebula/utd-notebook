@@ -1,7 +1,7 @@
-import Header from '@src/components/header/Header';
-import SearchBar from '@src/components/header/SearchBar';
 import NebulaLogo from '@src/lib/icons/NebulaLogo';
 import { HOME_PAGE_GRADIENT_CLASS } from '@src/lib/styles/gradients';
+import Header from '@src/systems/search/components/Header';
+import SearchBar from '@src/systems/search/components/SearchBar';
 
 const Home = () => {
   return (

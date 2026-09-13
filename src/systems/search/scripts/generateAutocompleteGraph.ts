@@ -311,7 +311,7 @@ checkForSingleChild(root);
 graph.forEachNode((node: string) => graph.removeNodeAttribute(node, 'visited'));
 
 writeFileSync(
-  'src/data/autocomplete_graph.json',
+  'src/systems/search/data/autocomplete_graph.json',
   JSON.stringify(graph.export()),
 );
 console.log('Autocomplete graph generation done.');

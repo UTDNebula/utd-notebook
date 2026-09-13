@@ -1,7 +1,7 @@
 import { NextResponse } from 'next/server';
-import untypedCourseNameTable from '@src/data/course_name_table.json';
 import type { GenericFetchedData } from '@src/lib/types/GenericFetchedData';
-import { type SearchQuery } from '@src/utils/SearchQuery';
+import untypedCourseNameTable from '@src/systems/search/data/course_name_table.json';
+import { type SearchQuery } from '@src/systems/search/utils/SearchQuery';
 
 type TableEntry = SearchQuery & { totalStudents: number };
 

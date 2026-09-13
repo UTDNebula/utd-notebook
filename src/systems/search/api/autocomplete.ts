@@ -1,12 +1,15 @@
 import { and, eq } from 'drizzle-orm';
 import { NextResponse } from 'next/server';
-import autocompleteGraph from '@src/data/autocomplete_graph.json';
 import type { GenericFetchedData } from '@src/lib/types/GenericFetchedData';
 import { db } from '@src/server/db';
 import { file } from '@src/server/db/schema/file';
 import { section } from '@src/server/db/schema/section';
-import { getGraph, searchAutocomplete } from '@src/utils/autocomplete';
-import { type SearchQueryWithTotalStudents } from '@src/utils/SearchQuery';
+import autocompleteGraph from '@src/systems/search/data/autocomplete_graph.json';
+import {
+  getGraph,
+  searchAutocomplete,
+} from '@src/systems/search/utils/autocomplete';
+import { type SearchQueryWithTotalStudents } from '@src/systems/search/utils/SearchQuery';
 
 const graph = getGraph(autocompleteGraph as object);
 
