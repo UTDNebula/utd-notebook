@@ -4,9 +4,9 @@ import Link from 'next/link';
 import { ReactNode } from 'react';
 import { withForm } from '@src/lib/components/form/form';
 import { WizardStepObject } from '@src/lib/components/form/FormWizard';
+import { AccountOnboardingSchema } from '@src/lib/schemas/formSchemas';
 import { studentClassificationEnum } from '@src/server/db/schema/user';
 import { majors, minors } from '@src/systems/account/data/utdDegrees';
-import { AccountOnboardingSchema } from '@src/utils/formSchemas';
 import { stepIds } from './OnboardingForm';
 
 type FormData = Partial<AccountOnboardingSchema>;

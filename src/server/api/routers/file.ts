@@ -2,10 +2,10 @@ import { TRPCError } from '@trpc/server';
 import { and, eq, ilike } from 'drizzle-orm';
 import { z } from 'zod';
 import { getNoteFileUrl } from '@src/lib/note-files/noteFile';
+import { createFileSchema, editFileSchema } from '@src/lib/schemas/formSchemas';
 import { file as files } from '@src/server/db/schema/file';
 import { section as sections } from '@src/server/db/schema/section';
 import { callStorageAPI } from '@src/server/storage';
-import { createFileSchema, editFileSchema } from '@src/utils/formSchemas';
 import { createTRPCRouter, protectedProcedure, publicProcedure } from '../trpc';
 
 const byIdSchema = z.object({

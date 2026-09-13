@@ -11,10 +11,10 @@ import {
   setSnackbar,
   SnackbarPresets,
 } from '@src/lib/modules/snackbar/Snackbar';
+import { editUsernameSchema } from '@src/lib/schemas/formSchemas';
 import { useTRPC } from '@src/lib/trpc/react';
 import useDebounce from '@src/lib/utils/useDebounce';
 import { SelectUserMetadata } from '@src/server/db/models';
-import { editUsernameSchema } from '@src/utils/formSchemas';
 
 type UsernameProps = {
   user: SelectUserMetadata;

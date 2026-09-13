@@ -16,12 +16,12 @@ import { BaseCard } from '@nebula-library/components/BaseCard';
 import Panel from '@nebula-library/components/Panel';
 import { useAppForm } from '@src/lib/components/form/form';
 import { WizardStepObject } from '@src/lib/components/form/FormWizard';
-import { useTRPC } from '@src/lib/trpc/react';
-import { SelectUserMetadata } from '@src/server/db/models';
 import {
   accountOnboardingSchema,
   AccountOnboardingSchema,
-} from '@src/utils/formSchemas';
+} from '@src/lib/schemas/formSchemas';
+import { useTRPC } from '@src/lib/trpc/react';
+import { SelectUserMetadata } from '@src/server/db/models';
 import OnboardingFormStep from './OnboardingFormStep';
 
 // "Source of truth" array that contains the actual steps of the form

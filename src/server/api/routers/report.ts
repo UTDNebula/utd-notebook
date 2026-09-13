@@ -1,7 +1,7 @@
 import { TRPCError } from '@trpc/server';
 import { eq } from 'drizzle-orm';
+import { createReportSchema } from '@src/lib/schemas/formSchemas';
 import { report as reports } from '@src/server/db/schema/reports';
-import { createReportSchema } from '@src/utils/formSchemas';
 import { createTRPCRouter, protectedProcedure } from '../trpc';
 
 export const reportRouter = createTRPCRouter({
