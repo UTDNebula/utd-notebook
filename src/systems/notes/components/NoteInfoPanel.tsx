@@ -6,14 +6,14 @@ import { Collapse, IconButton, Typography } from '@mui/material';
 import Link from 'next/link'; // To link back to specific profiles
 import { useState } from 'react';
 import Panel from '@nebula-library/components/Panel';
-import NoteDeleteButton from '@src/components/sections/NoteDeleteButton';
-import NoteEditButton from '@src/components/sections/NoteEditButton';
-import RatingWidget from '@src/components/sections/RatingWidget';
-import ReportButton from '@src/components/sections/ReportButton';
-import SaveButton from '@src/components/sections/SaveButton';
 import { getNoteFileUrl } from '@src/lib/note-files/noteFile';
 import { authClient } from '@src/lib/utils/auth-client';
 import type { SelectFileWithUserMetadataAndSection } from '@src/server/db/models';
+import NoteDeleteButton from '@src/systems/notes/components/NoteDeleteButton';
+import NoteEditButton from '@src/systems/notes/components/NoteEditButton';
+import RatingWidget from '@src/systems/notes/components/RatingWidget';
+import ReportButton from '@src/systems/notes/components/ReportButton';
+import SaveButton from '@src/systems/notes/components/SaveButton';
 
 type NoteInfoPanelProps = {
   file: SelectFileWithUserMetadataAndSection;

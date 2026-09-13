@@ -1,16 +1,16 @@
-import FilesGrid from '@src/components/sections/FilesGrid';
-import HandwrittenFilter from '@src/components/sections/Filters';
-import LinkCard from '@src/components/sections/LinkCard';
-import SectionHeader from '@src/components/sections/SectionHeader';
 import EmptyStateCard from '@src/lib/components/EmptyStateCard';
 import { api } from '@src/lib/trpc/server';
 import type { SectionWithFilesWithUserMetadata } from '@src/server/db/models';
+import FilesGrid from '@src/systems/notes/components/FilesGrid';
+import HandwrittenFilter from '@src/systems/notes/components/Filters';
+import LinkCard from '@src/systems/notes/components/LinkCard';
+import SectionHeader from '@src/systems/notes/components/SectionHeader';
 import {
   noteQueryToDescription,
   noteQueryToTitle,
   parseNoteSlug,
   type NoteQuery,
-} from '@src/utils/noteSlug';
+} from '@src/systems/notes/utils/noteSlug';
 
 type NotesPageProps = {
   params: Promise<{ slug: string[] }>;

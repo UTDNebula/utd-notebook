@@ -4,7 +4,7 @@ import { redirect } from 'next/navigation';
 import Header from '@src/components/header/Header';
 import { signInRoute } from '@src/lib/utils/redirect';
 import { auth } from '@src/server/auth';
-import CreateNoteForm from './CreateNoteForm';
+import CreateNoteForm from '@src/systems/notes/forms/CreateNoteForm';
 
 export const metadata: Metadata = {
   title: 'Create New Note',

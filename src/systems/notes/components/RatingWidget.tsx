@@ -3,11 +3,11 @@
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import { useRouter } from 'next/navigation';
 import { useRef } from 'react';
-import StyledRating from '@src/components/common/Rating';
 import { useRegisterModal } from '@src/lib/modules/registerModal/RegisterModalProvider';
 import { setSnackbar } from '@src/lib/modules/snackbar/Snackbar';
 import { useTRPC } from '@src/lib/trpc/react';
 import { authClient } from '@src/lib/utils/auth-client';
+import StyledRating from '@src/systems/notes/components/Rating';
 
 type RatingWidgetProps = {
   fileId: string;

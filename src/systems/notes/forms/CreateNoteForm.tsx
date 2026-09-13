@@ -6,8 +6,8 @@ import Panel, { PanelSkeleton } from '@nebula-library/components/Panel';
 import { useAppForm } from '@src/lib/components/form/form';
 import FormFile from '@src/lib/components/form/FormFile';
 import { useTRPC } from '@src/lib/trpc/react';
+import { useUploadToUploadURL } from '@src/systems/notes/hooks/useUploadToUploadURL';
 import { createFileFormSchema } from '@src/utils/formSchemas';
-import { useUploadToUploadURL } from '@src/utils/uploadFile';
 
 export type FileDetails = {
   file?: File | null;
