@@ -1,7 +1,7 @@
 import GroupsIcon from '@mui/icons-material/Groups';
 import PersonIcon from '@mui/icons-material/Person';
 import { Button } from '@mui/material';
-import AdminHeader from '@src/components/admin/AdminHeader';
+import AdminHeader from '@src/systems/moderation/components/AdminHeader';
 
 export default function Page() {
   return (
