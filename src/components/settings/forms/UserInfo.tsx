@@ -7,9 +7,12 @@ import { DatePicker } from '@mui/x-date-pickers/DatePicker';
 import { useMutation } from '@tanstack/react-query';
 import { useState } from 'react';
 import Panel from '@nebula-library/components/Panel';
-import { setSnackbar, SnackbarPresets } from '@src/components/global/Snackbar';
 import { majors, minors } from '@src/constants/utdDegrees';
 import { useAppForm } from '@src/lib/components/form/form';
+import {
+  setSnackbar,
+  SnackbarPresets,
+} from '@src/lib/modules/snackbar/Snackbar';
 import { useTRPC } from '@src/lib/trpc/react';
 import { SelectUserMetadata } from '@src/server/db/models';
 import { studentClassificationEnum } from '@src/server/db/schema/user';

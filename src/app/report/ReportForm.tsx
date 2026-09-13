@@ -5,8 +5,8 @@ import { useMutation } from '@tanstack/react-query';
 import { useRouter } from 'next/navigation';
 import { useMemo } from 'react';
 import Panel from '@nebula-library/components/Panel';
-import { setSnackbar } from '@src/components/global/Snackbar';
 import { useAppForm } from '@src/lib/components/form/form';
+import { setSnackbar } from '@src/lib/modules/snackbar/Snackbar';
 import { useTRPC } from '@src/lib/trpc/react';
 import { createReportSchema } from '@src/utils/formSchemas';
 
