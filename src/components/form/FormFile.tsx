@@ -88,9 +88,12 @@ const FormFile = ({
     <div className={className}>
       <div className="bg-cornflower-50 dark:bg-cornflower-950 has-[:hover]:bg-cornflower-100 dark:has-[:hover]:bg-cornflower-900 relative flex w-full flex-col items-center justify-center gap-2 rounded-md p-8 transition-colors max-lg:h-48 lg:h-96">
         {label && (
-          <p className="text-xs font-bold text-slate-800 dark:text-slate-200">
+          <label
+            htmlFor="pdf-file-input"
+            className="z-10 text-xs font-bold text-slate-800 dark:text-slate-200"
+          >
             {label}
-          </p>
+          </label>
         )}
         {selectedFileName ? (
           <p className="text-xs text-slate-800 dark:text-slate-200">
@@ -128,8 +131,10 @@ const FormFile = ({
           </div>
         ) : null}
         <input
+          id="pdf-file-input"
           type="file"
           accept="application/pdf"
+          aria-label={label ?? 'Upload PDF file'}
           onBlur={onBlur}
           onChange={onChange}
           className="absolute inset-0 cursor-pointer opacity-0"
