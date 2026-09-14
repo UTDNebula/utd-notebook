@@ -90,7 +90,7 @@ const FormFile = ({
         {label && (
           <label
             htmlFor="pdf-file-input"
-            className="text-xs font-bold text-slate-800 dark:text-slate-200 z-10"
+            className="z-10 text-xs font-bold text-slate-800 dark:text-slate-200"
           >
             {label}
           </label>

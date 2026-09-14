@@ -133,7 +133,7 @@ export default function CreateNoteForm() {
                       ? field.state.meta.errors
                           .map((err) => err?.message)
                           .join('. ') + '.'
-                      : "Max file size 5MB"
+                      : 'Max file size 5MB'
                   }
                 />
               )}
