@@ -4,8 +4,8 @@ _What am I_
 
 ## Developer documentation
 
-Start with the [developer wiki home](docs/Home.md) for architecture, project
-structure, and the contribution workflow.
+Start with the [developer wiki home](docs/Home.md) for local setup,
+architecture, project structure, and the contribution workflow.
 
 ## Contributing
 
