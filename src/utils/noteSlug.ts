@@ -35,6 +35,8 @@ export function parseNoteSlug(slug: string[]): NoteQuery | null {
         profFirst,
         profLast,
       };
+    } else if (profTokens.length === 1) {
+      return null;
     }
 
     return { type: 'course', prefix, number };
@@ -57,7 +59,7 @@ export function noteQueryToTitle(query: NoteQuery): string {
     case 'professor':
       return `${query.profFirst} ${query.profLast}`;
     case 'courseAndProfessor':
-      return `${query.prefix} ${query.number} — ${query.profFirst} ${query.profLast}`;
+      return `${query.prefix} ${query.number}, ${query.profFirst} ${query.profLast}`;
   }
 }
 

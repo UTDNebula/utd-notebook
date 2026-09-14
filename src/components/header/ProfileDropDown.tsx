@@ -23,7 +23,7 @@ type Props = {
 };
 
 export const ProfileDropDown = ({ shadow = false }: Props) => {
-  const { data: session } = authClient.useSession();
+  const { data: session, isPending } = authClient.useSession();
   const [anchorEl, setAnchorEl] = useState<HTMLElement | null>(null);
   const open = Boolean(anchorEl);
 
@@ -47,8 +47,9 @@ export const ProfileDropDown = ({ shadow = false }: Props) => {
   return (
     <>
       <Avatar
-        alt={session?.user.name ?? undefined}
-        src={session?.user.image ?? undefined}
+        alt={isPending ? undefined : session?.user.name}
+        src={isPending ? undefined : (session?.user.image ?? undefined)}
+        aria-label={session == null ? 'Sign In/Sign Up' : session?.user.name}
         onClick={(e) => {
           if (session !== null) {
             setAnchorEl(open ? null : e.currentTarget);
@@ -59,7 +60,7 @@ export const ProfileDropDown = ({ shadow = false }: Props) => {
         component="button"
         className={`cursor-pointer ${shadow ? 'drop-shadow-[0_0_4px_rgb(0_0_0_/_0.4)]' : ''}`}
       />
-      {session && (
+      {!isPending && session && (
         <Popover
           open={open}
           anchorEl={anchorEl}
@@ -70,12 +71,12 @@ export const ProfileDropDown = ({ shadow = false }: Props) => {
         >
           <Card>
             <MenuList>
-              <MenuItem divider component={Link} href="/settings">
+              <MenuItem divider component={Link} href="/profile">
                 <ListItemIcon>
                   <Avatar
                     alt={session.user.name}
                     src={session.user.image ?? undefined}
-                    className="w-6 h-6"
+                    className="h-6 w-6"
                   />
                 </ListItemIcon>
                 <div>

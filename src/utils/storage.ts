@@ -46,7 +46,7 @@ export async function callStorageAPI<T>(
   body?: Blob,
 ): Promise<APIResponse<T>> {
   const res = await fetch(
-    `${process.env.NEBULA_API_URL}/storage/${process.env.NEBULA_API_STORAGE_BUCKET}/${objectId}`,
+    `${process.env.NEBULA_API_URL}/storage/${process.env.NEBULA_API_STORAGE_BUCKET}/${encodeURIComponent(objectId)}`,
     {
       method,
       headers: {
@@ -64,7 +64,7 @@ export async function callStorageAPI<T>(
 
 export async function getUploadURL(objectId: string, type: string) {
   const res = await fetch(
-    `${process.env.NEBULA_API_URL}/storage/${process.env.NEBULA_API_STORAGE_BUCKET}/${objectId}/url`,
+    `${process.env.NEBULA_API_URL}/storage/${process.env.NEBULA_API_STORAGE_BUCKET}/${encodeURIComponent(objectId)}/url`,
     {
       method: 'PUT',
       headers: {

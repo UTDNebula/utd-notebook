@@ -5,7 +5,7 @@ import WarningIcon from '@mui/icons-material/Warning';
 import { useStore } from '@tanstack/react-form';
 import { useMutation, useQuery } from '@tanstack/react-query';
 import { useEffect, useState } from 'react';
-import Panel from '@src/components/common/Panel';
+import Panel from '@nebula-library/components/Panel';
 import { setSnackbar, SnackbarPresets } from '@src/components/global/Snackbar';
 import { SelectUserMetadata } from '@src/server/db/models';
 import { useTRPC } from '@src/trpc/react';
@@ -203,6 +203,7 @@ export default function Username({ user }: UsernameProps) {
             {(field) => (
               <field.TextField
                 label="Username"
+                maxLength={30}
                 className="w-full"
                 error={
                   !field.state.meta.isValid && !field.state.meta.isValidating
@@ -212,7 +213,7 @@ export default function Username({ user }: UsernameProps) {
             )}
           </form.AppField>
         </div>
-        <div className="flex flex-wrap justify-end items-center gap-2">
+        <div className="flex flex-wrap items-center justify-end gap-2">
           <form.AppForm>
             <form.ResetButton />
           </form.AppForm>

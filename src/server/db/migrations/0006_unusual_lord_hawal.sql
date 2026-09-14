@@ -1,0 +1,1 @@
+ALTER TABLE "file" ADD COLUMN "handwritten" boolean DEFAULT false NOT NULL;

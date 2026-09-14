@@ -5,14 +5,24 @@ import { Skeleton } from '@mui/material';
 import Image from 'next/image';
 import Link from 'next/link';
 import { useMemo, useState } from 'react';
-import { BaseCard } from '@src/components/common/BaseCard';
-import type { SelectFile } from '@src/server/db/models';
+import { BaseCard } from '@nebula-library/components/BaseCard';
+import RatingWidget from '@src/components/sections/RatingWidget';
+import SaveButton from '@src/components/sections/SaveButton';
+import type { SelectFileWithAuthorPreview } from '@src/server/db/models';
+import { authClient } from '@src/utils/auth-client';
+import { addVersionToFile } from '@src/utils/fileCacheBust';
+import { getNoteFileUrl } from '@src/utils/noteFile';
+import NoteDeleteButton from './NoteDeleteButton';
+import NoteEditButton from './NoteEditButton';
+import ReportButton from './ReportButton';
 
 type FileCardProps = {
-  file: SelectFile;
+  file: SelectFileWithAuthorPreview;
 };
 
-const formatUpdatedAt = (updatedAt: SelectFile['updatedAt']) => {
+const formatUpdatedAt = (
+  updatedAt: SelectFileWithAuthorPreview['updatedAt'],
+) => {
   const date =
     updatedAt instanceof Date ? updatedAt : new Date(updatedAt ?? Date.now());
 
@@ -24,7 +34,13 @@ const formatUpdatedAt = (updatedAt: SelectFile['updatedAt']) => {
 };
 
 export default function FileCard({ file }: FileCardProps) {
-  const thumbnailUrl = file.publicUrl;
+  const { data: session } = authClient.useSession();
+  const isAuthor = session?.user?.id === file.authorId;
+
+  const thumbnailUrl = addVersionToFile(
+    getNoteFileUrl(file.id),
+    file.updatedAt.getTime(),
+  );
 
   const files = useMemo<FileData[]>(
     () => [{ file: thumbnailUrl, name: file.name }],
@@ -62,15 +78,15 @@ export default function FileCard({ file }: FileCardProps) {
   const showPreviewError =
     hasStartedFetching && !thumbData && thumbnails.length === 0 && !isLoading;
 
+  const authorDisplay =
+    (file.author?.username ??
+      `${file.author?.firstName ?? ''} ${file.author?.lastName ?? ''}`.trim()) ||
+    file.authorId;
+
   return (
-    <BaseCard variant="interactive" className="h-full">
-      <Link
-        href={file.publicUrl}
-        target="_blank"
-        rel="noreferrer"
-        className="flex h-full flex-col gap-3 p-4"
-      >
-        <div className="overflow-hidden rounded-md border border-neutral-200 bg-slate-50 shadow-sm dark:border-neutral-700 dark:bg-neutral-800">
+    <BaseCard variant="interactive" className="flex h-full flex-col">
+      <Link href={`/notes/${file.id}`} className="flex grow flex-col">
+        <div className="overflow-hidden rounded-t-lg border-b border-neutral-200 bg-white dark:border-neutral-600 dark:bg-neutral-700">
           {thumbData ? (
             <div className="relative aspect-[3/4] w-full">
               <Image
@@ -93,7 +109,7 @@ export default function FileCard({ file }: FileCardProps) {
           )}
         </div>
 
-        <div className="flex items-start justify-between gap-3">
+        <div className="flex flex-col gap-2 p-4">
           <div className="min-w-0">
             <h3
               className="line-clamp-1 text-lg font-semibold"
@@ -101,22 +117,44 @@ export default function FileCard({ file }: FileCardProps) {
             >
               {file.name}
             </h3>
-            <p className="text-xs font-medium text-slate-600 dark:text-slate-400">
-              Uploaded by {file.authorId}
+          </div>
+
+          {file.description && (
+            <p className="line-clamp-2 text-sm text-slate-800 dark:text-slate-200">
+              {file.description}
             </p>
+          )}
+
+          <div className="mt-auto text-xs text-slate-600 dark:text-slate-400">
+            Updated {formatUpdatedAt(file.updatedAt)}
           </div>
         </div>
-
-        {file.description && (
-          <p className="line-clamp-2 text-sm text-slate-800 dark:text-slate-200">
-            {file.description}
-          </p>
-        )}
-
-        <div className="mt-auto text-xs text-slate-600 dark:text-slate-400">
-          Updated {formatUpdatedAt(file.updatedAt)}
-        </div>
       </Link>
+
+      <div className="mx-4 mt-0 mb-2">
+        <RatingWidget fileId={file.id} />
+      </div>
+
+      <p className="px-4 pb-2 text-xs font-medium text-slate-600 dark:text-slate-400">
+        By{' '}
+        {file.author?.username ? (
+          <Link
+            href={`/profile/${file.author.username}`}
+            className="underline hover:text-slate-900 dark:hover:text-slate-200"
+          >
+            {authorDisplay}
+          </Link>
+        ) : (
+          authorDisplay
+        )}
+      </p>
+
+      <div className="m-4 mt-0 flex flex-row items-center space-x-2">
+        {isAuthor && <NoteEditButton fileId={file.id} />}
+        {isAuthor && <NoteDeleteButton fileId={file.id} />}
+        {!isAuthor && <ReportButton fileId={file.id} />}
+        <SaveButton fileId={file.id} />
+      </div>
     </BaseCard>
   );
 }

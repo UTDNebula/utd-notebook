@@ -4,12 +4,14 @@ on: push
 
 jobs:
   main:
-    name: Run ESLint + Prettier
+    name: Run ESLint + Prettier + TypeScript
     runs-on: ubuntu-latest
 
     steps:
       - name: Check out Git repository
         uses: actions/checkout@v4
+        with:
+          submodules: recursive
 
       - name: Set up Node.js
         uses: actions/setup-node@v4
@@ -21,10 +23,13 @@ jobs:
         run: npm ci
 
       - name: Set up test environment file
-        run: echo "GOOGLE_CLIENT_ID=dummy" > .env.local && echo "GOOGLE_CLIENT_SECRET=dummy" >> .env.local && echo "NEXTAUTH_URL=http://localhost:3000" >> .env.local && echo "NEXTAUTH_SECRET=dummy" >> .env.local && echo "DATABASE_URL=dummy" >> .env.local && echo "DISCORD_CLIENT_ID=dummy" >> .env.local && echo "DISCORD_CLIENT_SECRET=dummy" >> .env.local && echo "NEBULA_API_URL=dummy" >> .env.local && echo "NEBULA_API_STORAGE_BUCKET=dummy" >> .env.local && echo "NEBULA_API_KEY=dummy" >> .env.local && echo "NEBULA_API_STORAGE_KEY=dummy" >> .env.local && echo "SENTRY_AUTH_TOKEN=dummy" >> .env.local
+        run: echo "GOOGLE_CLIENT_ID=dummy" > .env.local && echo "GOOGLE_CLIENT_SECRET=dummy" >> .env.local && echo "BETTER_AUTH_URL=http://localhost:3000" >> .env.local && echo "BETTER_AUTH_SECRET=dummy" >> .env.local && echo "DATABASE_URL=dummy" >> .env.local && echo "DISCORD_CLIENT_ID=dummy" >> .env.local && echo "DISCORD_CLIENT_SECRET=dummy" >> .env.local && echo "NEBULA_API_URL=dummy" >> .env.local && echo "NEBULA_API_STORAGE_BUCKET=dummy" >> .env.local && echo "NEBULA_API_KEY=dummy" >> .env.local && echo "NEBULA_API_STORAGE_KEY=dummy" >> .env.local && echo "SENTRY_AUTH_TOKEN=dummy" >> .env.local
 
       - name: Run ESLint
         run: npm run lint:check
 
       - name: Run Prettier
         run: npm run format:check
+
+      - name: Run TypeScript
+        run: npm run type:check

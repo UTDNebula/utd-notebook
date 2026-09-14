@@ -4,8 +4,10 @@ import {
   FormResetButton,
   FormSubmitButton,
 } from '@src/components/form/FormButtons';
+import FormCheckbox from '@src/components/form/FormCheckbox';
 import FormFieldSet from '@src/components/form/FormFieldSet';
 import FormQuestion from '@src/components/form/FormQuestion';
+import { FormSectionAutocomplete } from '@src/components/form/FormSectionAutocomplete';
 import FormSelect from '@src/components/form/FormSelect';
 import FormTextField from '@src/components/form/FormTextField';
 
@@ -20,7 +22,9 @@ export const { useAppForm, withForm } = createFormHook({
   fieldComponents: {
     TextField: FormTextField,
     Select: FormSelect,
+    Checkbox: FormCheckbox,
     AutocompleteFreeSolo: FormAutocompleteFreeSolo,
+    SectionAutocomplete: FormSectionAutocomplete,
   },
   formComponents: {
     ResetButton: FormResetButton,

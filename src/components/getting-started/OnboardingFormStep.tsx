@@ -30,6 +30,7 @@ const OnboardingFormStep = withForm({
                   {(field) => (
                     <field.TextField
                       label="First Name"
+                      maxLength={100}
                       className="grow"
                       required
                     />
@@ -37,7 +38,11 @@ const OnboardingFormStep = withForm({
                 </form.AppField>
                 <form.AppField name="lastName">
                   {(field) => (
-                    <field.TextField label="Last Name" className="grow" />
+                    <field.TextField
+                      label="Last Name"
+                      maxLength={100}
+                      className="grow"
+                    />
                   )}
                 </form.AppField>
               </form.Question>
@@ -90,7 +95,7 @@ const OnboardingFormStep = withForm({
                         }}
                         value={field.state.value ?? null}
                         label="Graduation Date"
-                        className="[&>.MuiPickersInputBase-root]:bg-white dark:[&>.MuiPickersInputBase-root]:bg-neutral-900 w-64 grow"
+                        className="w-64 grow"
                         slotProps={{
                           actionBar: {
                             actions: ['accept'],
@@ -130,6 +135,7 @@ const OnboardingFormStep = withForm({
                       <field.TextField
                         label="UTD Email"
                         placeholder="abc123456@utdallas.edu"
+                        maxLength={100}
                         className="w-full"
                         required
                       />
@@ -153,7 +159,7 @@ const OnboardingFormStep = withForm({
     } else if (step?.variant === 'start') {
       FormStepData = (
         <div className="flex flex-col gap-6">
-          <div className="flex flex-col gap-2 ml-3.5">
+          <div className="ml-3.5 flex flex-col gap-2">
             <Typography
               variant="h1"
               className="font-display text-4xl font-bold"
@@ -169,7 +175,7 @@ const OnboardingFormStep = withForm({
     } else if (step?.variant === 'finish') {
       FormStepData = (
         <div className="flex flex-col gap-6">
-          <div className="flex flex-col gap-2 ml-3.5">
+          <div className="ml-3.5 flex flex-col gap-2">
             <Typography
               variant="h1"
               className="font-display text-4xl font-bold"

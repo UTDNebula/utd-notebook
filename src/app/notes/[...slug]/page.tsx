@@ -1,8 +1,9 @@
 import EmptyStateCard from '@src/components/sections/EmptyStateCard';
 import FilesGrid from '@src/components/sections/FilesGrid';
+import HandwrittenFilter from '@src/components/sections/Filters';
 import LinkCard from '@src/components/sections/LinkCard';
 import SectionHeader from '@src/components/sections/SectionHeader';
-import type { SectionWithFiles } from '@src/server/db/models';
+import type { SectionWithFilesWithUserMetadata } from '@src/server/db/models';
 import { api } from '@src/trpc/server';
 import {
   noteQueryToDescription,
@@ -13,9 +14,12 @@ import {
 
 type NotesPageProps = {
   params: Promise<{ slug: string[] }>;
+  searchParams: Promise<{ [key: string]: string }>;
 };
 
-async function fetchSections(query: NoteQuery): Promise<SectionWithFiles[]> {
+async function fetchSections(
+  query: NoteQuery,
+): Promise<SectionWithFilesWithUserMetadata[]> {
   switch (query.type) {
     case 'course':
       return api.section.getNotesByCourse({
@@ -37,7 +41,22 @@ async function fetchSections(query: NoteQuery): Promise<SectionWithFiles[]> {
   }
 }
 
-function totalFileCount(sections: SectionWithFiles[]): number {
+function canonicalizeQuery(
+  query: NoteQuery,
+  sections: SectionWithFilesWithUserMetadata[],
+): NoteQuery {
+  if (sections.length === 0) return query;
+  const s = sections[0]!;
+  if (query.type === 'professor') {
+    return { ...query, profFirst: s.profFirst, profLast: s.profLast };
+  }
+  if (query.type === 'courseAndProfessor') {
+    return { ...query, profFirst: s.profFirst, profLast: s.profLast };
+  }
+  return query;
+}
+
+function totalFileCount(sections: SectionWithFilesWithUserMetadata[]): number {
   return sections.reduce((sum, s) => sum + s.files.length, 0);
 }
 
@@ -63,7 +82,10 @@ function buildBreadcrumbs(query: NoteQuery) {
   return items;
 }
 
-function getProfessorLinks(sections: SectionWithFiles[], query: NoteQuery) {
+function getProfessorLinks(
+  sections: SectionWithFilesWithUserMetadata[],
+  query: NoteQuery,
+) {
   if (query.type !== 'course') return [];
 
   const profMap = new Map<string, { profFirst: string; profLast: string }>();
@@ -81,7 +103,10 @@ function getProfessorLinks(sections: SectionWithFiles[], query: NoteQuery) {
   }));
 }
 
-function getCourseLinks(sections: SectionWithFiles[], query: NoteQuery) {
+function getCourseLinks(
+  sections: SectionWithFilesWithUserMetadata[],
+  query: NoteQuery,
+) {
   if (query.type !== 'professor') return [];
 
   const courseMap = new Map<string, { prefix: string; number: string }>();
@@ -103,8 +128,26 @@ function getCourseLinks(sections: SectionWithFiles[], query: NoteQuery) {
     }));
 }
 
-export default async function NotesPage({ params }: NotesPageProps) {
-  const { slug } = await params;
+function filterSections(
+  sections: SectionWithFilesWithUserMetadata[],
+  handwritten: string | undefined,
+): SectionWithFilesWithUserMetadata[] {
+  if (handwritten !== 'true' && handwritten !== 'false') return sections;
+  const isHandwritten = handwritten === 'true';
+  return sections.map((s) => ({
+    ...s,
+    files: s.files.filter((f) => f.handwritten === isHandwritten),
+  }));
+}
+
+export default async function NotesPage({
+  params,
+  searchParams,
+}: NotesPageProps) {
+  const [{ slug }, resolvedSearchParams] = await Promise.all([
+    params,
+    searchParams,
+  ]);
   const query = parseNoteSlug(slug);
 
   if (!query) {
@@ -117,37 +160,45 @@ export default async function NotesPage({ params }: NotesPageProps) {
   }
 
   const sections = await fetchSections(query);
-  const fileCount = totalFileCount(sections);
+  const displayQuery = canonicalizeQuery(query, sections);
+  const filteredSections = filterSections(
+    sections,
+    resolvedSearchParams.handwritten,
+  );
+  const fileCount = totalFileCount(filteredSections);
 
   return (
     <>
       <SectionHeader
-        title={noteQueryToTitle(query)}
-        description={noteQueryToDescription(query)}
+        title={noteQueryToTitle(displayQuery)}
+        description={noteQueryToDescription(displayQuery)}
         metaLabel={`${fileCount} note${fileCount === 1 ? '' : 's'}`}
-        breadcrumbs={buildBreadcrumbs(query)}
+        breadcrumbs={buildBreadcrumbs(displayQuery)}
       />
 
-      {sections.length === 0 ? (
+      <HandwrittenFilter />
+
+      {fileCount === 0 ? (
         <EmptyStateCard
-          title="No notes found"
+          title="No notes yet"
           description="No notes have been uploaded for this query yet."
         />
       ) : (
         <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
           {/* Links to course+prof combo pages */}
-          {(query.type === 'course' || query.type === 'professor') && (
+          {(displayQuery.type === 'course' ||
+            displayQuery.type === 'professor') && (
             <>
               {(() => {
                 const links =
-                  query.type === 'course'
-                    ? getProfessorLinks(sections, query)
-                    : getCourseLinks(sections, query);
+                  displayQuery.type === 'course'
+                    ? getProfessorLinks(filteredSections, displayQuery)
+                    : getCourseLinks(filteredSections, displayQuery);
                 if (links.length <= 1) return null;
                 return (
                   <div className="col-span-full">
                     <h2 className="mb-3 text-lg font-semibold">
-                      {query.type === 'course'
+                      {displayQuery.type === 'course'
                         ? 'Filter by professor'
                         : 'Filter by course'}
                     </h2>
@@ -168,7 +219,7 @@ export default async function NotesPage({ params }: NotesPageProps) {
           )}
 
           {/* Notes grouped by section */}
-          {sections.map((s) => (
+          {filteredSections.map((s) => (
             <div key={s.id} className="col-span-full">
               <h2 className="mb-3 text-lg font-semibold">
                 {s.prefix} {s.number}.{s.sectionCode} — {s.term} {s.year}

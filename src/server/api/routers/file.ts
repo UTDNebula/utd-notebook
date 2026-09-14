@@ -4,6 +4,7 @@ import { z } from 'zod';
 import { file as files } from '@src/server/db/schema/file';
 import { section as sections } from '@src/server/db/schema/section';
 import { createFileSchema, editFileSchema } from '@src/utils/formSchemas';
+import { getNoteFileUrl } from '@src/utils/noteFile';
 import { callStorageAPI } from '@src/utils/storage';
 import { createTRPCRouter, protectedProcedure, publicProcedure } from '../trpc';
 
@@ -38,22 +39,81 @@ export const fileRouter = createTRPCRouter({
       throw e;
     }
   }),
+  byAuthor: protectedProcedure
+    .input(
+      z.object({
+        authorId: z.string(),
+      }),
+    )
+    .query(async ({ input, ctx }) => {
+      const { authorId } = input;
+
+      const files = await ctx.db.query.file.findMany({
+        where: (file) => eq(file.authorId, authorId),
+        orderBy: (file, { desc }) => [desc(file.updatedAt)],
+        with: {
+          section: true,
+          author: {
+            columns: { username: true, firstName: true, lastName: true },
+          },
+        },
+      });
+
+      return files;
+    }),
+  byUsername: publicProcedure
+    .input(
+      z.object({
+        username: z.string().trim().min(1),
+      }),
+    )
+    .query(async ({ input, ctx }) => {
+      const author = await ctx.db.query.userMetadata.findFirst({
+        where: (userMetadata, { eq }) =>
+          eq(userMetadata.username, input.username),
+      });
+
+      if (!author) {
+        return [];
+      }
+
+      const files = await ctx.db.query.file.findMany({
+        where: (file) => eq(file.authorId, author.id),
+        orderBy: (file, { desc }) => [desc(file.updatedAt)],
+        with: {
+          section: true,
+          author: {
+            columns: { username: true, firstName: true, lastName: true },
+          },
+        },
+      });
+
+      return files;
+    }),
+
   create: protectedProcedure
     .input(createFileSchema)
     .mutation(async ({ input, ctx }) => {
       const userId = ctx.session.user.id;
-
-      const sectionSplit = input.section.split(' ');
-      const numberSectionSplit = sectionSplit[1]?.split('.');
+      const {
+        prefix,
+        number,
+        sectionCode,
+        term,
+        year,
+        profFirst,
+        profLast,
+        ...fileData
+      } = input;
 
       let section = await ctx.db.query.section.findFirst({
         where: (section) =>
           and(
-            eq(section.prefix, sectionSplit[0]!),
-            eq(section.number, numberSectionSplit![0]!),
-            eq(section.sectionCode, numberSectionSplit![1]!),
-            eq(section.term, sectionSplit[2] as 'Spring' | 'Summer' | 'Fall'),
-            eq(section.year, parseInt(sectionSplit[3]!)),
+            eq(section.prefix, prefix),
+            eq(section.number, number),
+            eq(section.sectionCode, sectionCode),
+            eq(section.term, term),
+            eq(section.year, year),
           ),
       });
 
@@ -62,13 +122,13 @@ export const fileRouter = createTRPCRouter({
           await ctx.db
             .insert(sections)
             .values({
-              prefix: sectionSplit[0]!,
-              number: numberSectionSplit![0]!,
-              sectionCode: numberSectionSplit![1]!,
-              term: sectionSplit[2] as 'Spring' | 'Summer' | 'Fall',
-              year: parseInt(sectionSplit[3]!),
-              profFirst: 'Should be pulled',
-              profLast: 'from db',
+              prefix,
+              number,
+              sectionCode,
+              term,
+              year,
+              profFirst,
+              profLast,
             })
             .returning()
         )[0];
@@ -83,7 +143,7 @@ export const fileRouter = createTRPCRouter({
       const res = await ctx.db
         .insert(files)
         .values({
-          ...input,
+          ...fileData,
           authorId: userId,
           sectionId: section.id,
           publicUrl: '', // This must be filled in with an update call right after the create call
@@ -101,7 +161,7 @@ export const fileRouter = createTRPCRouter({
   update: protectedProcedure
     .input(editFileSchema)
     .mutation(async ({ input, ctx }) => {
-      const { id, file: publicUrl, ...data } = input;
+      const { id, ...data } = input;
       const userId = ctx.session.user.id;
 
       const file = await ctx.db.query.file.findFirst({
@@ -121,7 +181,7 @@ export const fileRouter = createTRPCRouter({
         .update(files)
         .set({
           ...data,
-          publicUrl,
+          publicUrl: getNoteFileUrl(id),
           updatedAt: new Date(),
         })
         .where(eq(files.id, id))

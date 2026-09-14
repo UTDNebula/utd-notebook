@@ -17,8 +17,6 @@ async function SettingsForm({
   const user = session.user;
 
   let userData: SelectUserMetadata | undefined = undefined;
-
-  // Concurrently run both procedures
   await Promise.allSettled([api.userMetadata.byId({ id: user.id })]).then(
     ([userDataResult]) => {
       if (userDataResult.status === 'fulfilled' && userDataResult.value) {
@@ -32,16 +30,18 @@ async function SettingsForm({
   );
 
   return (
-    <div className="flex flex-col gap-8 w-full max-w-6xl">
+    <div className="flex w-full max-w-6xl flex-col gap-8">
       {!userData && (
         <Alert severity="error" variant="filled" className="rounded-lg">
           One or more panels were hidden because their associated data could not
           be found.
         </Alert>
       )}
+
       <SettingsHeader user={user} />
       {userData && <Username user={userData} />}
       {userData && <UserInfo user={userData} />}
+
       <DeleteAccount />
     </div>
   );

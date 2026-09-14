@@ -6,11 +6,11 @@ import AdminHeader from '@src/components/admin/AdminHeader';
 export default function Page() {
   return (
     <AdminHeader path={['Admin']}>
-      <div className="flex flex-wrap items-center gap-x-10 max-sm:gap-x-4 gap-y-2">
+      <div className="flex flex-wrap items-center gap-x-10 gap-y-2 max-sm:gap-x-4">
         {/*<Link href="/admin/sections">*/}
         <Button
           variant="contained"
-          className="normal-case whitespace-nowrap"
+          className="whitespace-nowrap normal-case"
           startIcon={<GroupsIcon />}
           size="large"
           disabled

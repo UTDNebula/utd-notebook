@@ -1,0 +1,1 @@
+ALTER TABLE "user_metadata_to_notes" ADD COLUMN "rating" integer;
