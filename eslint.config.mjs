@@ -3,6 +3,8 @@ import nextTs from 'eslint-config-next/typescript';
 import prettier from 'eslint-config-prettier/flat';
 import { defineConfig, globalIgnores } from 'eslint/config';
 
+const parentSourcePath = String.raw`(?:\.\./)+(?:src/)?`;
+
 const baseRestrictedImportPatterns = [
   {
     group: ['@src/nebula-library', '@src/nebula-library/*'],
@@ -33,12 +35,12 @@ const baseRestrictedImportPatterns = [
 ];
 
 const appLayerRestriction = {
-  group: ['@src/app', '@src/app/*'],
+  regex: `^(?:@src/app(?:/|$)|${parentSourcePath}app(?:/|$))`,
   message: 'Next.js route entrypoints must not be imported outside src/app.',
 };
 
 const systemsLayerRestriction = {
-  group: ['@src/systems', '@src/systems/*'],
+  regex: `^(?:@src/systems(?:/|$)|${parentSourcePath}systems(?:/|$))`,
   message: 'Library and server code must not depend on feature systems.',
 };
 
