@@ -1,74 +1,119 @@
 # UTD Notebook developer wiki
 
-UTD Notebook is a full-stack web application for sharing and finding course
-notes. Students can search by course or professor, view PDF notes, save and
-rate notes, upload their own notes, manage a profile, and report content.
+UTD Notebook helps students find, share, save, rate, and report course notes.
+This wiki explains how the project works and how to make changes without
+getting lost in the codebase.
 
-This wiki is the source of truth for stable project documentation. Meeting
-notes, proposals, and undecided ideas belong in the team's planning workspace;
-accepted technical decisions belong here.
+## Contents
+
+- [Start here](#start-here)
+- [Architecture at a glance](#architecture-at-a-glance)
+- [Main systems](#main-systems)
+- [Local setup](#local-setup)
 
 ## Start here
 
-- [Project architecture](./project-architecture.md) explains how requests,
-  data, authentication, storage, and the main libraries fit together.
-- [Project structure](./project-structure.md) explains where code belongs and
-  how to find the implementation for a feature.
-- [How to contribute](./how-to-contribute.md) covers setup, branches, checks,
-  commits, pull requests, and repository safety.
+- [Getting started](./getting-started.md) walks through a complete local setup.
+- [Project architecture](./project-architecture.md) explains how a request
+  moves through the app, server, database, and storage service.
+- [Project structure](./project-structure.md) shows where each kind of code
+  belongs.
+- [How to contribute](./how-to-contribute.md) covers branches, checks, commits,
+  pull requests, and review expectations.
 
 ## Architecture at a glance
 
-```text
-Browser
-  |
-  v
-Next.js entrypoints in src/app
-  |
-  +--> feature implementations in src/systems
-  |      |
-  |      +--> reusable code in src/lib
-  |      +--> typed procedures in src/server
-  |
-  +--> framework adapters and metadata
+Most requests begin in a small Next.js entrypoint. The entrypoint hands the
+work to a feature system, and that system uses shared project code or the
+server when it needs them.
 
-src/server
-  +--> Better Auth
-  +--> tRPC procedures
-  +--> Drizzle ORM --> PostgreSQL / Neon
-  +--> Nebula API storage
-
-src/lib --> shared Nebula components in src/nebula-library
+```mermaid
+flowchart LR
+  Browser[Browser] --> App[src/app routes]
+  App --> Systems[src/systems features]
+  Systems --> Lib[src/lib shared code]
+  App --> Server[src/server backend]
+  Systems --> Server
+  Lib --> Nebula[Nebula Library]
+  Server --> Database[(PostgreSQL)]
+  Server --> Storage[Nebula API storage]
 ```
 
-The main dependency direction is:
-
-```text
-app -> systems -> lib
- |       |
- +-------+----> server
-```
-
-`src/app` is intentionally thin. It defines routes and delegates application
-behavior to the owning system. `src/systems` owns Notebook features. `src/lib`
-contains reusable application infrastructure and shared primitives.
+The important idea is that `src/app` names routes but does not own feature
+behavior. Search behavior belongs to the search system, note behavior belongs
+to the notes system, and reusable pieces belong in `src/lib`.
 
 ## Main systems
 
-| System       | Owns                                                       |
+| System       | What you will find there                                   |
 | ------------ | ---------------------------------------------------------- |
-| `account`    | Authentication screens, onboarding, settings, and profiles |
+| `account`    | Sign in, onboarding, profiles, and settings                |
 | `moderation` | Reports and administrative review screens                  |
-| `notes`      | Note display, upload, edit, saving, rating, and note URLs  |
+| `notes`      | Note pages, uploads, editing, saving, ratings, and PDFs    |
 | `search`     | Search UI, autocomplete handlers, datasets, and generators |
 
-## Quick local start
+## Local setup
 
-1. Clone with submodules or initialize `src/nebula-library` after cloning.
-2. Install dependencies with `npm install`.
-3. Obtain authorized development environment values from a project lead. Do
-   not copy secrets into chat, screenshots, issues, or documentation.
-4. Run `npm run dev` and open `http://localhost:3000`.
+### 1. Check the required tools
 
-See [How to contribute](./how-to-contribute.md) for the complete setup and
-verification workflow.
+Install Git and Node.js 22. You can confirm the active versions with:
+
+```bash
+git --version
+node --version
+npm --version
+```
+
+### 2. Clone the project and its submodule
+
+```bash
+git clone https://github.com/UTDNebula/utd-notebook.git --recurse-submodules
+cd utd-notebook
+```
+
+If you already cloned the project without the submodule, run:
+
+```bash
+git submodule update --init --recursive
+```
+
+### 3. Install dependencies
+
+Use the committed lockfile so everyone gets the same dependency versions:
+
+```bash
+npm ci
+```
+
+### 4. Create your environment file
+
+Copy the example file, then fill in the private values through an authorized
+project channel:
+
+```bash
+cp .env.example .env
+```
+
+Never paste real credentials into chat, issues, screenshots, or documentation.
+
+### 5. Start the app
+
+```bash
+npm run dev
+```
+
+Open `http://localhost:3000`. The terminal should show a successful request
+when the home page loads.
+
+### 6. Check your setup
+
+Once the app starts, run the check-only commands:
+
+```bash
+npm run lint:check
+npm run format:check
+npm run type:check
+```
+
+For environment details and common setup problems, continue with
+[Getting started](./getting-started.md).

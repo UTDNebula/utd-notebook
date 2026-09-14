@@ -1,163 +1,180 @@
 # Project architecture
 
-UTD Notebook is a Next.js application organized around four feature systems:
-account, moderation, notes, and search. Next.js routes stay thin, feature code
-stays with its owner, reusable application code lives in `src/lib`, and backend
-infrastructure remains centralized in `src/server`.
+UTD Notebook is a Next.js application built around four feature systems:
+account, moderation, notes, and search. This page explains how those systems
+work together and what happens when a request moves through the application.
+
+## Contents
+
+- [How the pieces connect](#how-the-pieces-connect)
+- [Design principles](#design-principles)
+- [Rendering and state](#rendering-and-state)
+- [Common request paths](#common-request-paths)
+- [The backend boundary](#the-backend-boundary)
+- [Main libraries](#main-libraries)
+- [Generated search data](#generated-search-data)
+- [Security and configuration](#security-and-configuration)
+
+## How the pieces connect
+
+Most browser requests first reach a small route in `src/app`. That route hands
+the work to the feature that owns it. Feature code can use shared Notebook code
+from `src/lib` and backend services from `src/server`.
+
+```mermaid
+flowchart TB
+  Browser[Browser] --> App[Next.js routes in src/app]
+  App --> Systems[Feature code in src/systems]
+  App --> Framework[Framework adapters]
+  Systems --> Lib[Shared code in src/lib]
+  Systems --> Server[Backend in src/server]
+  Framework --> Auth[Better Auth]
+  Framework --> Server
+  Server --> Database[(PostgreSQL)]
+  Server --> Storage[Nebula API storage]
+  Lib --> Nebula[Nebula Library]
+```
+
+The direction matters. Routes can use systems, systems can use shared code and
+the server, and lower layers do not reach back into routes or features. Keeping
+that direction clear makes ownership easier to understand and helps avoid
+circular dependencies.
 
 ## Design principles
 
-1. **Routes are entrypoints.** Files under `src/app` satisfy Next.js routing
-   conventions and delegate to an implementation elsewhere.
-2. **Features own behavior.** A feature's pages, components, browser hooks,
-   request handlers, data, and scripts live together under `src/systems`.
-3. **Shared code has a specific home.** Reusable code belongs in a named area
-   under `src/lib`, not in an unbounded collection of helpers.
-4. **The backend is centralized.** Authentication, database access, storage,
-   and tRPC procedures remain under `src/server`.
-5. **Boundaries are typed and enforced.** TypeScript, Zod, tRPC, and ESLint
-   protect the contracts between layers.
-6. **Structural work preserves behavior.** Moves and ownership changes should
-   not be combined with product, visual, or formatting changes.
-
-## High-level flow
-
-```text
-Browser
-  |
-  v
-Next.js route in src/app
-  |
-  +--> system page or request handler
-  |      |
-  |      +--> shared UI, schemas, and clients in src/lib
-  |      +--> typed procedures and services in src/server
-  |
-  `--> framework-only adapters (Better Auth and tRPC)
-
-src/server
-  +--> Better Auth
-  +--> Drizzle ORM --> PostgreSQL / Neon
-  `--> Nebula API storage
-```
-
-The intended dependency direction is:
-
-```text
-app -> systems -> lib
- |       |
- +-------+----> server
-```
-
-`lib` and `server` do not import feature systems, and code outside `app` does
-not import routes. These rules prevent circular ownership and keep framework
-paths from becoming application APIs.
+1. **Routes introduce a request.** Files in `src/app` satisfy Next.js routing
+   rules, then pass the work to the code that owns it.
+2. **Features keep related work together.** Pages, components, browser hooks,
+   handlers, data, and scripts stay with their account, moderation, notes, or
+   search system.
+3. **Shared code has a clear purpose.** Reusable Notebook code belongs in a
+   named area under `src/lib`, not in a catch-all collection.
+4. **Backend work stays centralized.** Authentication, database access,
+   storage, and tRPC procedures live under `src/server`.
+5. **Tools reinforce the boundaries.** TypeScript, Zod, tRPC, and ESLint help
+   keep contracts between layers explicit.
+6. **Refactors preserve behavior.** A structural change should not quietly
+   include a product or visual change.
 
 ## Rendering and state
 
-Next.js server components load data and compose the initial page where that is
-appropriate. Client components are used for interactive forms, menus, search,
-notifications, uploads, and other browser state.
+Server components load data and build the first version of a page when that
+fits the request. Client components take over for forms, menus, search,
+notifications, uploads, and other browser interactions.
 
-TanStack Query and the tRPC React integration manage server-backed client
-state. TanStack Form and Zod manage form state and validation. Local component
-state remains local unless it has a clear application-wide owner.
+TanStack Query and the tRPC React integration manage data that comes from the
+server. TanStack Form and Zod handle form state and validation. Small pieces of
+interface state stay inside their component unless several parts of the app
+clearly need to share them.
 
-## Main request flows
+## Common request paths
 
 ### Search and autocomplete
 
-```text
-SearchBar
-  -> /api/autocomplete or /api/courseNameAutocomplete
-  -> thin route re-export
-  -> systems/search/api
-  -> search graph and generated lookup data
+The search bar calls one of the autocomplete routes. The route stays small and
+passes the request to the search system, which reads generated lookup data.
+
+```mermaid
+flowchart LR
+  SearchBar[Search bar] --> Route[Autocomplete API route]
+  Route --> Handler[Search system handler]
+  Handler --> Graph[Search graph and lookup data]
+  Graph --> Results[Suggestions]
 ```
 
-Search data is generated by scripts in `src/systems/search/scripts` and stored
-in `src/systems/search/data`. The normalized section dataset lives in
-`src/lib/sections` because both search and the server use it.
+The generation scripts live in `src/systems/search/scripts`, and their output
+lives in `src/systems/search/data`. The normalized section dataset is shared
+with the server, so it lives in `src/lib/sections`.
 
 ### Reading a note
 
-```text
-notes system page
-  -> tRPC client
-  -> server router
-  -> Drizzle
-  -> Neon/PostgreSQL
+Note information and the PDF take different paths. tRPC loads the database
+record, while a dedicated file route validates and retrieves the PDF from
+Nebula API storage.
+
+```mermaid
+flowchart TB
+  Page[Note page] --> Client[tRPC client]
+  Client --> Router[Server router]
+  Router --> Database[(PostgreSQL)]
+  Page --> FileRoute[PDF file route]
+  FileRoute --> FileHandler[Notes file handler]
+  FileHandler --> Storage[Nebula API storage]
 ```
 
-PDF delivery follows a separate HTTP path:
-
-```text
-/api/files/[id]
-  -> systems/notes/api/file
-  -> server/storage
-  -> Nebula API
-```
-
-The file handler validates the note identifier, storage metadata, PDF MIME
-type, maximum size, and PDF signature before returning the bytes. It does not
-trust a legacy stored public URL or follow redirects to another site.
+Before returning a PDF, the file handler checks the note identifier, storage
+metadata, MIME type, file size, and PDF signature. It does not trust a legacy
+public URL or follow a redirect to another site.
 
 ### Creating or editing a note
 
-Create and edit forms live in the notes system. Shared form controls and note
-validation live in `src/lib`. The form calls typed server procedures to create
-or update database records and to request a short-lived upload URL. The browser
-then uploads the PDF directly using that signed URL.
+The notes system owns the forms and upload behavior. Shared controls and note
+schemas come from `src/lib`. The server creates or updates the database record
+and provides a short-lived upload URL for the PDF.
+
+```mermaid
+sequenceDiagram
+  participant Browser
+  participant Notes as Notes system
+  participant Server
+  participant Storage as Nebula API storage
+  Browser->>Notes: Submit form
+  Notes->>Server: Validate and save note data
+  Server-->>Notes: Return upload URL
+  Notes->>Storage: Upload PDF directly
+  Storage-->>Notes: Confirm upload
+  Notes-->>Browser: Show the result
+```
 
 ### Authentication and account data
 
-The Better Auth adapter is exposed at `src/app/api/auth/[...all]/route.ts`.
-Configuration and database integration live in `src/server/auth.ts`. Account
-screens, onboarding, profiles, and settings belong to the account system.
-Google and Discord OAuth credentials are server-only environment values.
+The Better Auth adapter is exposed through
+`src/app/api/auth/[...all]/route.ts`. Its configuration and database
+integration live in `src/server/auth.ts`. Sign-in screens, onboarding,
+profiles, and settings belong to the account system.
 
 ### Reports and moderation
 
-The moderation system owns the report and admin user interfaces. Typed report
-procedures and persistence remain in `src/server/api/routers` and
-`src/server/db`.
+The moderation system owns the report form and admin screens. Report
+procedures and persistence stay in the server layer, where authentication and
+authorization can be enforced.
 
-## Backend boundaries
+## The backend boundary
 
-`src/server/api/root.ts` composes the application router. Individual routers
-own procedures for files, reports, saved notes, sections, storage, and user
-metadata. `src/server/api/trpc.ts` owns request context, serialization,
-authentication-aware procedures, and shared tRPC setup.
+`src/server/api/root.ts` combines the application routers. Each router owns a
+focused set of procedures for files, reports, saved notes, sections, storage,
+or user metadata. `src/server/api/trpc.ts` provides request context,
+serialization, authentication-aware procedures, and shared tRPC setup.
 
-Drizzle schemas and migrations are kept together in `src/server/db`. Schema
-changes should be reviewed with their generated migration; never edit an
-already-applied migration to change history.
+Drizzle schemas and migrations live together in `src/server/db`. Review a
+schema change with its generated migration. Do not rewrite a migration that
+has already been applied.
 
-`src/server/storage.ts` is the only shared transport for authenticated Nebula
-API storage calls. Storage credentials stay on the server.
+`src/server/storage.ts` is the shared transport for authenticated Nebula API
+storage requests. Storage credentials stay on the server.
 
-## Key libraries
+## Main libraries
 
-| Area                 | Libraries and responsibility                               |
+| Area                 | Main tools and responsibility                              |
 | -------------------- | ---------------------------------------------------------- |
-| Application          | Next.js, React, TypeScript                                 |
-| UI                   | Material UI, Emotion, Tailwind CSS, Nebula Library         |
-| Forms and validation | TanStack Form, Zod, drizzle-zod                            |
-| Data transport       | tRPC, TanStack Query, SuperJSON                            |
+| Application          | Next.js, React, and TypeScript                             |
+| Interface            | Material UI, Emotion, Tailwind CSS, and Nebula Library     |
+| Forms and validation | TanStack Form, Zod, and drizzle-zod                        |
+| Data transport       | tRPC, TanStack Query, and SuperJSON                        |
 | Authentication       | Better Auth with Google and Discord OAuth                  |
-| Database             | Drizzle ORM, Neon serverless PostgreSQL                    |
-| Search               | Graphology, autosuggest-highlight, generated JSON datasets |
-| Files                | Nebula API storage, pdf-thumbnail, Sharp                   |
+| Database             | Drizzle ORM and PostgreSQL                                 |
+| Search               | Graphology, autosuggest-highlight, and generated JSON data |
+| Files                | Nebula API storage, pdf-thumbnail, and Sharp               |
 | Dates                | date-fns and Material UI date pickers                      |
-| Observability        | Sentry and Google Analytics integration                    |
+| Observability        | Sentry and Google Analytics                                |
 
-Some installed packages are not directly imported by the current application
-source. Treat dependency removal as a separate audited change: an installed
-package may still support build tooling, transitive behavior, or planned work.
+An installed package may support build tooling or planned work even when it
+is not imported directly by the current application. Treat dependency removal
+as a separate, reviewed change.
 
-## Generated data
+## Generated search data
 
-The search scripts are run explicitly:
+These commands rebuild the committed search data:
 
 ```bash
 npm run fetchdata
@@ -166,23 +183,24 @@ npm run buildcoursenames
 npm run buildsections
 ```
 
-Generated JSON is intentionally committed so builds do not depend on a live
-course-data service. Review generated diffs and do not hand-edit them.
+Keeping the generated JSON in the repository means a build does not depend on
+a live course-data service. Review generated changes and do not edit those
+files by hand.
 
 ## Security and configuration
 
-Environment values are validated by `src/env.mjs`. Only variables beginning
-with `NEXT_PUBLIC_` may be exposed to browser code. Database, OAuth, Better
-Auth, and Nebula API credentials are server-only.
+`src/env.mjs` defines the environment values expected by the application.
+Only variables that begin with `NEXT_PUBLIC_` may be read by browser code.
+Database, OAuth, Better Auth, and Nebula API credentials are server-only.
 
 Never place real secrets in source files, committed environment files, issues,
-pull requests, chat messages, screenshots, or documentation. Use authorized
+pull requests, chat messages, screenshots, or documentation. Use approved
 development credentials locally and repository secrets in automation.
 
-File uploads and downloads cross an external storage boundary. Keep identifier,
-type, size, signature, redirect, and timeout checks intact when changing that
-path. Authentication and authorization checks belong at the server boundary,
-not only in the user interface.
+Uploads and downloads cross an external storage boundary. Keep identifier,
+type, size, signature, redirect, and timeout checks in place when changing
+that path. Authentication and authorization checks belong at the server
+boundary, not only in the interface.
 
 See [Project structure](./project-structure.md) for exact code ownership and
-[How to contribute](./how-to-contribute.md) for the required checks.
+[How to contribute](./how-to-contribute.md) for the review process.
