@@ -2,7 +2,7 @@ import { TRPCError } from '@trpc/server';
 import { and, eq, ne, sql } from 'drizzle-orm';
 import { headers } from 'next/headers';
 import { z } from 'zod';
-import { type personalCats } from '@src/constants/categories';
+import { type personalCats } from '@src/lib/modules/navigation/categories';
 import { auth } from '@src/server/auth';
 import { insertUserMetadata } from '@src/server/db/models';
 import { admin } from '@src/server/db/schema/admin';
