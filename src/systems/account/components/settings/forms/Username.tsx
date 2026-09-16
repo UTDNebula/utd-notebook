@@ -57,33 +57,39 @@ export default function Username({ user }: UsernameProps) {
   // Set to true when there is a zod error to prevent fetching
   const [simpleError, setSimpleError] = useState(false);
   const input = useStore(form.store, (state) => state.values.username);
-  const debouncedSearch = useDebounce(input, 300);
+  const normalizedInput = input.toLowerCase();
+  const currentUsername = defaultValues.username.toLowerCase();
+  const isNewUsername = normalizedInput !== currentUsername;
+  const debouncedSearch = useDebounce(normalizedInput, 300);
   const { data: usernameExists, isFetching } = useQuery(
     api.userMetadata.usernameExists.queryOptions(
       { username: debouncedSearch },
       {
         enabled:
           !!debouncedSearch &&
-          debouncedSearch !== (user?.username ?? '') &&
+          debouncedSearch !== currentUsername &&
           !simpleError,
       },
     ),
   );
-  const isFetchingOrWaiting = isFetching || debouncedSearch !== input;
+  const isFetchingOrWaiting = isFetching || debouncedSearch !== normalizedInput;
 
   // Update async errors
   useEffect(() => {
-    const currentUsername = user?.username ?? '';
-    const isNewUsername = input !== currentUsername;
-
     // Loading
     if (isNewUsername && isFetchingOrWaiting) {
       form.setFieldMeta('username', (prev) => {
-        if (prev.errorMap.onChange?.length) return prev;
         return {
           ...prev,
           errorMap: {
-            onChange: [{ message: 'Checking availability..' }],
+            onChange: [
+              ...(prev.errorMap.onChange ?? []).filter(
+                (err: { message?: string } | undefined) =>
+                  err?.message !== 'Checking availability..' &&
+                  err?.message !== 'This username is already taken',
+              ),
+              { message: 'Checking availability..' },
+            ],
           },
           isValidating: true,
         };
@@ -94,12 +100,15 @@ export default function Username({ user }: UsernameProps) {
     // Taken
     if (isNewUsername && usernameExists && !isFetchingOrWaiting) {
       form.setFieldMeta('username', (prev) => {
-        if (prev.errorMap.onChange?.length) return prev;
         return {
           ...prev,
           errorMap: {
             onChange: [
-              ...(prev.errorMap.onChange || []),
+              ...(prev.errorMap.onChange ?? []).filter(
+                (err: { message?: string } | undefined) =>
+                  err?.message !== 'Checking availability..' &&
+                  err?.message !== 'This username is already taken',
+              ),
               { message: 'This username is already taken' },
             ],
           },
@@ -133,10 +142,19 @@ export default function Username({ user }: UsernameProps) {
     if (!isNewUsername) {
       form.setFieldMeta('username', (prev) => ({
         ...prev,
+        errorMap: {
+          ...prev.errorMap,
+          onChange:
+            prev.errorMap.onChange?.filter(
+              (err: { message?: string } | undefined) =>
+                err?.message !== 'Checking availability..' &&
+                err?.message !== 'This username is already taken',
+            ) ?? [],
+        },
         isValidating: false,
       }));
     }
-  }, [user?.username, form, input, isFetchingOrWaiting, usernameExists]);
+  }, [isNewUsername, form, isFetchingOrWaiting, usernameExists]);
 
   // Show first error
   const helperText = (errors: ({ message?: string } | undefined)[]) => {
@@ -156,7 +174,7 @@ export default function Username({ user }: UsernameProps) {
         </span>
       );
     }
-    if (input !== (user?.username ?? '')) {
+    if (isNewUsername) {
       return (
         <span className="flex items-center gap-1 text-green-700">
           <CheckCircleIcon fontSize="inherit" />
@@ -171,7 +189,7 @@ export default function Username({ user }: UsernameProps) {
       onSubmit={(e) => {
         e.preventDefault();
         e.stopPropagation();
-        if (isFetchingOrWaiting || usernameExists) {
+        if (isNewUsername && (isFetchingOrWaiting || usernameExists)) {
           return;
         }
         form.handleSubmit();
