@@ -3,18 +3,22 @@ import { and, eq, ne, sql } from 'drizzle-orm';
 import { headers } from 'next/headers';
 import { z } from 'zod';
 import { type personalCats } from '@src/lib/modules/navigation/categories';
+import { editUsernameSchema } from '@src/lib/schemas/account';
 import { auth } from '@src/server/auth';
 import { insertUserMetadata } from '@src/server/db/models';
 import { admin } from '@src/server/db/schema/admin';
 import { user as users } from '@src/server/db/schema/auth';
 import { userMetadata } from '@src/server/db/schema/user';
+import { isUsernameConflict } from '@src/server/db/username';
 import { createTRPCRouter, protectedProcedure, publicProcedure } from '../trpc';
 
 const byIdSchema = z.object({ id: z.string() });
 const byUsernameSchema = z.object({ username: z.string().trim().min(1) });
 
 const updateByIdSchema = z.object({
-  updateUser: insertUserMetadata.partial().omit({ id: true }),
+  updateUser: insertUserMetadata.partial().omit({ id: true }).extend({
+    username: editUsernameSchema.shape.username.optional(),
+  }),
 });
 const nameSchema = z.object({
   name: z.string().default(''),
@@ -33,7 +37,10 @@ export const userMetadataRouter = createTRPCRouter({
     .input(byUsernameSchema)
     .query(async ({ input, ctx }) => {
       const profile = await ctx.db.query.userMetadata.findFirst({
-        where: eq(userMetadata.username, input.username),
+        where: eq(
+          sql`lower(${userMetadata.username})`,
+          input.username.toLowerCase(),
+        ),
       });
 
       if (!profile) {
@@ -73,7 +80,7 @@ export const userMetadataRouter = createTRPCRouter({
       if (updateUser.username) {
         const existingUser = await ctx.db.query.userMetadata.findFirst({
           where: and(
-            eq(userMetadata.username, updateUser.username),
+            eq(sql`lower(${userMetadata.username})`, updateUser.username),
             ne(userMetadata.id, user.id),
           ),
         });
@@ -91,6 +98,15 @@ export const userMetadataRouter = createTRPCRouter({
           .set(updateUser)
           .where(eq(userMetadata.id, user.id))
           .returning()
+          .catch((error: unknown) => {
+            if (isUsernameConflict(error)) {
+              throw new TRPCError({
+                code: 'CONFLICT',
+                message: 'Username is already taken',
+              });
+            }
+            throw error;
+          })
       )[0];
 
       // Update `name` field in BetterAuth user information to match user metadata
@@ -130,7 +146,10 @@ export const userMetadataRouter = createTRPCRouter({
     .input(z.object({ username: z.string() }))
     .query(async ({ input, ctx }) => {
       const existing = await ctx.db.query.userMetadata.findFirst({
-        where: eq(userMetadata.username, input.username),
+        where: eq(
+          sql`lower(${userMetadata.username})`,
+          input.username.toLowerCase(),
+        ),
       });
       return !!existing;
     }),
