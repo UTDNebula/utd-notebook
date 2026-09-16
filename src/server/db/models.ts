@@ -5,6 +5,7 @@ import { file } from './schema/file';
 import { userMetadataToNotes } from './schema/savedNote';
 import { section } from './schema/section';
 import { userMetadata } from './schema/user';
+import { report } from './schema/reports';
 
 /* =========================
    USER
@@ -56,6 +57,16 @@ export type InsertSavedNote = z.infer<typeof insertSavedNote>;
 export type SelectSavedNote = z.infer<typeof selectSavedNote>;
 
 /* =========================
+   REPORT
+========================= */
+
+export const insertReport = createInsertSchema(report);
+export const selectReport = createSelectSchema(report);
+
+export type InsertReport = z.infer<typeof insertReport>;
+export type SelectReport = z.infer<typeof selectReport>;
+
+/* =========================
    FILE WITH USER METADATA
 ========================= */
 
@@ -101,6 +112,27 @@ export const selectFileWithUserMetadataAndSection = selectFile.extend({
 
 export type SelectFileWithUserMetadataAndSection = z.infer<
   typeof selectFileWithUserMetadataAndSection
+>;
+
+/* =========================
+   FILE WITH USER METADATA AND REPORTS
+========================= */
+
+export const selectFileWithAuthorPreviewAndReports = selectFile.extend({
+  author: selectUserMetadata.pick({
+    username: true,
+  }),
+  reports: z.array(
+    selectReport.extend({
+      reporter: selectUserMetadata.pick({
+        username: true,
+      }),
+    })
+  ),
+});
+
+export type SelectFileWithAuthorPreviewAndReports = z.infer<
+  typeof selectFileWithAuthorPreviewAndReports
 >;
 
 /* =========================
