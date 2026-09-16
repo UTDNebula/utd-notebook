@@ -3,7 +3,6 @@ import { headers } from 'next/headers';
 import { redirect } from 'next/navigation';
 import { signInRoute } from '@src/lib/utils/redirect';
 import { auth } from '@src/server/auth';
-import { isOnboarded } from '@src/server/onboarding';
 import SettingsForm from '@src/systems/account/components/settings/SettingsForm';
 import Header from '@src/systems/search/components/Header';
 
@@ -23,10 +22,6 @@ const Settings = async () => {
 
   if (!session) {
     redirect(await signInRoute('settings'));
-  }
-
-  if (!(await isOnboarded(session.user.id))) {
-    redirect('/get-started');
   }
 
   return (

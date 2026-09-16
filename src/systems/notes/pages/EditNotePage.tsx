@@ -3,7 +3,6 @@ import { notFound, redirect } from 'next/navigation';
 import { api } from '@src/lib/trpc/server';
 import { signInRoute } from '@src/lib/utils/redirect';
 import { auth } from '@src/server/auth';
-import { isOnboarded } from '@src/server/onboarding';
 import EditNoteForm from '@src/systems/notes/forms/EditNoteForm';
 import Header from '@src/systems/search/components/Header';
 
@@ -17,10 +16,6 @@ export default async function EditNotePage({ params }: EditNotePageProps) {
     auth.api.getSession({ headers: await headers() }),
   ]);
   if (!session) redirect(await signInRoute(`notes/${id}/edit`));
-
-  if (!(await isOnboarded(session.user.id))) {
-    redirect('/get-started');
-  }
 
   const file = await api.file.byId({ id });
   if (!file) notFound();
