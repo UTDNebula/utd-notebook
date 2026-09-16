@@ -1,5 +1,5 @@
 import { MetadataRoute } from 'next';
-import { api } from '@src/trpc/server';
+import { api } from '@src/lib/trpc/server';
 
 export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
   const baseUrl = 'https://notebook.utdnebula.com';
