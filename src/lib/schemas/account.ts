@@ -9,6 +9,7 @@ const usernameSchema = z
     /^[a-zA-Z0-9_-]+$/,
     'Username can only contain letters, numbers, hyphens, and underscores',
   );
+  .transform((val) => val.toLowerCase());
 
 export const editUsernameSchema = z.object({
   username: usernameSchema,
