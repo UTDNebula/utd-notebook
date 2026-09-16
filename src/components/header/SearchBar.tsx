@@ -444,11 +444,14 @@ export default function SearchBar(props: Props) {
                     disableTouchListener
                   >
                     <IconButton
+                      aria-label="search"
                       size="small"
                       onClick={() => onSelect(value)}
                       className="relative"
                     >
+                      <button type = "submit" hidden></button>
                       <SearchIcon className={isPending ? 'opacity-0' : ''} />
+                      
                       {isPending && (
                         <CircularProgress
                           size={18}

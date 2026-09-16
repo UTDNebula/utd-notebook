@@ -14,6 +14,7 @@ const BackButton = ({ href, ...props }: BackButtonProps) => {
 
   const button = (
     <IconButton
+      aria-label="back"
       onClick={
         href
           ? undefined
