@@ -6,6 +6,7 @@ type FormAutocompleteFreeSoloProps = {
   label: string;
   options: string[];
   className?: string;
+  required?: boolean;
 };
 
 export function FormAutocompleteFreeSolo({
