@@ -13,8 +13,8 @@ import {
   SnackbarPresets,
 } from '@src/lib/modules/snackbar/Snackbar';
 import {
-  AccountSettingsSchema,
-  accountSettingsSchema,
+  AccountSchema,
+  accountSchema,
 } from '@src/lib/schemas/account';
 import { useTRPC } from '@src/lib/trpc/react';
 import { SelectUserMetadata } from '@src/server/db/models';
@@ -39,7 +39,7 @@ export default function UserInfo({ user }: UserInfoProps) {
     }),
   );
 
-  const [defaultValues, setDefaultValues] = useState<AccountSettingsSchema>({
+  const [defaultValues, setDefaultValues] = useState<AccountSchema>({
     firstName: user?.firstName ?? '',
     lastName: user?.lastName ?? '',
     major: user?.major ?? '',
@@ -81,7 +81,7 @@ export default function UserInfo({ user }: UserInfoProps) {
         console.error(e);
       }
     },
-    validators: { onChange: accountSettingsSchema },
+    validators: { onChange: accountSchema },
   });
 
   return (

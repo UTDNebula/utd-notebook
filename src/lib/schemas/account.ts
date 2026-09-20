@@ -17,7 +17,7 @@ export const editUsernameSchema = z.object({
 
 export type EditUsernameSchema = z.infer<typeof editUsernameSchema>;
 
-export const accountSettingsSchema = z.object({
+export const accountSchema = z.object({
   firstName: z.string().min(1, 'First name is required'),
   lastName: z.string().min(1, 'Last name is required'),
   major: z.enum(majors, {
@@ -33,7 +33,7 @@ export const accountSettingsSchema = z.object({
     z.string().max(0, 'Invalid college minor').nullable(),
   ]),
   studentClassification: z.enum(studentClassificationEnum.enumValues),
-  graduationDate: z.date().nullable(),
+  graduationDate: z.date('Graduation date is required').nullable(),
   contactEmail: z
     .email({
       error: 'Use your UT Dallas email',
@@ -43,34 +43,4 @@ export const accountSettingsSchema = z.object({
     .nullable(),
 });
 
-export type AccountSettingsSchema = z.infer<typeof accountSettingsSchema>;
-
-export const accountOnboardingSchema = z.object({
-  firstName: z.string().min(1, 'Name is required'),
-  lastName: z.string().optional(),
-  major: z
-    .enum(majors, {
-      error: (iss) =>
-        iss.input === ''
-          ? 'College major is required'
-          : 'Invalid college major',
-    })
-    .optional(),
-  // See comment at accountSettingsSchema minor
-  minor: z.union([
-    z.enum(minors, 'Invalid college minor').nullable(),
-    z.string().max(0, 'Invalid college minor').nullable(),
-  ]),
-  studentClassification: z.enum(studentClassificationEnum.enumValues),
-  graduationDate: z.date({ error: 'Graduation date is required' }).nullable(),
-  contactEmail: z
-    .email({
-      error: 'Use your UT Dallas email',
-      pattern:
-        /^(?!\.)(?!.*\.\.)([a-z0-9_'+\-\.]*)[a-z0-9_+-]@([a-z0-9][a-z0-9\-]*\.)*utdallas\.edu$/i,
-    })
-    .min(1, 'Contact email is required')
-    .nullable(),
-});
-
-export type AccountOnboardingSchema = z.infer<typeof accountOnboardingSchema>;
+export type AccountSchema = z.infer<typeof accountSchema>;
