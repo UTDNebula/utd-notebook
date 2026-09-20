@@ -16,10 +16,7 @@ import { BaseCard } from '@nebula-library/components/BaseCard';
 import Panel from '@nebula-library/components/Panel';
 import { useAppForm } from '@src/lib/components/form/form';
 import { WizardStepObject } from '@src/lib/components/form/FormWizard';
-import {
-  accountSchema,
-  AccountSchema,
-} from '@src/lib/schemas/account';
+import { accountSchema, AccountSchema } from '@src/lib/schemas/account';
 import { useTRPC } from '@src/lib/trpc/react';
 import { SelectUserMetadata } from '@src/server/db/models';
 import OnboardingFormStep from './OnboardingFormStep';
@@ -70,9 +67,7 @@ export default function OnboardingForm({
     api.userMetadata.updateById.mutationOptions({}),
   );
 
-  const [defaultValues, setDefaultValues] = useState<
-    Partial<AccountSchema>
-  >({
+  const [defaultValues, setDefaultValues] = useState<Partial<AccountSchema>>({
     firstName: userMetadata?.firstName,
     lastName: userMetadata?.lastName,
     major: userMetadata?.major,
