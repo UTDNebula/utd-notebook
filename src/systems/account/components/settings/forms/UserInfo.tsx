@@ -19,7 +19,7 @@ import {
 import { useTRPC } from '@src/lib/trpc/react';
 import { SelectUserMetadata } from '@src/server/db/models';
 import { studentClassificationEnum } from '@src/server/db/schema/user';
-import { majors, minors } from '@src/systems/account/data/utdDegrees';
+import { majors, minors } from '@src/server/db/schema/utdDegrees';
 
 type UserInfoProps = {
   user: SelectUserMetadata;

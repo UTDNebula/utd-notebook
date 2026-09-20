@@ -6,7 +6,7 @@ import { withForm } from '@src/lib/components/form/form';
 import { WizardStepObject } from '@src/lib/components/form/FormWizard';
 import { AccountOnboardingSchema } from '@src/lib/schemas/account';
 import { studentClassificationEnum } from '@src/server/db/schema/user';
-import { majors, minors } from '@src/systems/account/data/utdDegrees';
+import { majors, minors } from '@src/server/db/schema/utdDegrees';
 import { stepIds } from './OnboardingForm';
 
 type FormData = Partial<AccountOnboardingSchema>;

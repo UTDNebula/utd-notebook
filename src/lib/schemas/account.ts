@@ -1,5 +1,6 @@
 import { z } from 'zod';
 import { studentClassificationEnum } from '@src/server/db/schema/user';
+import { majors, minors } from '@src/server/db/schema/utdDegrees';
 
 const usernameSchema = z
   .string()
@@ -19,8 +20,18 @@ export type EditUsernameSchema = z.infer<typeof editUsernameSchema>;
 export const accountSettingsSchema = z.object({
   firstName: z.string().min(1, 'First name is required'),
   lastName: z.string().min(1, 'Last name is required'),
-  major: z.string().min(1, 'College major is required'),
-  minor: z.string().nullable(),
+  major: z.enum(majors, {
+    error: (iss) =>
+      iss.input === '' ? 'College major is required' : 'Invalid college major',
+  }),
+  // Considers empty strings valid...hopefully not an issue?
+  // Better strat would be using preprocess() to turn empty strings into null,
+  // but I can't get typescript to recognize the output type as string | null,
+  // which causes errors in UserInfo.tsx and OnboardingForm.tsx.
+  minor: z.union([
+    z.enum(minors, 'Invalid college minor').nullable(),
+    z.string().max(0, 'Invalid college minor').nullable(),
+  ]),
   studentClassification: z.enum(studentClassificationEnum.enumValues),
   graduationDate: z.date().nullable(),
   contactEmail: z
@@ -37,8 +48,19 @@ export type AccountSettingsSchema = z.infer<typeof accountSettingsSchema>;
 export const accountOnboardingSchema = z.object({
   firstName: z.string().min(1, 'Name is required'),
   lastName: z.string().optional(),
-  major: z.string().optional(),
-  minor: z.string().nullable().optional(),
+  major: z
+    .enum(majors, {
+      error: (iss) =>
+        iss.input === ''
+          ? 'College major is required'
+          : 'Invalid college major',
+    })
+    .optional(),
+  // See comment at accountSettingsSchema minor
+  minor: z.union([
+    z.enum(minors, 'Invalid college minor').nullable(),
+    z.string().max(0, 'Invalid college minor').nullable(),
+  ]),
   studentClassification: z.enum(studentClassificationEnum.enumValues),
   graduationDate: z.date({ error: 'Graduation date is required' }).nullable(),
   contactEmail: z
