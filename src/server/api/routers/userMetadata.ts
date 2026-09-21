@@ -73,8 +73,8 @@ export const userMetadataRouter = createTRPCRouter({
       if (updateUser.username) {
         const existingUser = await ctx.db.query.userMetadata.findFirst({
           where: and(
-           ilike(userMetadata.username, updateUser.username),
-           ne(userMetadata.id, user.id),
+            ilike(userMetadata.username, updateUser.username),
+            ne(userMetadata.id, user.id),
           ),
         });
         if (existingUser) {
@@ -130,7 +130,7 @@ export const userMetadataRouter = createTRPCRouter({
     .input(z.object({ username: z.string() }))
     .query(async ({ input, ctx }) => {
       const existing = await ctx.db.query.userMetadata.findFirst({
-       where: ilike(userMetadata.username, input.username),
+        where: ilike(userMetadata.username, input.username),
       });
       return !!existing;
     }),
