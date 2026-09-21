@@ -1,5 +1,6 @@
 src/server/db/migrations/*
 next-env.d.ts
 data
+src/lib/sections/sections_data.json
 src/nebula-library/*
 .github/pull_request_template.md
