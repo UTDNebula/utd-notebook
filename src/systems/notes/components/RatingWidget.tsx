@@ -179,7 +179,7 @@ export default function RatingWidget({ fileId }: RatingWidgetProps) {
     >
       <StyledRating
         value={userRating?.rating ?? avg}
-        precision={userRating?.rating ? 1 : 0.5}
+        precision={1}
         onChange={handleRatingChange}
         size="small"
       />
