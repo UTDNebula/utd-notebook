@@ -93,6 +93,9 @@ export default function SearchBar(props: Props) {
   // Shortcut to loading course name results if a known substring has no normal results
   const [noResult, setNoResults] = useState<null | string>(null);
 
+  // Autocomplete error handling
+  const [autocompleteError, setAutocompleteError] = useState(false);
+
   // Text in search
   const [inputValue, _setInputValue] = useState('');
   // Quick input updates for fetch (state is slow)
@@ -239,12 +242,14 @@ export default function SearchBar(props: Props) {
 
   // Fetch new options, add tags if valid
   function loadNewOptions(newInputValue: string) {
+    setAutocompleteError(false);
+    setLoading(true);
+
     if (noResult !== null && newInputValue.startsWith(noResult)) {
       loadNewCourseNameOptions(newInputValue);
       return;
     }
 
-    setLoading(true);
     if (newInputValue.trim() === '') {
       prePopulateRecents();
       setLoading(false);
@@ -256,7 +261,12 @@ export default function SearchBar(props: Props) {
         encodeURIComponent(newInputValue) +
         '&searchBy=both',
     )
-      .then((response) => response.json())
+      .then((response) => {
+        if (!response.ok) {
+          throw new Error('Autocomplete request failed');
+        }
+        return response.json();
+      })
       .then((data) => {
         if (data.state !== 'done') {
           throw new Error(data.data ?? data.message);
@@ -309,7 +319,10 @@ export default function SearchBar(props: Props) {
           setOptions(filtered);
         }
       })
-      .catch(() => {})
+      .catch(() => {
+        setAutocompleteError(true);
+        setOptions([]);
+      })
       .finally(() => {
         setLoading(false);
       });
@@ -320,7 +333,12 @@ export default function SearchBar(props: Props) {
     fetch(
       '/api/courseNameAutocomplete?input=' + encodeURIComponent(newInputValue),
     )
-      .then((response) => response.json())
+      .then((response) => {
+        if (!response.ok) {
+          throw new Error('Course name autocomplete request failed');
+        }
+        return response.json();
+      })
       .then((data) => {
         if (data.state !== 'done') {
           throw new Error(data.data ?? data.message);
@@ -344,7 +362,10 @@ export default function SearchBar(props: Props) {
           setOptions(filtered);
         }
       })
-      .catch(() => {})
+      .catch(() => {
+        setAutocompleteError(true);
+        setOptions([]);
+      })
       .finally(() => {
         setLoading(false);
       });
@@ -422,6 +443,12 @@ export default function SearchBar(props: Props) {
       renderInput={(params) => (
         <TextField
           {...params}
+          error={autocompleteError}
+          helperText={
+            autocompleteError
+              ? 'Unable to load suggestions. Please try again.'
+              : undefined
+          }
           variant="outlined"
           slotProps={{
             ...params.slotProps,
