@@ -23,7 +23,7 @@ export type EditUsernameSchema = z.infer<typeof editUsernameSchema>;
 export const accountSettingsSchema = z.object({
   firstName: z.string().min(1, 'First name is required'),
   lastName: z.string().min(1, 'Last name is required'),
-  major: z.string().min(1, 'College major is required'),
+  major: z.string().trim().min(1, 'College major is required'),
   minor: z.string().nullable(),
   studentClassification: z.enum(studentClassificationEnum.enumValues),
   graduationDate: z.date().nullable(),
@@ -40,7 +40,7 @@ export type AccountSettingsSchema = z.infer<typeof accountSettingsSchema>;
 export const accountOnboardingSchema = z.object({
   firstName: z.string().min(1, 'Name is required'),
   lastName: z.string().optional(),
-  major: z.string().min(1, 'College major is required'),
+  major: z.string().trim().min(1, 'College major is required'),
   minor: z.string().nullable().optional(),
   studentClassification: z.enum(studentClassificationEnum.enumValues),
   graduationDate: z.date({ error: 'Graduation date is required' }).nullable(),
@@ -63,7 +63,7 @@ export function isProfileComplete(
 ): boolean {
   if (!userMetadata) return false;
   return (
-    userMetadata.major.length > 0 &&
+    userMetadata.major.trim().length > 0 &&
     !!userMetadata.contactEmail &&
     UTD_EMAIL_REGEX.test(userMetadata.contactEmail)
   );

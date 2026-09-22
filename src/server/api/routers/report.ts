@@ -2,10 +2,10 @@ import { TRPCError } from '@trpc/server';
 import { eq } from 'drizzle-orm';
 import { createReportSchema } from '@src/lib/schemas/moderation';
 import { report as reports } from '@src/server/db/schema/reports';
-import { createTRPCRouter, protectedProcedure } from '../trpc';
+import { createTRPCRouter, onboardedProcedure } from '../trpc';
 
 export const reportRouter = createTRPCRouter({
-  create: protectedProcedure
+  create: onboardedProcedure
     .input(createReportSchema)
     .mutation(async ({ input, ctx }) => {
       const userId = ctx.session.user.id;
