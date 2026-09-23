@@ -36,7 +36,9 @@ function createOwnedFileProcedure(options: { allowMissing: boolean }) {
 }
 
 const ownedFileProcedure = createOwnedFileProcedure({ allowMissing: false });
-const ownedOrNewFileProcedure = createOwnedFileProcedure({ allowMissing: true });
+const ownedOrNewFileProcedure = createOwnedFileProcedure({
+  allowMissing: true,
+});
 
 export const storageRouter = createTRPCRouter({
   get: publicProcedure.input(getDeleteSchema).query(async ({ input }) => {

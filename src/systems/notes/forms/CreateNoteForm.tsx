@@ -1,6 +1,7 @@
 'use client';
 
 import { useMutation } from '@tanstack/react-query';
+import { nanoid } from 'nanoid';
 import { useRouter, useSearchParams } from 'next/navigation';
 import Panel, { PanelSkeleton } from '@nebula-library/components/Panel';
 import { useAppForm } from '@src/lib/components/form/form';
@@ -8,7 +9,6 @@ import FormFile from '@src/lib/components/form/FormFile';
 import { createFileFormSchema } from '@src/lib/schemas/note';
 import { useTRPC } from '@src/lib/trpc/react';
 import { useUploadToUploadURL } from '@src/systems/notes/hooks/useUploadToUploadURL';
-import { nanoid } from 'nanoid';
 
 export type FileDetails = {
   file?: File | null;
@@ -63,7 +63,7 @@ export default function CreateNoteForm() {
           fileName: fileId,
         });
       }
-      
+
       // Create
       return createMutation.mutateAsync(
         {
@@ -82,7 +82,7 @@ export default function CreateNoteForm() {
         {
           onSuccess: async (newId) => {
             router.push(`/notes/${newId}`);
-          }
+          },
         },
       );
     },
