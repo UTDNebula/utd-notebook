@@ -8,6 +8,7 @@ import FormFile from '@src/lib/components/form/FormFile';
 import { createFileFormSchema } from '@src/lib/schemas/note';
 import { useTRPC } from '@src/lib/trpc/react';
 import { useUploadToUploadURL } from '@src/systems/notes/hooks/useUploadToUploadURL';
+import { nanoid } from 'nanoid';
 
 export type FileDetails = {
   file?: File | null;
@@ -42,7 +43,6 @@ const defaultValues: FileDetails = {
 export default function CreateNoteForm() {
   const api = useTRPC();
   const createMutation = useMutation(api.file.create.mutationOptions());
-  const updateMutation = useMutation(api.file.update.mutationOptions());
   const uploadFile = useUploadToUploadURL();
   const router = useRouter();
   const searchParams = useSearchParams();
@@ -52,10 +52,22 @@ export default function CreateNoteForm() {
     defaultValues,
     onSubmit: async ({ value, formApi }) => {
       const selectedFile = value.file ?? null;
+      const isFileDirty = !formApi.getFieldMeta('file')?.isDefaultValue;
 
+      let fileId: string | undefined;
+
+      if (isFileDirty) {
+        fileId = nanoid(20);
+        await uploadFile.mutateAsync({
+          file: selectedFile,
+          fileName: fileId,
+        });
+      }
+      
       // Create
       return createMutation.mutateAsync(
         {
+          id: fileId,
           name: value.name,
           description: value.description,
           handwritten: value.handwritten,
@@ -69,28 +81,8 @@ export default function CreateNoteForm() {
         },
         {
           onSuccess: async (newId) => {
-            const isFileDirty = !formApi.getFieldMeta('file')?.isDefaultValue;
-            if (!isFileDirty) {
-              router.push(`/notes/${newId}`);
-              return;
-            }
-
-            await uploadFile.mutateAsync({
-              file: selectedFile,
-              fileName: newId,
-            });
-            updateMutation.mutate(
-              {
-                id: newId,
-                name: value.name,
-                description: value.description,
-                handwritten: value.handwritten,
-              },
-              {
-                onSuccess: () => router.push(`/notes/${newId}`),
-              },
-            );
-          },
+            router.push(`/notes/${newId}`);
+          }
         },
       );
     },
