@@ -94,18 +94,20 @@ export const userMetadataRouter = createTRPCRouter({
       )[0];
 
       // Update `name` field in BetterAuth user information to match user metadata
-      const name = `${updateUser.firstName} ${updateUser.lastName}`;
-      if (user.name != name) {
-        try {
-          await auth.api.updateUser({
-            body: { name },
-            headers: await headers(),
-          });
-        } catch (e) {
-          console.error(
-            `Unable to update name field for${updateUser.firstName ? ` ${name}'s` : ''} user information`,
-            e,
-          );
+      if (updatedUser) {
+        const name = `${updatedUser.firstName} ${updatedUser.lastName}`;
+        if (user.name != name) {
+          try {
+            await auth.api.updateUser({
+              body: { name },
+              headers: await headers(),
+            });
+          } catch (e) {
+            console.error(
+              `Unable to update name field for${updateUser.firstName ? ` ${name}'s` : ''} user information`,
+              e,
+            );
+          }
         }
       }
 
