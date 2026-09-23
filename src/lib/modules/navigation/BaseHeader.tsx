@@ -217,6 +217,7 @@ export const BaseHeader = ({
                   size="large"
                   className={`${searchVisibility === true ? 'md:hidden' : ''}`}
                   onClick={() => setOpenCompactSearchBar(true)}
+                  aria-label="open search bar"
                 >
                   <SearchIcon />
                 </IconButton>
@@ -231,6 +232,7 @@ export const BaseHeader = ({
               <IconButton
                 size="large"
                 onClick={() => setOpenCompactSearchBar(false)}
+                aria-label="close search bar"
               >
                 <ArrowBackIcon />
               </IconButton>
