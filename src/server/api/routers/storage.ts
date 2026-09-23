@@ -13,9 +13,6 @@ const createUploadSchema = z.object({
   mime: z.literal(NOTE_MIME_TYPE),
 });
 
-
-// Trying to rewrite ownedFileProcedure in a way that preserves its old function for 
-// everything except for creating a new entry/note page
 function createOwnedFileProcedure(options: { allowMissing: boolean }) {
   return protectedProcedure
     .input(getDeleteSchema)
@@ -38,11 +35,8 @@ function createOwnedFileProcedure(options: { allowMissing: boolean }) {
     });
 }
 
-// These two separate variables are to avoid changing the usage of the
-// original function below
 const ownedFileProcedure = createOwnedFileProcedure({ allowMissing: false });
 const ownedOrNewFileProcedure = createOwnedFileProcedure({ allowMissing: true });
-// End of replacement
 
 export const storageRouter = createTRPCRouter({
   get: publicProcedure.input(getDeleteSchema).query(async ({ input }) => {
@@ -67,7 +61,7 @@ export const storageRouter = createTRPCRouter({
     }
     return data;
   }),
-  createUpload: ownedOrNewFileProcedure // Instead of ownedFileProcedure
+  createUpload: ownedOrNewFileProcedure
     .input(createUploadSchema)
     .mutation(async ({ input }) => {
       const data = await getUploadURL(input.objectId, input.mime);
