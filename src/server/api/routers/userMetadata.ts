@@ -93,25 +93,27 @@ export const userMetadataRouter = createTRPCRouter({
           .returning()
       )[0];
 
+      if (!updatedUser) {
+        return updatedUser;
+      }
+
       // Update `name` field in BetterAuth user information to match user metadata
-      if (updatedUser) {
-        const name = `${updatedUser.firstName} ${updatedUser.lastName}`;
-        if (user.name != name) {
-          try {
-            await auth.api.updateUser({
-              body: { name },
-              headers: await headers(),
-            });
-          } catch (e) {
-            console.error(
-              `Unable to update name field for${updateUser.firstName ? ` ${name}'s` : ''} user information`,
-              e,
-            );
-          }
+      const name = `${updatedUser.firstName} ${updatedUser.lastName}`;
+      if (user.name != name) {
+        try {
+          await auth.api.updateUser({
+            body: { name },
+            headers: await headers(),
+          });
+        } catch (e) {
+          console.error(
+            `Unable to update name field for${updateUser.firstName ? ` ${name}'s` : ''} user information`,
+            e,
+          );
         }
       }
 
-      return updatedUser!;
+      return updatedUser;
     }),
   deleteById: protectedProcedure.mutation(async ({ ctx }) => {
     const { user } = ctx.session;
