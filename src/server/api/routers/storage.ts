@@ -13,21 +13,32 @@ const createUploadSchema = z.object({
   mime: z.literal(NOTE_MIME_TYPE),
 });
 
-const ownedFileProcedure = protectedProcedure
-  .input(getDeleteSchema)
-  .use(async ({ ctx, input, next }) => {
-    const file = await ctx.db.query.file.findFirst({
-      where: (file, { eq }) => eq(file.id, input.objectId),
-      columns: { authorId: true },
-    });
-    if (!file || file.authorId !== ctx.session.user.id) {
-      throw new TRPCError({
-        code: 'FORBIDDEN',
-        message: 'You do not own this note.',
+function createOwnedFileProcedure(options: { allowMissing: boolean }) {
+  return protectedProcedure
+    .input(getDeleteSchema)
+    .use(async ({ ctx, input, next }) => {
+      const file = await ctx.db.query.file.findFirst({
+        where: (file, { eq }) => eq(file.id, input.objectId),
+        columns: { authorId: true },
       });
-    }
-    return next();
-  });
+
+      const missing = !file;
+      const notYours = file && file.authorId !== ctx.session.user.id;
+
+      if (notYours || (missing && !options.allowMissing)) {
+        throw new TRPCError({
+          code: 'FORBIDDEN',
+          message: 'You do not own this note.',
+        });
+      }
+      return next();
+    });
+}
+
+const ownedFileProcedure = createOwnedFileProcedure({ allowMissing: false });
+const ownedOrNewFileProcedure = createOwnedFileProcedure({
+  allowMissing: true,
+});
 
 export const storageRouter = createTRPCRouter({
   get: publicProcedure.input(getDeleteSchema).query(async ({ input }) => {
@@ -52,7 +63,7 @@ export const storageRouter = createTRPCRouter({
     }
     return data;
   }),
-  createUpload: ownedFileProcedure
+  createUpload: ownedOrNewFileProcedure
     .input(createUploadSchema)
     .mutation(async ({ input }) => {
       const data = await getUploadURL(input.objectId, input.mime);
