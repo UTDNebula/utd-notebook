@@ -1,4 +1,4 @@
-import { sql } from 'drizzle-orm';
+import { relations, sql } from 'drizzle-orm';
 import {
   pgTable,
   text,
@@ -37,3 +37,14 @@ export const report = pgTable(
   },
   (t) => [uniqueIndex('report_user_file_unique_idx').on(t.userId, t.fileId)],
 );
+
+export const reportRelations = relations(report, ({ one }) => ({
+  reporter: one(userMetadata, {
+    fields: [report.userId],
+    references: [userMetadata.id],
+  }),
+  file: one(file, {
+    fields: [report.fileId],
+    references: [file.id],
+  }),
+}));
