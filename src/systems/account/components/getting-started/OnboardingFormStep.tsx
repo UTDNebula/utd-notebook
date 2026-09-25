@@ -63,6 +63,7 @@ const OnboardingFormStep = withForm({
                       label="Major"
                       options={majors}
                       className="grow"
+                      required
                     />
                   )}
                 </form.AppField>
