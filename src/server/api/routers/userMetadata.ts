@@ -93,8 +93,12 @@ export const userMetadataRouter = createTRPCRouter({
           .returning()
       )[0];
 
+      if (!updatedUser) {
+        return updatedUser;
+      }
+
       // Update `name` field in BetterAuth user information to match user metadata
-      const name = `${updateUser.firstName} ${updateUser.lastName}`;
+      const name = `${updatedUser.firstName} ${updatedUser.lastName}`;
       if (user.name != name) {
         try {
           await auth.api.updateUser({
@@ -109,7 +113,7 @@ export const userMetadataRouter = createTRPCRouter({
         }
       }
 
-      return updatedUser!;
+      return updatedUser;
     }),
   deleteById: protectedProcedure.mutation(async ({ ctx }) => {
     const { user } = ctx.session;
