@@ -2,10 +2,10 @@ import { createInsertSchema, createSelectSchema } from 'drizzle-zod';
 import { z } from 'zod';
 import { user } from './schema/auth';
 import { file } from './schema/file';
+import { report } from './schema/reports';
 import { userMetadataToNotes } from './schema/savedNote';
 import { section } from './schema/section';
 import { userMetadata } from './schema/user';
-import { report } from './schema/reports';
 
 /* =========================
    USER
@@ -127,7 +127,7 @@ export const selectFileWithAuthorPreviewAndReports = selectFile.extend({
       reporter: selectUserMetadata.pick({
         username: true,
       }),
-    })
+    }),
   ),
 });
 

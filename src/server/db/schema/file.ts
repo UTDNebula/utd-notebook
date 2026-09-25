@@ -8,9 +8,9 @@ import {
   uniqueIndex,
   varchar,
 } from 'drizzle-orm/pg-core';
+import { report } from './reports';
 import { section } from './section';
 import { userMetadata } from './user';
-import { report } from './reports';
 
 export const file = pgTable(
   'file',

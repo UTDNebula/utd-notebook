@@ -1,20 +1,21 @@
-
-
 type CategoriesScrollProps = {
-    categories: string[],
+  categories: string[];
 };
 
 export const CategoriesScroll = ({ categories }: CategoriesScrollProps) => {
-    // remove duplicates if they exist
-    categories = [...new Set(categories)];
+  // remove duplicates if they exist
+  categories = [...new Set(categories)];
 
-    return (
-        <div className="flex flex-cols gap-x-2 justify-around h-fit w-fit overflow-x-scroll">
-            {categories.map((category) =>
-                <div key={category} className="rounded-full w-fit px-4 py-1 bg-blue-100 text-blue-500 text-xs">
-                    {category}
-                </div>
-            )}
+  return (
+    <div className="flex-cols flex h-fit w-fit justify-around gap-x-2 overflow-x-scroll">
+      {categories.map((category) => (
+        <div
+          key={category}
+          className="w-fit rounded-full bg-blue-100 px-4 py-1 text-xs text-blue-500"
+        >
+          {category}
         </div>
-    );
+      ))}
+    </div>
+  );
 };

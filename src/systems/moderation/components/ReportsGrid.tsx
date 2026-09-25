@@ -1,17 +1,17 @@
 import type { ReactNode } from 'react';
 import { BaseCard } from '@nebula-library/components/BaseCard';
-import type {
-  SelectFileWithAuthorPreviewAndReports,
-} from '@src/server/db/models';
+import type { SelectFileWithAuthorPreviewAndReports } from '@src/server/db/models';
 import ReportCard from './ReportCard';
 
-type ReportsGridProps= {
-    reportedFiles:
-      | SelectFileWithAuthorPreviewAndReports[];
-    noFilesMessage?: ReactNode;
+type ReportsGridProps = {
+  reportedFiles: SelectFileWithAuthorPreviewAndReports[];
+  noFilesMessage?: ReactNode;
 };
 
-export default function ReportsGrid({ reportedFiles, noFilesMessage }: ReportsGridProps) {
+export default function ReportsGrid({
+  reportedFiles,
+  noFilesMessage,
+}: ReportsGridProps) {
   if (reportedFiles.length === 0) {
     if (noFilesMessage) {
       return noFilesMessage;
