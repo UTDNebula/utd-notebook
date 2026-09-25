@@ -1,5 +1,5 @@
 import { TRPCError } from '@trpc/server';
-import { and, eq, ne, sql } from 'drizzle-orm';
+import { and, eq, ilike, ne, sql } from 'drizzle-orm';
 import { headers } from 'next/headers';
 import { z } from 'zod';
 import { type personalCats } from '@src/lib/modules/navigation/categories';
@@ -33,7 +33,7 @@ export const userMetadataRouter = createTRPCRouter({
     .input(byUsernameSchema)
     .query(async ({ input, ctx }) => {
       const profile = await ctx.db.query.userMetadata.findFirst({
-        where: eq(userMetadata.username, input.username),
+        where: ilike(userMetadata.username, input.username),
       });
 
       if (!profile) {
@@ -73,7 +73,7 @@ export const userMetadataRouter = createTRPCRouter({
       if (updateUser.username) {
         const existingUser = await ctx.db.query.userMetadata.findFirst({
           where: and(
-            eq(userMetadata.username, updateUser.username),
+            ilike(userMetadata.username, updateUser.username),
             ne(userMetadata.id, user.id),
           ),
         });
@@ -130,7 +130,7 @@ export const userMetadataRouter = createTRPCRouter({
     .input(z.object({ username: z.string() }))
     .query(async ({ input, ctx }) => {
       const existing = await ctx.db.query.userMetadata.findFirst({
-        where: eq(userMetadata.username, input.username),
+        where: ilike(userMetadata.username, input.username),
       });
       return !!existing;
     }),
