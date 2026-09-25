@@ -12,14 +12,11 @@ import {
   setSnackbar,
   SnackbarPresets,
 } from '@src/lib/modules/snackbar/Snackbar';
-import {
-  AccountSettingsSchema,
-  accountSettingsSchema,
-} from '@src/lib/schemas/account';
+import { AccountSchema, accountSchema } from '@src/lib/schemas/account';
 import { useTRPC } from '@src/lib/trpc/react';
 import { SelectUserMetadata } from '@src/server/db/models';
 import { studentClassificationEnum } from '@src/server/db/schema/user';
-import { majors, minors } from '@src/systems/account/data/utdDegrees';
+import { majors, minors } from '@src/server/db/schema/utdDegrees';
 
 type UserInfoProps = {
   user: SelectUserMetadata;
@@ -39,7 +36,7 @@ export default function UserInfo({ user }: UserInfoProps) {
     }),
   );
 
-  const [defaultValues, setDefaultValues] = useState<AccountSettingsSchema>({
+  const [defaultValues, setDefaultValues] = useState<AccountSchema>({
     firstName: user?.firstName ?? '',
     lastName: user?.lastName ?? '',
     major: user?.major ?? '',
@@ -81,7 +78,7 @@ export default function UserInfo({ user }: UserInfoProps) {
         console.error(e);
       }
     },
-    validators: { onChange: accountSettingsSchema },
+    validators: { onChange: accountSchema },
   });
 
   return (
