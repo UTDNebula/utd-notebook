@@ -94,7 +94,10 @@ export const userMetadataRouter = createTRPCRouter({
       )[0];
 
       if (!updatedUser) {
-        return updatedUser;
+        throw new TRPCError({
+          code: 'INTERNAL_SERVER_ERROR',
+          message: 'Unable to update account information',
+        });
       }
 
       // Update `name` field in BetterAuth user information to match user metadata
