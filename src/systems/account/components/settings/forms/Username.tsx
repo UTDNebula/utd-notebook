@@ -13,6 +13,7 @@ import {
 } from '@src/lib/modules/snackbar/Snackbar';
 import { editUsernameSchema } from '@src/lib/schemas/account';
 import { useTRPC } from '@src/lib/trpc/react';
+import { authClient } from '@src/lib/utils/auth-client';
 import useDebounce from '@src/lib/utils/useDebounce';
 import { SelectUserMetadata } from '@src/server/db/models';
 
@@ -22,6 +23,7 @@ type UsernameProps = {
 
 export default function Username({ user }: UsernameProps) {
   const api = useTRPC();
+  const { refetch } = authClient.useSession();
 
   const editAccountMutation = useMutation(
     api.userMetadata.updateById.mutationOptions({
@@ -45,6 +47,7 @@ export default function Username({ user }: UsernameProps) {
         updateUser: { username: value.username },
       });
       if (updated) {
+        await refetch();
         setDefaultValues({ username: updated.username ?? '' });
         formApi.reset({ username: updated.username ?? '' });
       }
