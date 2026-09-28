@@ -1,10 +1,11 @@
 import { betterAuth } from 'better-auth';
 import { drizzleAdapter } from 'better-auth/adapters/drizzle';
-import { eq } from 'drizzle-orm';
+import { eq, sql } from 'drizzle-orm';
 import { env } from '@src/env.mjs';
 import { db } from './db';
 import { type InsertUserMetadata } from './db/models';
 import { userMetadata } from './db/schema/user';
+import { isUsernameConflict } from './db/username';
 
 /**
  * Options for Better Auth used to configure adapters, providers, callbacks, etc.
@@ -40,24 +41,30 @@ export const auth = betterAuth({
             .replace(/^-|-$/g, '')
             .slice(0, 24);
 
-          // Check for collisions and append random digits if needed
-          let username = baseUsername;
-          while (
-            await db.query.userMetadata.findFirst({
-              where: eq(userMetadata.username, username),
-            })
-          ) {
-            username = `${baseUsername}-${Math.floor(1000 + Math.random() * 9000)}`;
+          // Retry if another signup claims the username between check and insert.
+          let username = baseUsername || 'user';
+          for (let attempt = 0; attempt < 20; attempt++) {
+            const existing = await db.query.userMetadata.findFirst({
+              where: eq(sql`lower(${userMetadata.username})`, username),
+            });
+            if (!existing) {
+              const insert: InsertUserMetadata = {
+                firstName,
+                lastName,
+                id: user.id,
+                major: '',
+                username,
+              };
+              try {
+                await db.insert(userMetadata).values(insert).returning();
+                return;
+              } catch (error) {
+                if (!isUsernameConflict(error)) throw error;
+              }
+            }
+            username = `${baseUsername || 'user'}-${Math.floor(1000 + Math.random() * 9000)}`;
           }
-
-          const insert: InsertUserMetadata = {
-            firstName,
-            lastName,
-            id: user.id,
-            major: '',
-            username,
-          };
-          await db.insert(userMetadata).values(insert).returning();
+          throw new Error('Unable to allocate an available username');
         },
       },
       delete: {

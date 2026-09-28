@@ -1,4 +1,4 @@
-import { and, avg, count, eq, isNotNull } from 'drizzle-orm';
+import { and, avg, count, eq, isNotNull, sql } from 'drizzle-orm';
 import { z } from 'zod';
 import { userMetadataToNotes } from '@src/server/db/schema/savedNote';
 import { createTRPCRouter, protectedProcedure, publicProcedure } from '../trpc';
@@ -90,7 +90,10 @@ export const savedNoteRouter = createTRPCRouter({
     .query(async ({ input, ctx }) => {
       const user = await ctx.db.query.userMetadata.findFirst({
         where: (userMetadata, { eq }) =>
-          eq(userMetadata.username, input.username),
+          eq(
+            sql`lower(${userMetadata.username})`,
+            input.username.toLowerCase(),
+          ),
       });
 
       if (!user) {
