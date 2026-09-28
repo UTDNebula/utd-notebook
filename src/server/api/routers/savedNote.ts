@@ -1,14 +1,19 @@
 import { and, avg, count, eq, isNotNull } from 'drizzle-orm';
 import { z } from 'zod';
 import { userMetadataToNotes } from '@src/server/db/schema/savedNote';
-import { createTRPCRouter, protectedProcedure, publicProcedure } from '../trpc';
+import {
+  createTRPCRouter,
+  onboardedProcedure,
+  protectedProcedure,
+  publicProcedure,
+} from '../trpc';
 
 const byFileIdSchema = z.object({
   fileId: z.string(),
 });
 
 export const savedNoteRouter = createTRPCRouter({
-  toggle: protectedProcedure
+  toggle: onboardedProcedure
     .input(byFileIdSchema)
     .mutation(async ({ input, ctx }) => {
       const userId = ctx.session.user.id;
@@ -117,7 +122,7 @@ export const savedNoteRouter = createTRPCRouter({
       return rows.map((row) => row.file);
     }),
 
-  rate: protectedProcedure
+  rate: onboardedProcedure
     .input(
       z.object({
         fileId: z.string(),

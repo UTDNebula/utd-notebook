@@ -6,7 +6,12 @@ import { createFileSchema, editFileSchema } from '@src/lib/schemas/note';
 import { file as files } from '@src/server/db/schema/file';
 import { section as sections } from '@src/server/db/schema/section';
 import { callStorageAPI } from '@src/server/storage';
-import { createTRPCRouter, protectedProcedure, publicProcedure } from '../trpc';
+import {
+  createTRPCRouter,
+  onboardedProcedure,
+  protectedProcedure,
+  publicProcedure,
+} from '../trpc';
 
 const byIdSchema = z.object({
   id: z.string().default(''),
@@ -91,7 +96,7 @@ export const fileRouter = createTRPCRouter({
       return files;
     }),
 
-  create: protectedProcedure
+  create: onboardedProcedure
     .input(createFileSchema)
     .mutation(async ({ input, ctx }) => {
       const userId = ctx.session.user.id;
@@ -158,7 +163,7 @@ export const fileRouter = createTRPCRouter({
         });
       return newFile.id;
     }),
-  update: protectedProcedure
+  update: onboardedProcedure
     .input(editFileSchema)
     .mutation(async ({ input, ctx }) => {
       const { id, ...data } = input;

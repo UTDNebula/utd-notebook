@@ -15,6 +15,7 @@ import superjson from 'superjson';
 import { ZodError } from 'zod';
 import { auth } from '@src/server/auth';
 import { db } from '@src/server/db';
+import { isOnboarded } from '@src/server/onboarding';
 
 /**
  * 1. CONTEXT
@@ -115,6 +116,18 @@ const enforceUserIsAuthed = t.middleware(({ ctx, next }) => {
  * @see https://trpc.io/docs/procedures
  */
 export const protectedProcedure = t.procedure.use(enforceUserIsAuthed);
+
+export const onboardedProcedure = protectedProcedure.use(
+  async ({ ctx, next }) => {
+    if (!(await isOnboarded(ctx.session.user.id))) {
+      throw new TRPCError({
+        code: 'FORBIDDEN',
+        message: 'Finish onboarding before doing this.',
+      });
+    }
+    return next();
+  },
+);
 
 /**
  * Admin procedures
