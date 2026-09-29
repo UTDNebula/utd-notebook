@@ -103,6 +103,7 @@ export const fileRouter = createTRPCRouter({
         year,
         profFirst,
         profLast,
+        id,
         ...fileData
       } = input;
 
@@ -144,6 +145,7 @@ export const fileRouter = createTRPCRouter({
         .insert(files)
         .values({
           ...fileData,
+          ...(id ? { id } : {}), // Providing id should prevent publicURL from having '' placeholder
           authorId: userId,
           sectionId: section.id,
           publicUrl: '', // This must be filled in with an update call right after the create call

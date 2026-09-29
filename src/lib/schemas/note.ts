@@ -35,6 +35,7 @@ export const createFileFormSchema = z.object({
 });
 
 export const createFileSchema = z.object({
+  id: noteIdSchema.optional(),
   name: z
     .string()
     .min(3, 'Name must be at least 3 characters')
