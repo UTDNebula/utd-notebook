@@ -1,7 +1,7 @@
 import DeleteIcon from '@mui/icons-material/Delete';
 import SaveIcon from '@mui/icons-material/Save';
 import Button from '@mui/material/Button';
-import { useStore } from '@tanstack/react-form';
+import { useSelector } from '@tanstack/react-store';
 import { useFormContext } from '@src/lib/components/form/form';
 
 interface FormSubmitButtonProps {
@@ -18,9 +18,12 @@ export const FormSubmitButton = ({
   allowDisable = true,
 }: FormSubmitButtonProps) => {
   const form = useFormContext();
-  const isDefaultValue = useStore(form.store, (state) => state.isDefaultValue);
-  const isSubmitting = useStore(form.store, (state) => state.isSubmitting);
-  const isValid = useStore(form.store, (state) => state.isValid);
+  const isDefaultValue = useSelector(
+    form.store,
+    (state) => state.isDefaultValue,
+  );
+  const isSubmitting = useSelector(form.store, (state) => state.isSubmitting);
+  const isValid = useSelector(form.store, (state) => state.isValid);
   const iconComponent = icon ?? <SaveIcon />;
 
   return (
@@ -46,8 +49,11 @@ interface FormResetButtonProps {
 
 export const FormResetButton = ({ onClick }: FormResetButtonProps) => {
   const form = useFormContext();
-  const isDefaultValue = useStore(form.store, (state) => state.isDefaultValue);
-  const isSubmitting = useStore(form.store, (state) => state.isSubmitting);
+  const isDefaultValue = useSelector(
+    form.store,
+    (state) => state.isDefaultValue,
+  );
+  const isSubmitting = useSelector(form.store, (state) => state.isSubmitting);
   return (
     <form.Subscribe>
       <Button

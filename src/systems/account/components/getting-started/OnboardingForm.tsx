@@ -8,8 +8,8 @@ import StepLabel from '@mui/material/StepLabel';
 import Stepper from '@mui/material/Stepper';
 import { useTheme } from '@mui/material/styles';
 import useMediaQuery from '@mui/system/useMediaQuery';
-import { useStore } from '@tanstack/react-form';
 import { useMutation } from '@tanstack/react-query';
+import { useSelector } from '@tanstack/react-store';
 import { useRouter } from 'next/navigation';
 import { MouseEvent, useCallback, useState } from 'react';
 import { BaseCard } from '@nebula-library/components/BaseCard';
@@ -121,9 +121,9 @@ export default function OnboardingForm({
     },
     validators: { onChange: accountOnboardingSchema },
   });
-  const fieldMeta = useStore(form.store, (state) => state.fieldMeta);
-  const isFieldsValid = useStore(form.store, (state) => state.isFieldsValid);
-  const isSubmitting = useStore(form.store, (state) => state.isSubmitting);
+  const fieldMeta = useSelector(form.store, (state) => state.fieldMeta);
+  const isFieldsValid = useSelector(form.store, (state) => state.isFieldsValid);
+  const isSubmitting = useSelector(form.store, (state) => state.isSubmitting);
 
   /*
    * Steps
