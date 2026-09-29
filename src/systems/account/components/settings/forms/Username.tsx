@@ -2,8 +2,8 @@
 
 import CheckCircleIcon from '@mui/icons-material/CheckCircle';
 import WarningIcon from '@mui/icons-material/Warning';
-import { useStore } from '@tanstack/react-form';
 import { useMutation, useQuery } from '@tanstack/react-query';
+import { useSelector } from '@tanstack/react-store';
 import { useEffect, useState } from 'react';
 import Panel from '@nebula-library/components/Panel';
 import { useAppForm } from '@src/lib/components/form/form';
@@ -59,7 +59,7 @@ export default function Username({ user }: UsernameProps) {
 
   // Set to true when there is a zod error to prevent fetching
   const [simpleError, setSimpleError] = useState(false);
-  const input = useStore(form.store, (state) => state.values.username);
+  const input = useSelector(form.store, (state) => state.values.username);
   const debouncedSearch = useDebounce(input, 300);
   const { data: usernameExists, isFetching } = useQuery(
     api.userMetadata.usernameExists.queryOptions(

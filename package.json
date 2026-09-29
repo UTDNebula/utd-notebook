@@ -39,6 +39,7 @@
     "@tanstack/react-form-devtools": "^0.2.29",
     "@tanstack/react-query": "^5.101.0",
     "@tanstack/react-query-devtools": "^5.101.0",
+    "@tanstack/react-store": "^0.11.0",
     "@tanstack/react-table": "^8.11.0",
     "@tanstack/react-virtual": "^3.14.3",
     "@trpc/client": "^11.17.0",
