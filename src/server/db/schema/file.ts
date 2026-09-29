@@ -8,6 +8,7 @@ import {
   uniqueIndex,
   varchar,
 } from 'drizzle-orm/pg-core';
+import { report } from './reports';
 import { section } from './section';
 import { userMetadata } from './user';
 
@@ -42,7 +43,7 @@ export const file = pgTable(
   ],
 );
 
-export const fileRelations = relations(file, ({ one }) => ({
+export const fileRelations = relations(file, ({ one, many }) => ({
   author: one(userMetadata, {
     fields: [file.authorId],
     references: [userMetadata.id],
@@ -51,4 +52,5 @@ export const fileRelations = relations(file, ({ one }) => ({
     fields: [file.sectionId],
     references: [section.id],
   }),
+  report: many(report),
 }));
