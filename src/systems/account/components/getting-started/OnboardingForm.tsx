@@ -16,10 +16,7 @@ import { BaseCard } from '@nebula-library/components/BaseCard';
 import Panel from '@nebula-library/components/Panel';
 import { useAppForm } from '@src/lib/components/form/form';
 import { WizardStepObject } from '@src/lib/components/form/FormWizard';
-import {
-  accountOnboardingSchema,
-  AccountOnboardingSchema,
-} from '@src/lib/schemas/account';
+import { accountSchema, AccountSchema } from '@src/lib/schemas/account';
 import { useTRPC } from '@src/lib/trpc/react';
 import { SelectUserMetadata } from '@src/server/db/models';
 import OnboardingFormStep from './OnboardingFormStep';
@@ -33,13 +30,13 @@ const stepsBody = [
     fields: ['major', 'minor', 'studentClassification', 'graduationDate'],
   },
   { id: 3, label: 'Contact Email', fields: ['contactEmail'] },
-] as const satisfies readonly WizardStepObject<AccountOnboardingSchema>[];
+] as const satisfies readonly WizardStepObject<AccountSchema>[];
 
 // Extracts a union of all the ids used in rawSteps
 export type stepIds = (typeof stepsBody)[number]['id'];
 
 // Creates the generic array of WizardStepObjects
-export const steps: readonly WizardStepObject<AccountOnboardingSchema>[] = [
+export const steps: readonly WizardStepObject<AccountSchema>[] = [
   { variant: 'start', label: 'Get Started', hidden: true },
   ...stepsBody,
   { variant: 'finish', label: 'Finish', hidden: true },
@@ -70,9 +67,7 @@ export default function OnboardingForm({
     api.userMetadata.updateById.mutationOptions({}),
   );
 
-  const [defaultValues, setDefaultValues] = useState<
-    Partial<AccountOnboardingSchema>
-  >({
+  const [defaultValues, setDefaultValues] = useState<Partial<AccountSchema>>({
     firstName: userMetadata?.firstName,
     lastName: userMetadata?.lastName,
     major: userMetadata?.major,
@@ -119,7 +114,7 @@ export default function OnboardingForm({
         console.error(e);
       }
     },
-    validators: { onChange: accountOnboardingSchema },
+    validators: { onChange: accountSchema },
   });
   const fieldMeta = useStore(form.store, (state) => state.fieldMeta);
   const isFieldsValid = useStore(form.store, (state) => state.isFieldsValid);
