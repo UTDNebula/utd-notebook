@@ -7,9 +7,18 @@ import { useRouter } from 'next/navigation';
 import type { MouseEvent } from 'react';
 import { useState } from 'react';
 import Confirmation from '@src/lib/components/Confirmation';
+import { setSnackbar } from '@src/lib/modules/snackbar/Snackbar';
 import { useTRPC } from '@src/lib/trpc/react';
 
-export default function NoteDeleteButton({ fileId }: { fileId: string }) {
+type NoteDeleteButtonProps = {
+  fileId: string;
+  fallbackHref?: string;
+};
+
+export default function NoteDeleteButton({
+  fileId,
+  fallbackHref,
+}: NoteDeleteButtonProps) {
   const [open, setOpen] = useState(false);
   const api = useTRPC();
   const router = useRouter();
@@ -49,7 +58,18 @@ export default function NoteDeleteButton({ fileId }: { fileId: string }) {
             {
               onSuccess: () => {
                 setOpen(false);
-                router.refresh();
+                if (!fallbackHref) {
+                  setSnackbar({
+                    message: 'Note deleted. Returning to the home page.',
+                    type: 'warning',
+                    autoHideDuration: true,
+                    closeOn: ['timeout', 'escapeKeyDown', 'dismiss'],
+                  });
+                  router.replace('/');
+                  return;
+                }
+
+                router.replace(fallbackHref);
               },
             },
           );

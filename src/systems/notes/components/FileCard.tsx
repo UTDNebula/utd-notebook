@@ -4,6 +4,7 @@ import { useThumbnails, type FileData } from '@mkholt/pdf-thumbnail';
 import { Skeleton } from '@mui/material';
 import Image from 'next/image';
 import Link from 'next/link';
+import { usePathname, useSearchParams } from 'next/navigation';
 import { useMemo, useState } from 'react';
 import { BaseCard } from '@nebula-library/components/BaseCard';
 import { getNoteFileUrl } from '@src/lib/note-files/noteFile';
@@ -35,6 +36,8 @@ const formatUpdatedAt = (
 
 export default function FileCard({ file }: FileCardProps) {
   const { data: session } = authClient.useSession();
+  const pathname = usePathname();
+  const searchParams = useSearchParams();
   const isAuthor = session?.user?.id === file.authorId;
 
   const thumbnailUrl = addVersionToFile(
@@ -151,7 +154,12 @@ export default function FileCard({ file }: FileCardProps) {
 
       <div className="m-4 mt-0 flex flex-row items-center space-x-2">
         {isAuthor && <NoteEditButton fileId={file.id} />}
-        {isAuthor && <NoteDeleteButton fileId={file.id} />}
+        {isAuthor && (
+          <NoteDeleteButton
+            fileId={file.id}
+            fallbackHref={`${pathname}${searchParams.toString() ? `?${searchParams}` : ''}`}
+          />
+        )}
         {!isAuthor && <ReportButton fileId={file.id} />}
         <SaveButton fileId={file.id} />
       </div>
