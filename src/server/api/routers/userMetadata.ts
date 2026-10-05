@@ -3,8 +3,8 @@ import { and, eq, ne, sql } from 'drizzle-orm';
 import { headers } from 'next/headers';
 import { z } from 'zod';
 import { type personalCats } from '@src/lib/modules/navigation/categories';
+import { accountSchema } from '@src/lib/schemas/account';
 import { auth } from '@src/server/auth';
-import { insertUserMetadata } from '@src/server/db/models';
 import { admin } from '@src/server/db/schema/admin';
 import { user as users } from '@src/server/db/schema/auth';
 import { userMetadata } from '@src/server/db/schema/user';
@@ -14,7 +14,9 @@ const byIdSchema = z.object({ id: z.string() });
 const byUsernameSchema = z.object({ username: z.string().trim().min(1) });
 
 const updateByIdSchema = z.object({
-  updateUser: insertUserMetadata.partial().omit({ id: true }),
+  updateUser: accountSchema.partial().extend({
+    username: z.string().nullable().optional(),
+  }),
 });
 const nameSchema = z.object({
   name: z.string().default(''),

@@ -92,7 +92,6 @@ systems/account/
 │   ├── getting-started/   Onboarding wizard
 │   ├── profile/           Profile note lists
 │   └── settings/          Account settings forms
-├── data/utdDegrees.ts     Major and minor choices
 └── pages/                 Auth, onboarding, settings, and profile screens
 ```
 
