@@ -2,7 +2,7 @@ import { TRPCError } from '@trpc/server';
 import { z } from 'zod';
 import { NOTE_MIME_TYPE, noteIdSchema } from '@src/lib/note-files/noteFile';
 import { callStorageAPI, getUploadURL } from '@src/server/storage';
-import { createTRPCRouter, protectedProcedure, publicProcedure } from '../trpc';
+import { createTRPCRouter, protectedProcedure } from '../trpc';
 
 const getDeleteSchema = z.object({
   objectId: noteIdSchema,
@@ -30,7 +30,7 @@ const ownedFileProcedure = protectedProcedure
   });
 
 export const storageRouter = createTRPCRouter({
-  get: publicProcedure.input(getDeleteSchema).query(async ({ input }) => {
+  get: protectedProcedure.input(getDeleteSchema).query(async ({ input }) => {
     const data = await callStorageAPI('GET', input.objectId);
     if (data.message !== 'success') {
       throw new TRPCError({

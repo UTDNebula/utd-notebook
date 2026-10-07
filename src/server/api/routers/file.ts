@@ -6,7 +6,7 @@ import { createFileSchema, editFileSchema } from '@src/lib/schemas/note';
 import { file as files } from '@src/server/db/schema/file';
 import { section as sections } from '@src/server/db/schema/section';
 import { callStorageAPI } from '@src/server/storage';
-import { createTRPCRouter, protectedProcedure, publicProcedure } from '../trpc';
+import { createTRPCRouter, protectedProcedure } from '../trpc';
 
 const byIdSchema = z.object({
   id: z.string().default(''),
@@ -18,7 +18,7 @@ const byNameSchema = z.object({
 });
 
 export const fileRouter = createTRPCRouter({
-  byId: publicProcedure.input(byIdSchema).query(async ({ input, ctx }) => {
+  byId: protectedProcedure.input(byIdSchema).query(async ({ input, ctx }) => {
     const { id } = input;
 
     try {
@@ -61,7 +61,7 @@ export const fileRouter = createTRPCRouter({
 
       return files;
     }),
-  byUsername: publicProcedure
+  byUsername: protectedProcedure
     .input(
       z.object({
         username: z.string().trim().min(1),
@@ -219,26 +219,28 @@ export const fileRouter = createTRPCRouter({
 
       return { success: true };
     }),
-  byName: publicProcedure.input(byNameSchema).query(async ({ input, ctx }) => {
-    const { name, sortByDate } = input;
-    try {
-      const files = await ctx.db.query.file.findMany({
-        where: (file) => ilike(file.name, `%${name}%`),
-        orderBy: sortByDate
-          ? (file, { desc }) => [desc(file.updatedAt)]
-          : undefined,
-        with: {
-          section: true,
-          author: {
-            columns: { username: true, firstName: true, lastName: true },
+  byName: protectedProcedure
+    .input(byNameSchema)
+    .query(async ({ input, ctx }) => {
+      const { name, sortByDate } = input;
+      try {
+        const files = await ctx.db.query.file.findMany({
+          where: (file) => ilike(file.name, `%${name}%`),
+          orderBy: sortByDate
+            ? (file, { desc }) => [desc(file.updatedAt)]
+            : undefined,
+          with: {
+            section: true,
+            author: {
+              columns: { username: true, firstName: true, lastName: true },
+            },
           },
-        },
-      });
+        });
 
-      return files;
-    } catch (e) {
-      console.error(e);
-      throw e;
-    }
-  }),
+        return files;
+      } catch (e) {
+        console.error(e);
+        throw e;
+      }
+    }),
 });

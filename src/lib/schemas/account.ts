@@ -1,4 +1,5 @@
 import { z } from 'zod';
+import { type SelectUserMetadata } from '@src/server/db/models';
 import { studentClassificationEnum } from '@src/server/db/schema/user';
 
 const usernameSchema = z
@@ -47,8 +48,25 @@ export const accountOnboardingSchema = z.object({
       pattern:
         /^(?!\.)(?!.*\.\.)([a-z0-9_'+\-\.]*)[a-z0-9_+-]@([a-z0-9][a-z0-9\-]*\.)*utdallas\.edu$/i,
     })
-    .min(1, 'Contact email is required')
-    .nullable(),
+    .min(1, 'Contact email is required'),
 });
 
 export type AccountOnboardingSchema = z.infer<typeof accountOnboardingSchema>;
+
+export type OnboardingData = Pick<
+  SelectUserMetadata,
+  | 'firstName'
+  | 'lastName'
+  | 'major'
+  | 'minor'
+  | 'studentClassification'
+  | 'graduationDate'
+  | 'contactEmail'
+>;
+
+// Uses the onboarding form's schema so the form and the server agree
+export function isOnboardingComplete(
+  profile: Partial<OnboardingData> | null | undefined,
+): boolean {
+  return accountOnboardingSchema.safeParse(profile).success;
+}

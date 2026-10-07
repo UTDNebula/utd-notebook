@@ -15,6 +15,7 @@ import superjson from 'superjson';
 import { ZodError } from 'zod';
 import { auth } from '@src/server/auth';
 import { db } from '@src/server/db';
+import { isOnboarded } from '@src/server/onboarding';
 
 /**
  * 1. CONTEXT
@@ -107,14 +108,33 @@ const enforceUserIsAuthed = t.middleware(({ ctx, next }) => {
 });
 
 /**
+ * Onboarding procedure
+ *
+ * Requires a session but not completed onboarding. Only use it for onboarding operations, and
+ * always act on `ctx.session.user.id` instead of taking a user ID as input.
+ */
+export const onboardingProcedure = t.procedure.use(enforceUserIsAuthed);
+
+/**
  * Protected (authenticated) procedure
  *
- * If you want a query or mutation to ONLY be accessible to logged in users, use this. It verifies
- * the session is valid and guarantees `ctx.session.user` is not null.
+ * If you want a query or mutation to ONLY be accessible to logged in users who have completed
+ * onboarding, use this. It verifies the session is valid and guarantees `ctx.session.user` is not
+ * null.
  *
  * @see https://trpc.io/docs/procedures
  */
-export const protectedProcedure = t.procedure.use(enforceUserIsAuthed);
+export const protectedProcedure = onboardingProcedure.use(
+  async ({ ctx, next }) => {
+    if (!(await isOnboarded(ctx.db, ctx.session.user.id))) {
+      throw new TRPCError({
+        code: 'FORBIDDEN',
+        message: 'Finish onboarding before using the application.',
+      });
+    }
+    return next();
+  },
+);
 
 /**
  * Admin procedures

@@ -1,19 +1,47 @@
 import { MetadataRoute } from 'next';
-import { api } from '@src/lib/trpc/server';
+import { db } from '@src/server/db';
+import { section } from '@src/server/db/schema/section';
 
 export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
   const baseUrl = 'https://notebook.utdnebula.com';
 
-  const [courses, professors, combos, notes, usernames] = await Promise.all([
+  // Crawlers have no session, so read the database directly instead of through tRPC
+  const [courses, professors, combos, notes, userRows] = await Promise.all([
     // Fetch all existing courses, profs, and course-prof combos as arrays
-    api.section.getAllCourses(),
-    api.section.getAllProfessors(),
-    api.section.getAllCourseProfessorCombos(),
+    db
+      .selectDistinct({ prefix: section.prefix, number: section.number })
+      .from(section)
+      .orderBy(section.prefix, section.number),
+    db
+      .selectDistinct({
+        profFirst: section.profFirst,
+        profLast: section.profLast,
+      })
+      .from(section)
+      .orderBy(section.profFirst, section.profLast),
+    db
+      .selectDistinct({
+        prefix: section.prefix,
+        number: section.number,
+        profFirst: section.profFirst,
+        profLast: section.profLast,
+      })
+      .from(section)
+      .orderBy(
+        section.prefix,
+        section.number,
+        section.profFirst,
+        section.profLast,
+      ),
     // Fetch note IDs
-    api.file.byName({ name: '', sortByDate: true }),
+    db.query.file.findMany({
+      columns: { id: true, updatedAt: true },
+      orderBy: (file, { desc }) => [desc(file.updatedAt)],
+    }),
     // Fetch usernames
-    api.userMetadata.getAllUsernames(),
+    db.query.userMetadata.findMany({ columns: { username: true } }),
   ]);
+  const usernames = userRows.map((u) => u.username).filter((u) => u !== null);
 
   // array of all possible note page slugs
   const noteSlugs = [

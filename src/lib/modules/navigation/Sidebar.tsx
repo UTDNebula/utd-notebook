@@ -1,5 +1,6 @@
 'use server';
 
+import { TRPCError } from '@trpc/server';
 import { api } from '@src/lib/trpc/server';
 import type { ContentComponentColor } from './BaseHeader';
 import NewSidebar from './Slide';
@@ -12,8 +13,18 @@ const Sidebar = async ({
   homepage?: boolean;
   hamburgerColor?: ContentComponentColor;
 }) => {
-  const userSidebarCapabilities =
-    await api.userMetadata.getUserSidebarCapabilities();
+  // Signed-out and not-yet-onboarded visitors just get no personal entries
+  const userSidebarCapabilities = await api.userMetadata
+    .getUserSidebarCapabilities()
+    .catch((error: unknown) => {
+      if (
+        error instanceof TRPCError &&
+        (error.code === 'UNAUTHORIZED' || error.code === 'FORBIDDEN')
+      ) {
+        return [];
+      }
+      throw error;
+    });
   return (
     <NewSidebar
       userCapabilities={userSidebarCapabilities}
