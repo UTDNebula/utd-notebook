@@ -16,12 +16,17 @@ export class NoRegisterModalProviderError extends Error {
 const defaultValues = {
   showRegisterModal: false,
   setShowRegisterModal: () => {},
+  callbackUrl: undefined,
+  setCallbackUrl: () => {},
 };
 
 interface RegisterModalContextInterface {
   inProvider: boolean;
   showRegisterModal: boolean;
   setShowRegisterModal: React.Dispatch<React.SetStateAction<boolean>>;
+  /** Where to send the user after they log in. Defaults to the current page. */
+  callbackUrl: string | undefined;
+  setCallbackUrl: React.Dispatch<React.SetStateAction<string | undefined>>;
 }
 
 /**
@@ -79,14 +84,26 @@ export const RegisterModalProvider = ({
   children,
 }: RegisterModalProviderProps) => {
   const [showRegisterModal, setShowRegisterModal] = useState(false);
+  const [callbackUrl, setCallbackUrl] = useState<string | undefined>();
 
   return (
     <RegisterModalContext.Provider
-      value={{ inProvider: true, showRegisterModal, setShowRegisterModal }}
+      value={{
+        inProvider: true,
+        showRegisterModal,
+        setShowRegisterModal,
+        callbackUrl,
+        setCallbackUrl,
+      }}
     >
       <RegisterModal
         open={showRegisterModal}
-        onClose={() => setShowRegisterModal(false)}
+        callbackUrl={callbackUrl}
+        onClose={() => {
+          setShowRegisterModal(false);
+          // A destination only applies to the popup it was set for
+          setCallbackUrl(undefined);
+        }}
       />
       {children}
     </RegisterModalContext.Provider>
