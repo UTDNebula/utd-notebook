@@ -5,9 +5,10 @@ CREATE TYPE "public"."report_status" AS ENUM('PENDING', 'DISMISSED', 'FILE_HIDDE
 -- add moderation status (visibility) column to file table. all files are visible by default.
 ALTER TABLE "file" ADD COLUMN "moderation_status" "moderation_status" DEFAULT 'VISIBLE' NOT NULL;--> statement-breakpoint
 
--- add filename column to existing reports. needs migration
-ALTER TABLE "report" ADD COLUMN "file_name" text NOT NULL;--> statement-breakpoint
-
+-- add filename column to existing reports, filling it with the reports' associated file names
+ALTER TABLE "report" ADD COLUMN "file_name" text;--> statement-breakpoint
+UPDATE "report" SET "file_name" = "file"."name" FROM "file" WHERE "report"."file_id" = "file"."id";
+ALTER TABLE "report" ALTER COLUMN "file_name" SET NOT NULL;
 
 -- add status column to all existing reports; all are pending by default
 ALTER TABLE "report" ADD COLUMN "status" "report_status" DEFAULT 'PENDING' NOT NULL;--> statement-breakpoint
