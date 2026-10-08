@@ -7,8 +7,8 @@ ALTER TABLE "file" ADD COLUMN "moderation_status" "moderation_status" DEFAULT 'V
 
 -- add filename column to existing reports, filling it with the reports' associated file names
 ALTER TABLE "report" ADD COLUMN "file_name" text;--> statement-breakpoint
-UPDATE "report" SET "file_name" = "file"."name" FROM "file" WHERE "report"."file_id" = "file"."id";
-ALTER TABLE "report" ALTER COLUMN "file_name" SET NOT NULL;
+UPDATE "report" SET "file_name" = "file"."name" FROM "file" WHERE "report"."file_id" = "file"."id";--> statement-breakpoint
+ALTER TABLE "report" ALTER COLUMN "file_name" SET NOT NULL;--> statement-breakpoint
 
 -- add status column to all existing reports; all are pending by default
 ALTER TABLE "report" ADD COLUMN "status" "report_status" DEFAULT 'PENDING' NOT NULL;--> statement-breakpoint
