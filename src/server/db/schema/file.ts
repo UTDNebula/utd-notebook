@@ -8,6 +8,7 @@ import {
   uniqueIndex,
   varchar,
 } from 'drizzle-orm/pg-core';
+import { fileModerationStatusEnum as moderationStatusEnum } from '@src/lib/schemas/moderation';
 import { report } from './reports';
 import { section } from './section';
 import { userMetadata } from './user';
@@ -35,6 +36,10 @@ export const file = pgTable(
     handwritten: boolean('handwritten').notNull().default(false),
 
     updatedAt: timestamp('updated_at').notNull().defaultNow(),
+
+    moderationStatus: moderationStatusEnum('moderation_status')
+      .notNull()
+      .default('VISIBLE'),
   },
   (t) => [
     uniqueIndex('file_name_unique_idx').on(t.authorId, t.name),
