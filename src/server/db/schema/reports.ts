@@ -11,7 +11,7 @@ import { reportStatuses } from '@src/lib/types/moderation';
 import { file } from './file';
 import { userMetadata } from './user';
 
-export const statusEnum = pgEnum('status', reportStatuses);
+export const statusEnum = pgEnum('report_status', reportStatuses);
 
 export const report = pgTable(
   'report',
