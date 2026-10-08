@@ -40,6 +40,7 @@ export const reportRouter = createTRPCRouter({
           .values({
             userId,
             fileId: input.fileId,
+            fileName: existingFile.name,
             category: input.category,
             details: input.details,
           })
