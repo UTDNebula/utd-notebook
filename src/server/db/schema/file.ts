@@ -2,16 +2,22 @@ import { relations, sql } from 'drizzle-orm';
 import {
   boolean,
   index,
+  pgEnum,
   pgTable,
   text,
   timestamp,
   uniqueIndex,
   varchar,
 } from 'drizzle-orm/pg-core';
-import { fileModerationStatusEnum as moderationStatusEnum } from '@src/lib/schemas/moderation';
+import { fileModerationStatuses } from '@src/lib/types/moderation';
 import { report } from './reports';
 import { section } from './section';
 import { userMetadata } from './user';
+
+export const moderationStatusEnum = pgEnum(
+  'moderation_status',
+  fileModerationStatuses,
+);
 
 export const file = pgTable(
   'file',

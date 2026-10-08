@@ -1,14 +1,17 @@
 import { relations, sql } from 'drizzle-orm';
 import {
+  pgEnum,
   pgTable,
   text,
   timestamp,
   uniqueIndex,
   varchar,
 } from 'drizzle-orm/pg-core';
-import { reportStatusEnum as statusEnum } from '@src/lib/schemas/moderation';
+import { reportStatuses } from '@src/lib/types/moderation';
 import { file } from './file';
 import { userMetadata } from './user';
+
+export const statusEnum = pgEnum('status', reportStatuses);
 
 export const report = pgTable(
   'report',
