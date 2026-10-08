@@ -2,14 +2,22 @@ import { relations, sql } from 'drizzle-orm';
 import {
   boolean,
   index,
+  pgEnum,
   pgTable,
   text,
   timestamp,
   uniqueIndex,
   varchar,
 } from 'drizzle-orm/pg-core';
+import { fileModerationStatuses } from '@src/lib/types/moderation';
+import { report } from './reports';
 import { section } from './section';
 import { userMetadata } from './user';
+
+export const moderationStatusEnum = pgEnum(
+  'moderation_status',
+  fileModerationStatuses,
+);
 
 export const file = pgTable(
   'file',
@@ -34,6 +42,10 @@ export const file = pgTable(
     handwritten: boolean('handwritten').notNull().default(false),
 
     updatedAt: timestamp('updated_at').notNull().defaultNow(),
+
+    moderationStatus: moderationStatusEnum('moderation_status')
+      .notNull()
+      .default('VISIBLE'),
   },
   (t) => [
     uniqueIndex('file_name_unique_idx').on(t.authorId, t.name),
@@ -42,7 +54,7 @@ export const file = pgTable(
   ],
 );
 
-export const fileRelations = relations(file, ({ one }) => ({
+export const fileRelations = relations(file, ({ one, many }) => ({
   author: one(userMetadata, {
     fields: [file.authorId],
     references: [userMetadata.id],
@@ -51,4 +63,5 @@ export const fileRelations = relations(file, ({ one }) => ({
     fields: [file.sectionId],
     references: [section.id],
   }),
+  report: many(report),
 }));
