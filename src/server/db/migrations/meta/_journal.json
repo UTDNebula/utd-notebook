@@ -57,6 +57,13 @@
       "when": 1788391245464,
       "tag": "0007_add_account_issuer",
       "breakpoints": true
+    },
+    {
+      "idx": 8,
+      "version": "7",
+      "when": 1791766083423,
+      "tag": "0008_fine_korath",
+      "breakpoints": true
     }
   ]
 }

@@ -38,4 +38,23 @@ const ProviderButton = ({
   </Button>
 );
 
+export const AnonymousButton = () => (
+  <Button
+    variant="contained"
+    size="large"
+    onClick={async () => {
+      const result = await authClient.signIn.anonymous();
+
+      if (!result.error) {
+        window.location.reload();
+      }
+    }}
+    className="min-w-max bg-white whitespace-nowrap normal-case hover:bg-neutral-100 dark:bg-neutral-700 dark:hover:bg-neutral-600"
+  >
+    <Typography className="text-base font-extrabold text-slate-800 md:text-xs dark:text-slate-200">
+      <span className="min-w-fit">Continue as Guest</span>
+    </Typography>
+  </Button>
+);
+
 export default ProviderButton;

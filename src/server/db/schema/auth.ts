@@ -9,6 +9,7 @@ import {
 } from 'drizzle-orm/pg-core';
 
 export const user = pgTable('user', {
+  isAnonymous: boolean('is_anonymous').default(false).notNull(),
   id: text('id').primaryKey(),
   name: text('name').notNull(),
   email: text('email').notNull().unique(),

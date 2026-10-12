@@ -5,7 +5,7 @@ import IconButton from '@mui/material/IconButton';
 import Modal, { ModalProps } from '@mui/material/Modal';
 import Typography from '@mui/material/Typography';
 import React from 'react';
-import ProviderButton from './ProviderButtons';
+import ProviderButton, { AnonymousButton } from './ProviderButtons';
 
 type RegisterModalProps = Omit<ModalProps, 'children'> & {
   open: boolean;
@@ -41,6 +41,7 @@ export const RegisterModalContents = ({
         </Typography>
       </div>
       <div className="flex w-full flex-col items-center justify-center gap-3 p-4 sm:flex-row">
+        {process.env.NODE_ENV === 'development' && <AnonymousButton />}
         {providers.map((provider) => (
           <ProviderButton key={provider} provider={provider} />
         ))}
