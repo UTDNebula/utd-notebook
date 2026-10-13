@@ -9,11 +9,14 @@ import {
   getGraph,
   searchAutocomplete,
 } from '@src/systems/search/utils/autocomplete';
-import { type SearchQueryWithTotalStudents } from '@src/systems/search/utils/SearchQuery';
+import { type SearchQueryWithTitle } from '@src/systems/search/utils/SearchQuery';
 
 const graph = getGraph(autocompleteGraph as object);
 
-const CACHE_TTL_MS = 1000 * 60 * 1; // 1 minute
+const CACHE_TTL_MS = 1000 * 60 * 1; //1 minute
+
+//callers can ask for fewer results, never more
+const MAX_LIMIT = 20;
 
 declare global {
   var __autocompleteCache:
@@ -78,10 +81,10 @@ export async function GET(request: Request) {
     searchBy = searchByParam;
   }
 
-  let limit = 20;
-  const limitParam = searchParams.get('limit');
-  if (typeof limitParam === 'string' && !isNaN(Number(limitParam))) {
-    limit = Number(limitParam);
+  let limit = MAX_LIMIT;
+  const requestedLimit = Number.parseInt(searchParams.get('limit') ?? '', 10);
+  if (!Number.isNaN(requestedLimit)) {
+    limit = Math.min(Math.max(requestedLimit, 1), MAX_LIMIT);
   }
 
   const results = searchAutocomplete(graph, input, limit, searchBy);
@@ -115,11 +118,23 @@ export async function GET(request: Request) {
     }
   }
 
+  //only what the search bar needs to render a suggestion
+  const suggestions = results.map((res) => ({
+    prefix: res.prefix,
+    number: res.number,
+    sectionNumber: res.sectionNumber,
+    profFirst: res.profFirst,
+    profLast: res.profLast,
+    title: res.title,
+    subtitle: res.subtitle,
+    hasNotes: res.hasNotes,
+  }));
+
   return NextResponse.json(
     {
       state: 'done',
-      data: results,
-    } satisfies GenericFetchedData<SearchQueryWithTotalStudents[]>,
+      data: suggestions,
+    } satisfies GenericFetchedData<SearchQueryWithTitle[]>,
     { status: 200 },
   );
 }
