@@ -9,9 +9,7 @@ export const reportRouter = createTRPCRouter({
     .input(createReportSchema)
     .mutation(async ({ input, ctx }) => {
       const userId = ctx.session.user.id;
-      const hasReportedPrior =
-        (await ctx.db.select().from(reports).where(eq(reports.userId, userId)))
-          .length > 0;
+      const hasReportedPrior = (await ctx.db.select().from(reports).where(eq(reports.userId, userId))).length > 0;
 
       const existingFile = await ctx.db.query.file.findFirst({
         where: (fileRecord) => eq(fileRecord.id, input.fileId),
