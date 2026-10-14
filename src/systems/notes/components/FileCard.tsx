@@ -4,7 +4,7 @@ import { useThumbnails, type FileData } from '@mkholt/pdf-thumbnail';
 import { Skeleton } from '@mui/material';
 import Image from 'next/image';
 import Link from 'next/link';
-import { useMemo, useState } from 'react';
+import { useEffect, useMemo, useState } from 'react';
 import { BaseCard } from '@nebula-library/components/BaseCard';
 import { getNoteFileUrl } from '@src/lib/note-files/noteFile';
 import { authClient } from '@src/lib/utils/auth-client';
@@ -71,9 +71,13 @@ export default function FileCard({ file }: FileCardProps) {
 
   const [hasStartedFetching, setHasStartedFetching] = useState(false);
 
-  if (isLoading && !hasStartedFetching) {
-    setHasStartedFetching(true);
-  }
+  useEffect(() => {
+    if (isLoading && !hasStartedFetching) {
+      // Persist the thumbnail hook's loading history for preview failure detection.
+      // eslint-disable-next-line react-hooks/set-state-in-effect
+      setHasStartedFetching(true);
+    }
+  }, [isLoading, hasStartedFetching]);
 
   const showPreviewError =
     hasStartedFetching && !thumbData && thumbnails.length === 0 && !isLoading;
