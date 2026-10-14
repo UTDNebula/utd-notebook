@@ -1,7 +1,9 @@
 import { type Metadata } from 'next';
 import { notFound } from 'next/navigation';
 import { api } from '@src/lib/trpc/server';
+import { getViewer } from '@src/server/viewer';
 import ProfileNotes from '@src/systems/account/components/profile/ProfileNotes';
+import PublicProfilePage from '@src/systems/account/pages/PublicProfilePage';
 import Header from '@src/systems/search/components/Header';
 
 type ProfilePageProps = {
@@ -30,6 +32,9 @@ export async function generateMetadata({
 
 export default async function ProfilePage({ params }: ProfilePageProps) {
   const { username } = await params;
+  if ((await getViewer()) === 'anonymous') {
+    return <PublicProfilePage username={username} />;
+  }
 
   const [profile, uploadedNotes, savedNotes] = await Promise.all([
     api.userMetadata.byUsername({ username }),
