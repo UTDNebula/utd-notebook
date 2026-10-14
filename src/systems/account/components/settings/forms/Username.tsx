@@ -96,20 +96,21 @@ export default function Username({ user }: UsernameProps) {
 
     // Taken
     if (isNewUsername && usernameExists && !isFetchingOrWaiting) {
-      form.setFieldMeta('username', (prev) => {
-        if (prev.errorMap.onChange?.length) return prev;
-        return {
-          ...prev,
-          errorMap: {
-            onChange: [
-              ...(prev.errorMap.onChange || []),
-              { message: 'This username is already taken' },
-            ],
-          },
-          isValid: false,
-          isValidating: false,
-        };
-      });
+      form.setFieldMeta('username', (prev) => ({
+        ...prev,
+        errorMap: {
+          onChange: [
+            ...(prev.errorMap.onChange?.filter(
+              (err: { message?: string } | undefined) =>
+                err?.message !== 'Checking availability..' &&
+                err?.message !== 'This username is already taken',
+            ) ?? []),
+            { message: 'This username is already taken' },
+          ],
+        },
+        isValid: false,
+        isValidating: false,
+      }));
       return;
     }
 
