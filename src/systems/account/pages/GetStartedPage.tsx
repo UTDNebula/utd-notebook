@@ -1,6 +1,7 @@
 import { headers } from 'next/headers';
 import Image from 'next/image';
 import { redirect } from 'next/navigation';
+import { isOnboardingComplete } from '@src/lib/schemas/account';
 import { api } from '@src/lib/trpc/server';
 import { signInRoute } from '@src/lib/utils/redirect';
 import { auth } from '@src/server/auth';
@@ -14,7 +15,11 @@ export default async function Page() {
     redirect(await signInRoute('get-started'));
   }
 
-  const userMetadata = await api.userMetadata.byId({ id: session.user.id });
+  const onboardingData = await api.onboarding.get();
+
+  if (isOnboardingComplete(onboardingData)) {
+    redirect('/');
+  }
 
   return (
     <main className="relative min-h-screen pb-24">
@@ -34,7 +39,7 @@ export default async function Page() {
           color="light"
           itemVisibility={{ search: false, children: false }}
         />
-        <OnboardingForm userMetadata={userMetadata} withLayout />
+        <OnboardingForm userMetadata={onboardingData ?? undefined} withLayout />
       </div>
     </main>
   );

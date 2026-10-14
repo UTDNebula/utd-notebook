@@ -19,9 +19,9 @@ import { WizardStepObject } from '@src/lib/components/form/FormWizard';
 import {
   accountOnboardingSchema,
   AccountOnboardingSchema,
+  OnboardingData,
 } from '@src/lib/schemas/account';
 import { useTRPC } from '@src/lib/trpc/react';
-import { SelectUserMetadata } from '@src/server/db/models';
 import OnboardingFormStep from './OnboardingFormStep';
 
 // "Source of truth" array that contains the actual steps of the form
@@ -49,7 +49,7 @@ const hasStart = steps.find((step) => step.variant === 'start');
 const hasFinish = steps.find((step) => step.variant === 'finish');
 
 type OnboardingFormProps = {
-  userMetadata?: SelectUserMetadata;
+  userMetadata?: OnboardingData;
   /**
    * Include div's for centering and keeping content within a max width
    */
@@ -67,7 +67,7 @@ export default function OnboardingForm({
   const api = useTRPC();
 
   const editAccountMutation = useMutation(
-    api.userMetadata.updateById.mutationOptions({}),
+    api.onboarding.submit.mutationOptions({}),
   );
 
   const [defaultValues, setDefaultValues] = useState<
@@ -93,12 +93,14 @@ export default function OnboardingForm({
     defaultValues,
     onSubmit: async ({ value, formApi }) => {
       try {
-        const updated = await editAccountMutation.mutateAsync({
-          updateUser: value,
-        });
+        // Parse with the same schema the server validates against
+        const updated = await editAccountMutation.mutateAsync(
+          accountOnboardingSchema.parse(value),
+        );
         if (updated) {
           const updatedFixed = {
             ...updated,
+            contactEmail: updated.contactEmail ?? '',
             graduationDate: updated?.graduationDate
               ? new Date(
                   updated?.graduationDate?.getTime() +

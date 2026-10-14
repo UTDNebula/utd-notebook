@@ -3,7 +3,9 @@ import { BaseCard } from '@nebula-library/components/BaseCard';
 import { getNoteFileUrl } from '@src/lib/note-files/noteFile';
 import { api } from '@src/lib/trpc/server';
 import { addVersionToFile } from '@src/lib/utils/fileCacheBust';
+import { getViewer } from '@src/server/viewer';
 import NoteInfoPanel from '@src/systems/notes/components/NoteInfoPanel';
+import PublicNotePage from '@src/systems/notes/pages/PublicNotePage';
 import Header from '@src/systems/search/components/Header';
 
 type NotePageProps = {
@@ -12,6 +14,8 @@ type NotePageProps = {
 
 export default async function NotePage({ params }: NotePageProps) {
   const { id } = await params;
+  if ((await getViewer()) === 'anonymous') return <PublicNotePage id={id} />;
+
   const file = await api.file.byId({ id });
   if (!file) notFound();
 

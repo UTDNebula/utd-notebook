@@ -1,5 +1,6 @@
 import { createCallerFactory, createTRPCRouter } from '@src/server/api/trpc';
 import { fileRouter } from './routers/file';
+import { onboardingRouter } from './routers/onboarding';
 import { reportRouter } from './routers/report';
 import { savedNoteRouter } from './routers/savedNote';
 import { sectionRouter } from './routers/section';
@@ -13,6 +14,7 @@ import { userMetadataRouter } from './routers/userMetadata';
  */
 export const appRouter = createTRPCRouter({
   file: fileRouter,
+  onboarding: onboardingRouter,
   report: reportRouter,
   savedNote: savedNoteRouter,
   section: sectionRouter,

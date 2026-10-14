@@ -8,7 +8,7 @@ import { insertUserMetadata } from '@src/server/db/models';
 import { admin } from '@src/server/db/schema/admin';
 import { user as users } from '@src/server/db/schema/auth';
 import { userMetadata } from '@src/server/db/schema/user';
-import { createTRPCRouter, protectedProcedure, publicProcedure } from '../trpc';
+import { createTRPCRouter, protectedProcedure } from '../trpc';
 
 const byIdSchema = z.object({ id: z.string() });
 const byUsernameSchema = z.object({ username: z.string().trim().min(1) });
@@ -29,7 +29,7 @@ export const userMetadataRouter = createTRPCRouter({
 
     return userMetadata;
   }),
-  byUsername: publicProcedure
+  byUsername: protectedProcedure
     .input(byUsernameSchema)
     .query(async ({ input, ctx }) => {
       const profile = await ctx.db.query.userMetadata.findFirst({
@@ -54,7 +54,7 @@ export const userMetadataRouter = createTRPCRouter({
         image: user?.image ?? null,
       };
     }),
-  getAllUsernames: publicProcedure.query(async ({ ctx }) => {
+  getAllUsernames: protectedProcedure.query(async ({ ctx }) => {
     const usernames = await ctx.db.query.userMetadata.findMany({
       columns: {
         username: true,
@@ -123,7 +123,7 @@ export const userMetadataRouter = createTRPCRouter({
     await ctx.db.delete(users).where(eq(users.id, user.id));
     await ctx.db.delete(userMetadata).where(eq(userMetadata.id, user.id));
   }),
-  searchByName: publicProcedure
+  searchByName: protectedProcedure
     .input(nameSchema)
     .query(async ({ input, ctx }) => {
       const users = ctx.db.query.userMetadata.findMany({
@@ -133,7 +133,7 @@ export const userMetadataRouter = createTRPCRouter({
       });
       return await users;
     }),
-  usernameExists: publicProcedure
+  usernameExists: protectedProcedure
     .input(z.object({ username: z.string() }))
     .query(async ({ input, ctx }) => {
       const existing = await ctx.db.query.userMetadata.findFirst({
@@ -141,7 +141,7 @@ export const userMetadataRouter = createTRPCRouter({
       });
       return !!existing;
     }),
-  getUserSidebarCapabilities: publicProcedure.query(async ({ ctx }) => {
+  getUserSidebarCapabilities: protectedProcedure.query(async ({ ctx }) => {
     const session = ctx.session;
     const capabilites: (typeof personalCats)[number][] = [];
     if (!session) return capabilites;

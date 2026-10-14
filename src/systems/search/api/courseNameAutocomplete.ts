@@ -256,7 +256,8 @@ export async function GET(request: Request) {
     .filter((r) => r.distance <= oneStdCutoff)
     .map((result) => ({
       title: result.title,
-      result: result.result,
+      //only what the search bar needs, without the student count
+      result: { prefix: result.result.prefix, number: result.result.number },
     }));
 
   return NextResponse.json(

@@ -12,6 +12,8 @@ type RegisterModalProps = Omit<ModalProps, 'children'> & {
   onClose?: () => void;
   closeButton?: boolean;
   className?: string;
+  /** Where to send the user after they log in. Defaults to the current page. */
+  callbackUrl?: string;
 };
 
 const providers = ['google', 'discord'] as const;
@@ -20,7 +22,11 @@ export const RegisterModalContents = ({
   className,
   onClose,
   closeButton,
-}: Pick<RegisterModalProps, 'className' | 'onClose' | 'closeButton'>) => {
+  callbackUrl,
+}: Pick<
+  RegisterModalProps,
+  'className' | 'onClose' | 'closeButton' | 'callbackUrl'
+>) => {
   return (
     <div
       className={`z-20 flex w-fit flex-col items-center rounded-lg bg-white p-4 shadow-lg dark:bg-neutral-800 dark:shadow-xl ${className}`}
@@ -42,7 +48,11 @@ export const RegisterModalContents = ({
       </div>
       <div className="flex w-full flex-col items-center justify-center gap-3 p-4 sm:flex-row">
         {providers.map((provider) => (
-          <ProviderButton key={provider} provider={provider} />
+          <ProviderButton
+            key={provider}
+            provider={provider}
+            callbackUrl={callbackUrl}
+          />
         ))}
       </div>
     </div>
@@ -54,6 +64,7 @@ const RegisterModal: React.FC<RegisterModalProps> = ({
   onClose,
   closeButton,
   className,
+  callbackUrl,
 }) => {
   if (!open) return null;
 
@@ -68,6 +79,7 @@ const RegisterModal: React.FC<RegisterModalProps> = ({
         <RegisterModalContents
           onClose={onClose}
           closeButton={closeButton ?? true}
+          callbackUrl={callbackUrl}
         />
       </span>
     </Modal>

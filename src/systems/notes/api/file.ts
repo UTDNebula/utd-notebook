@@ -3,6 +3,9 @@ import {
   NOTE_MIME_TYPE,
   noteIdSchema,
 } from '@src/lib/note-files/noteFile';
+import { auth } from '@src/server/auth';
+import { db } from '@src/server/db';
+import { isOnboarded } from '@src/server/onboarding';
 import { callStorageAPI } from '@src/server/storage';
 
 const errorResponse = (message: string, status: number) =>
@@ -16,9 +19,14 @@ const errorResponse = (message: string, status: number) =>
   });
 
 export async function GET(
-  _request: Request,
+  request: Request,
   { params }: { params: Promise<{ id: string }> },
 ) {
+  const session = await auth.api.getSession({ headers: request.headers });
+  if (!session) return errorResponse('Sign in to view this note.', 401);
+  if (!(await isOnboarded(db, session.user.id)))
+    return errorResponse('Finish onboarding to view this note.', 403);
+
   const parsed = noteIdSchema.safeParse((await params).id);
   if (!parsed.success) return errorResponse('File not found.', 404);
 

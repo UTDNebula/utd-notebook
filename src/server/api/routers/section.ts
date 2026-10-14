@@ -4,7 +4,7 @@ import { normalizePrefix } from '@src/lib/sections/section';
 import type { SectionEntry } from '@src/lib/sections/sectionEntry';
 import sectionsData from '@src/lib/sections/sections_data.json';
 import { section } from '@src/server/db/schema/section';
-import { createTRPCRouter, publicProcedure } from '../trpc';
+import { createTRPCRouter, protectedProcedure } from '../trpc';
 
 // Already sorted by year desc, term desc at build time (generateSectionsData.ts)
 const sections: SectionEntry[] = sectionsData as SectionEntry[];
@@ -48,7 +48,7 @@ const byCourseAndProfessorSchema = z.object({
 });
 
 export const sectionRouter = createTRPCRouter({
-  getSectionById: publicProcedure.input(byIdSchema).query(({ input, ctx }) =>
+  getSectionById: protectedProcedure.input(byIdSchema).query(({ input, ctx }) =>
     ctx.db.query.section.findFirst({
       where: eq(section.id, input.id),
       with: {
@@ -61,7 +61,7 @@ export const sectionRouter = createTRPCRouter({
     }),
   ),
 
-  getNotesByCourse: publicProcedure
+  getNotesByCourse: protectedProcedure
     .input(byCourseSchema)
     .query(async ({ input, ctx }) => {
       const normalizedPrefix = normalizePrefix(input.prefix);
@@ -85,7 +85,7 @@ export const sectionRouter = createTRPCRouter({
       });
     }),
 
-  getNotesByProfessor: publicProcedure
+  getNotesByProfessor: protectedProcedure
     .input(byProfessorSchema)
     .query(async ({ input, ctx }) => {
       return ctx.db.query.section.findMany({
@@ -107,7 +107,7 @@ export const sectionRouter = createTRPCRouter({
       });
     }),
 
-  getNotesByCourseAndProfessor: publicProcedure
+  getNotesByCourseAndProfessor: protectedProcedure
     .input(byCourseAndProfessorSchema)
     .query(async ({ input, ctx }) => {
       const normalizedPrefix = normalizePrefix(input.prefix);
@@ -133,7 +133,7 @@ export const sectionRouter = createTRPCRouter({
       });
     }),
 
-  getAllCourses: publicProcedure.query(async ({ ctx }) => {
+  getAllCourses: protectedProcedure.query(async ({ ctx }) => {
     return ctx.db
       .selectDistinct({
         prefix: section.prefix,
@@ -143,7 +143,7 @@ export const sectionRouter = createTRPCRouter({
       .orderBy(section.prefix, section.number);
   }),
 
-  getAllProfessors: publicProcedure.query(async ({ ctx }) => {
+  getAllProfessors: protectedProcedure.query(async ({ ctx }) => {
     return ctx.db
       .selectDistinct({
         profFirst: section.profFirst,
@@ -153,7 +153,7 @@ export const sectionRouter = createTRPCRouter({
       .orderBy(section.profFirst, section.profLast);
   }),
 
-  getAllCourseProfessorCombos: publicProcedure.query(async ({ ctx }) => {
+  getAllCourseProfessorCombos: protectedProcedure.query(async ({ ctx }) => {
     return ctx.db
       .selectDistinct({
         prefix: section.prefix,
@@ -170,7 +170,7 @@ export const sectionRouter = createTRPCRouter({
       );
   }),
 
-  searchSections: publicProcedure
+  searchSections: protectedProcedure
     .input(z.object({ query: z.string().min(2).max(100) }))
     .query(({ input }) => {
       // Normalize: insert space between letters and digits ("CS1200" -> "CS 1200")

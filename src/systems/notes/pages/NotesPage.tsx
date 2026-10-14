@@ -1,10 +1,12 @@
 import EmptyStateCard from '@src/lib/components/EmptyStateCard';
 import { api } from '@src/lib/trpc/server';
 import type { SectionWithFilesWithUserMetadata } from '@src/server/db/models';
+import { getViewer } from '@src/server/viewer';
 import FilesGrid from '@src/systems/notes/components/FilesGrid';
 import HandwrittenFilter from '@src/systems/notes/components/Filters';
 import LinkCard from '@src/systems/notes/components/LinkCard';
 import SectionHeader from '@src/systems/notes/components/SectionHeader';
+import PublicNotesPage from '@src/systems/notes/pages/PublicNotesPage';
 import {
   noteQueryToDescription,
   noteQueryToTitle,
@@ -155,6 +157,15 @@ export default async function NotesPage({
       <EmptyStateCard
         title="Invalid URL"
         description="Could not parse the notes URL. Try /notes/CS/3341 for a course or /notes/John/Smith for a professor."
+      />
+    );
+  }
+
+  if ((await getViewer()) === 'anonymous') {
+    return (
+      <PublicNotesPage
+        query={query}
+        handwritten={resolvedSearchParams.handwritten}
       />
     );
   }

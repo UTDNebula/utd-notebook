@@ -1,7 +1,7 @@
 import { and, avg, count, eq, isNotNull } from 'drizzle-orm';
 import { z } from 'zod';
 import { userMetadataToNotes } from '@src/server/db/schema/savedNote';
-import { createTRPCRouter, protectedProcedure, publicProcedure } from '../trpc';
+import { createTRPCRouter, protectedProcedure } from '../trpc';
 
 const byFileIdSchema = z.object({
   fileId: z.string(),
@@ -43,7 +43,7 @@ export const savedNoteRouter = createTRPCRouter({
       return { saved: true };
     }),
 
-  isSaved: publicProcedure
+  isSaved: protectedProcedure
     .input(byFileIdSchema)
     .query(async ({ input, ctx }) => {
       if (!ctx.session?.user) {
@@ -81,7 +81,7 @@ export const savedNoteRouter = createTRPCRouter({
     return rows.map((row) => row.file);
   }),
 
-  byUsername: publicProcedure
+  byUsername: protectedProcedure
     .input(
       z.object({
         username: z.string().trim().min(1),
@@ -160,7 +160,7 @@ export const savedNoteRouter = createTRPCRouter({
       return { rating: input.rating };
     }),
 
-  getUserRating: publicProcedure
+  getUserRating: protectedProcedure
     .input(byFileIdSchema)
     .query(async ({ input, ctx }) => {
       if (!ctx.session?.user) {
@@ -177,7 +177,7 @@ export const savedNoteRouter = createTRPCRouter({
       return { rating: row?.rating ?? null };
     }),
 
-  getAverageRating: publicProcedure
+  getAverageRating: protectedProcedure
     .input(byFileIdSchema)
     .query(async ({ input, ctx }) => {
       const [result] = await ctx.db

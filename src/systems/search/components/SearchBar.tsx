@@ -23,7 +23,10 @@ import React, {
   useTransition,
   type Key,
 } from 'react';
+import { useRegisterModal } from '@src/lib/modules/registerModal/RegisterModalProvider';
+import { authClient } from '@src/lib/utils/auth-client';
 import untyped_professor_to_alias from '@src/systems/search/data/professor_to_alias.json';
+import { resolveSearchNavigation } from '@src/systems/search/utils/searchNavigation';
 import {
   decodeSearchQueryLabel,
   removeDuplicates,
@@ -157,32 +160,27 @@ export default function SearchBar(props: Props) {
   }
 
   const router = useRouter();
+  const { data: session, isPending: sessionPending } = authClient.useSession();
+  const { setShowRegisterModal, setCallbackUrl } = useRegisterModal();
 
   // Update route with what's in value
   function updateQueries(term: SearchQuery) {
-    if (term.prefix && term.number) {
-      if (term.hasNotes === false) {
-        router.push(`/notes/create?q=${searchQueryLabel(term)}`);
-        return;
-      }
+    // Navigate while the session loads; the layout sends anonymous visitors to log in
+    const navigation = resolveSearchNavigation(
+      term,
+      sessionPending || session != null,
+      window.location.origin,
+    );
+    if (navigation === null) return;
 
-      // Navigate to notes page based on search term
-      router.push(
-        `/notes/${term.prefix.toLowerCase()}/${term.number.toLowerCase()}`,
-      );
+    if (navigation.action === 'login') {
+      // Anonymous visitors log in first, then land on the page they picked
+      setCallbackUrl(navigation.callbackUrl);
+      setShowRegisterModal(true);
       return;
     }
 
-    if (term.profFirst && term.profLast) {
-      if (term.hasNotes === false) {
-        router.push(`/notes/create?q=${searchQueryLabel(term)}`);
-        return;
-      }
-
-      router.push(
-        `/notes/${term.profFirst.toLowerCase()}/${term.profLast.toLowerCase()}`,
-      );
-    }
+    router.push(navigation.href);
   }
 
   // Set options to recent searches only (at the start)
