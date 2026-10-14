@@ -11,16 +11,16 @@ export const reportRouter = createTRPCRouter({
       const userId = ctx.session.user.id;
       const hasReportedPrior = (await ctx.db.select().from(reports).where(eq(reports.userId, userId))).length > 0;
 
-      const existingFile = await ctx.db.query.file.findFirst({
-        where: (fileRecord) => eq(fileRecord.id, input.fileId),
-      });
-
       if (hasReportedPrior) {
         throw new TRPCError({
           code: 'BAD_REQUEST',
           message: 'User cannot report the same file more than once.',
         });
       }
+      
+      const existingFile = await ctx.db.query.file.findFirst({
+        where: (fileRecord) => eq(fileRecord.id, input.fileId),
+      });
 
       if (!existingFile) {
         throw new TRPCError({
