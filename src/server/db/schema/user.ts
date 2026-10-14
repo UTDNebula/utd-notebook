@@ -1,4 +1,4 @@
-import { relations } from 'drizzle-orm';
+import { relations, sql } from 'drizzle-orm';
 import { date, pgEnum, pgTable, text, uniqueIndex } from 'drizzle-orm/pg-core';
 import { user } from './auth';
 import { file } from './file';
@@ -27,7 +27,11 @@ export const userMetadata = pgTable(
     graduationDate: date('graduation_date', { mode: 'date' }),
     contactEmail: text('contact_email'),
   },
-  (t) => [uniqueIndex('user_metadata_username_unique_idx').on(t.username)],
+  (t) => [
+    uniqueIndex('user_metadata_username_unique_idx').on(
+      sql`lower(${t.username})`,
+    ),
+  ],
 );
 
 export const userMetadataRelations = relations(userMetadata, ({ many }) => ({
