@@ -1,5 +1,7 @@
 import { z } from 'zod';
 
+const isProduction = process.env.NODE_ENV === 'production';
+
 /**
  * Specify your server-side environment variables schema here. This way you can ensure the app isn't
  * built with invalid env vars.
@@ -8,20 +10,17 @@ const server = z.object({
   NODE_ENV: z
     .enum(['development', 'test', 'production'])
     .default('development'),
-  BETTER_AUTH_SECRET:
-    process.env.NODE_ENV === 'production'
-      ? z.string().min(1)
-      : z.string().min(1).optional(),
+  DATABASE_URL: z.string().min(1),
+  BETTER_AUTH_SECRET: isProduction ? z.string().min(1) : z.string().optional(),
   BETTER_AUTH_URL: z.preprocess(
-    // This makes Vercel deployments not fail if you don't set NEXTAUTH_URL
-    // Since NextAuth.js automatically uses the VERCEL_URL if present.
+    // This makes Vercel deployments not fail if you don't set BETTER_AUTH_URL
+    // Since Better Auth automatically uses the VERCEL_URL if present.
     (str) => process.env.VERCEL_URL ?? str,
     // VERCEL_URL doesn't include `https` so it cant be validated as a URL
-    process.env.VERCEL ? z.string().min(1) : z.string().url(),
+    process.env.VERCEL ? z.string().min(1) : z.url(),
   ),
   GOOGLE_CLIENT_ID: z.string().min(1),
   GOOGLE_CLIENT_SECRET: z.string().min(1),
-  DATABASE_URL: z.string().min(1),
   DISCORD_CLIENT_ID: z.string().min(1),
   DISCORD_CLIENT_SECRET: z.string().min(1),
   SENTRY_AUTH_TOKEN: z.string().optional(),
@@ -40,6 +39,11 @@ const client = z.object({
   NEXT_PUBLIC_SENTRY_DSN: z.string().optional(),
 });
 
+const clean = (/** @type {string | undefined} */ input) => {
+  const trimmed = input?.trim();
+  return trimmed !== '' ? trimmed : undefined;
+};
+
 /**
  * You can't destruct `process.env` as a regular object in the Next.js edge runtimes (e.g.
  * middlewares) or client-side so we need to destruct manually.
@@ -47,26 +51,26 @@ const client = z.object({
  * @type {Record<keyof z.infer<typeof server> | keyof z.infer<typeof client>, string | undefined>}
  */
 const processEnv = {
-  NODE_ENV: process.env.NODE_ENV,
-  BETTER_AUTH_SECRET: process.env.BETTER_AUTH_SECRET,
-  BETTER_AUTH_URL: process.env.BETTER_AUTH_URL,
-  GOOGLE_CLIENT_ID: process.env.GOOGLE_CLIENT_ID,
-  GOOGLE_CLIENT_SECRET: process.env.GOOGLE_CLIENT_SECRET,
-  DATABASE_URL: process.env.DATABASE_URL,
-  DISCORD_CLIENT_ID: process.env.DISCORD_CLIENT_ID,
-  DISCORD_CLIENT_SECRET: process.env.DISCORD_CLIENT_SECRET,
-  SENTRY_AUTH_TOKEN: process.env.SENTRY_AUTH_TOKEN,
-  NEXT_PUBLIC_SENTRY_DSN: process.env.NEXT_PUBLIC_SENTRY_DSN,
-  NEBULA_API_URL: process.env.NEBULA_API_URL,
-  NEBULA_API_STORAGE_BUCKET: process.env.NEBULA_API_KEY,
-  NEBULA_API_KEY: process.env.NEBULA_API_KEY,
-  NEBULA_API_STORAGE_KEY: process.env.NEBULA_API_KEY,
+  NODE_ENV: clean(process.env.NODE_ENV),
+  DATABASE_URL: clean(process.env.DATABASE_URL),
+  BETTER_AUTH_SECRET: clean(process.env.BETTER_AUTH_SECRET),
+  BETTER_AUTH_URL: clean(process.env.BETTER_AUTH_URL),
+  GOOGLE_CLIENT_ID: clean(process.env.GOOGLE_CLIENT_ID),
+  GOOGLE_CLIENT_SECRET: clean(process.env.GOOGLE_CLIENT_SECRET),
+  DISCORD_CLIENT_ID: clean(process.env.DISCORD_CLIENT_ID),
+  DISCORD_CLIENT_SECRET: clean(process.env.DISCORD_CLIENT_SECRET),
+  SENTRY_AUTH_TOKEN: clean(process.env.SENTRY_AUTH_TOKEN),
+  NEXT_PUBLIC_SENTRY_DSN: clean(process.env.NEXT_PUBLIC_SENTRY_DSN),
+  NEBULA_API_URL: clean(process.env.NEBULA_API_URL),
+  NEBULA_API_STORAGE_BUCKET: clean(process.env.NEBULA_API_STORAGE_BUCKET),
+  NEBULA_API_KEY: clean(process.env.NEBULA_API_KEY),
+  NEBULA_API_STORAGE_KEY: clean(process.env.NEBULA_API_STORAGE_KEY),
 };
 
 // Don't touch the part below
 // --------------------------
 
-const merged = server.merge(client);
+const merged = server.extend(client.shape);
 
 /** @typedef {z.input<typeof merged>} MergedInput */
 /** @typedef {z.infer<typeof merged>} MergedOutput */
@@ -84,18 +88,21 @@ if (!!process.env.SKIP_ENV_VALIDATION == false) {
   );
 
   if (parsed.success === false) {
-    console.error(
-      '❌ Invalid environment variables:',
-      parsed.error.flatten().fieldErrors,
-    );
-    throw new Error('Invalid environment variables');
+    const errors = z.treeifyError(parsed.error).properties ?? [];
+
+    let errorString = '';
+    for (const [key, value] of Object.entries(errors)) {
+      errorString += `\n • ${key} - ${value.errors.join('; ')}`;
+    }
+
+    console.error('❌ Invalid environment variables:', errors);
+    throw new Error(`Invalid environment variables:${errorString}`);
   }
 
   env = new Proxy(parsed.data, {
     get(target, prop) {
       if (typeof prop !== 'string') return undefined;
-      // Throw a descriptive error if a server-side env var is accessed on the client
-      // Otherwise it would just be returning `undefined` and be annoying to debug
+      // Throw an error if a server-side env var is accessed on the client
       if (!isServer && !prop.startsWith('NEXT_PUBLIC_'))
         throw new Error(
           process.env.NODE_ENV === 'production'
