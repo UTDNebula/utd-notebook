@@ -4,17 +4,17 @@ import Link from 'next/link';
 import { ReactNode } from 'react';
 import { withForm } from '@src/lib/components/form/form';
 import { WizardStepObject } from '@src/lib/components/form/FormWizard';
-import { AccountOnboardingSchema } from '@src/lib/schemas/account';
+import { AccountSchema } from '@src/lib/schemas/account';
 import { studentClassificationEnum } from '@src/server/db/schema/user';
-import { majors, minors } from '@src/systems/account/data/utdDegrees';
+import { majors, minors } from '@src/server/db/schema/utdDegrees';
 import { stepIds } from './OnboardingForm';
 
-type FormData = Partial<AccountOnboardingSchema>;
+type FormData = Partial<AccountSchema>;
 
 const OnboardingFormStep = withForm({
   defaultValues: {} as FormData,
   props: {
-    step: {} as WizardStepObject<AccountOnboardingSchema> | undefined,
+    step: {} as WizardStepObject<AccountSchema> | undefined,
     active: false as boolean | undefined,
   },
   render: function Render({ form, step, active }) {
