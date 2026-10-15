@@ -160,25 +160,13 @@ export default function SearchBar(props: Props) {
 
   // Update route with what's in value
   function updateQueries(term: SearchQuery) {
+    // Navigate to notes page based on search term
     if (term.prefix && term.number) {
-      if (term.hasNotes === false) {
-        router.push(`/notes/create?q=${searchQueryLabel(term)}`);
-        return;
-      }
-
-      // Navigate to notes page based on search term
       router.push(
         `/notes/${term.prefix.toLowerCase()}/${term.number.toLowerCase()}`,
       );
-      return;
     }
-
-    if (term.profFirst && term.profLast) {
-      if (term.hasNotes === false) {
-        router.push(`/notes/create?q=${searchQueryLabel(term)}`);
-        return;
-      }
-
+    else if (term.profFirst && term.profLast) {
       router.push(
         `/notes/${term.profFirst.toLowerCase()}/${term.profLast.toLowerCase()}`,
       );
