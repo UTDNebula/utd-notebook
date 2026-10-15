@@ -29,7 +29,7 @@ export default function ProfileNotes({
 }: ProfileNotesProps) {
   const [tab, setTab] = useState<TabKey>('saved');
 
-  const activeNotes = tab === 'saved' ? savedNotes : uploadedNotes;
+  const activeNotes = tab === 'saved' ? savedNotes.toReversed() : uploadedNotes;
   const activeHeading =
     tab === 'saved' ? (
       <span className="text-3xl font-bold">Saved Notes</span>
