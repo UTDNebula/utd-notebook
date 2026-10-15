@@ -165,8 +165,7 @@ export default function SearchBar(props: Props) {
       router.push(
         `/notes/${term.prefix.toLowerCase()}/${term.number.toLowerCase()}`,
       );
-    }
-    else if (term.profFirst && term.profLast) {
+    } else if (term.profFirst && term.profLast) {
       router.push(
         `/notes/${term.profFirst.toLowerCase()}/${term.profLast.toLowerCase()}`,
       );
