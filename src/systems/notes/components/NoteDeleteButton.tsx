@@ -1,7 +1,7 @@
 'use client';
 
 import DeleteIcon from '@mui/icons-material/Delete';
-import { IconButton, Tooltip } from '@mui/material';
+import { Button, Tooltip } from '@mui/material';
 import { useMutation } from '@tanstack/react-query';
 import { useRouter } from 'next/navigation';
 import type { MouseEvent } from 'react';
@@ -24,8 +24,9 @@ export default function NoteDeleteButton({ fileId }: { fileId: string }) {
   return (
     <>
       <Tooltip title="Delete Note">
-        <IconButton
+        <Button
           size="small"
+          variant="contained"
           aria-label="Delete Note"
           sx={{
             backgroundColor: 'error.main',
@@ -37,7 +38,7 @@ export default function NoteDeleteButton({ fileId }: { fileId: string }) {
           onClick={handleClick}
         >
           <DeleteIcon />
-        </IconButton>
+        </Button>
       </Tooltip>
       <Confirmation
         open={open}
