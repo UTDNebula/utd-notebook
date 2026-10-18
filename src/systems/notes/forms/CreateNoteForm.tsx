@@ -47,52 +47,55 @@ export default function CreateNoteForm() {
   const router = useRouter();
   const searchParams = useSearchParams();
   const defaultQuery = searchParams.get('q');
+  const deleteMutation = useMutation(api.file.delete.mutationOptions());
 
   const form = useAppForm({
     defaultValues,
     onSubmit: async ({ value, formApi }) => {
       const selectedFile = value.file ?? null;
+      const isFileDirty = !formApi.getFieldMeta('file')?.isDefaultValue;
 
       // Create
-      return createMutation.mutateAsync(
-        {
+      const newId = await createMutation.mutateAsync({
+        name: value.name,
+        description: value.description,
+        handwritten: value.handwritten,
+        prefix: value.prefix ?? '',
+        number: value.number ?? '',
+        sectionCode: value.sectionCode ?? '',
+        term: (value.term ?? '') as 'Spring' | 'Summer' | 'Fall',
+        year: value.year ?? 0,
+        profFirst: value.profFirst ?? '',
+        profLast: value.profLast ?? '',
+      });
+
+      if (!isFileDirty) {
+        router.push(`/notes/${newId}`);
+        return;
+      }
+
+      try {
+        await uploadFile.mutateAsync({ file: selectedFile, fileName: newId });
+        await updateMutation.mutateAsync({
+          id: newId,
           name: value.name,
           description: value.description,
           handwritten: value.handwritten,
-          prefix: value.prefix ?? '',
-          number: value.number ?? '',
-          sectionCode: value.sectionCode ?? '',
-          term: (value.term ?? '') as 'Spring' | 'Summer' | 'Fall',
-          year: value.year ?? 0,
-          profFirst: value.profFirst ?? '',
-          profLast: value.profLast ?? '',
-        },
-        {
-          onSuccess: async (newId) => {
-            const isFileDirty = !formApi.getFieldMeta('file')?.isDefaultValue;
-            if (!isFileDirty) {
-              router.push(`/notes/${newId}`);
-              return;
-            }
+        });
+      } catch (error) {
+        // Roll back so a failed upload doesn't leave a note record with no PDF
+        await deleteMutation
+          .mutateAsync({ id: newId })
+          .catch((cleanupError) =>
+            console.error(
+              'Failed to clean up note after upload failure',
+              cleanupError,
+            ),
+          );
+        throw error;
+      }
 
-            await uploadFile.mutateAsync({
-              file: selectedFile,
-              fileName: newId,
-            });
-            updateMutation.mutate(
-              {
-                id: newId,
-                name: value.name,
-                description: value.description,
-                handwritten: value.handwritten,
-              },
-              {
-                onSuccess: () => router.push(`/notes/${newId}`),
-              },
-            );
-          },
-        },
-      );
+      router.push(`/notes/${newId}`);
     },
     validators: {
       onChange: createFileFormSchema,
