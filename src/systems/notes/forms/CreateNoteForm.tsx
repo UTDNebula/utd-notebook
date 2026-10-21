@@ -68,6 +68,17 @@ export default function CreateNoteForm() {
           profLast: value.profLast ?? '',
         },
         {
+          onError: (error) => {
+            if (error.data?.code === 'CONFLICT') {
+              formApi.setFieldMeta('name', (prev) => ({
+                ...prev,
+                errorMap: {
+                  ...prev.errorMap,
+                  onSubmit: [{ message: error.message }],
+                },
+              }));
+            }
+          },
           onSuccess: async (newId) => {
             const isFileDirty = !formApi.getFieldMeta('file')?.isDefaultValue;
             if (!isFileDirty) {
