@@ -148,13 +148,14 @@ export const fileRouter = createTRPCRouter({
           sectionId: section.id,
           publicUrl: '', // This must be filled in with an update call right after the create call
         })
+        .onConflictDoNothing({ target: [files.authorId, files.name] })
         .returning({ id: files.id });
 
       const newFile = res[0];
       if (!newFile)
         throw new TRPCError({
-          code: 'INTERNAL_SERVER_ERROR',
-          message: 'Failed to add event',
+          code: 'CONFLICT',
+          message: 'This note name is already in use',
         });
       return newFile.id;
     }),
