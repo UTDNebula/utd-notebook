@@ -5,7 +5,7 @@ import WarningIcon from '@mui/icons-material/Warning';
 import { useStore } from '@tanstack/react-form';
 import { useMutation, useQuery } from '@tanstack/react-query';
 import { useEffect, useState } from 'react';
-import Panel from '@nebula-library/components/Panel';
+import Panel from '../../../../nebula-library/components/Panel';
 import { useAppForm } from '@src/lib/components/form/form';
 import {
   setSnackbar,
@@ -208,6 +208,10 @@ export default function Username({ user }: UsernameProps) {
                 label="Username"
                 maxLength={30}
                 className="w-full"
+                onChange={(e) => {
+                  const lowerValue = e.target.value.toLowerCase();
+                  field.handleChange(lowerValue);
+            }}
                 error={
                   !field.state.meta.isValid && !field.state.meta.isValidating
                 }
