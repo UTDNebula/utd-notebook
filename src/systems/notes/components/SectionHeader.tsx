@@ -1,4 +1,3 @@
-import { BaseCard } from '@nebula-library/components/BaseCard';
 import Link from 'next/link';
 import Breadcrumbs, {
   type BreadcrumbItem,
