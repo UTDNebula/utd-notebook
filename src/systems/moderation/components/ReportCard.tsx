@@ -1,8 +1,12 @@
 'use client';
 
+import KeyboardDoubleArrowUpRoundedIcon from '@mui/icons-material/KeyboardDoubleArrowUpRounded';
+import Button from '@mui/material/Button';
 import Link from 'next/link';
+import { useState } from 'react';
 import { BaseCard } from '@nebula-library/components/BaseCard';
 import type { SelectFileWithAuthorPreviewAndReports } from '@src/server/db/models';
+import AdminActionsPopover from './AdminActionsPopover';
 import { CategoriesScroll } from './CategoriesScroll';
 import { PdfThumbnail } from './PdfThumbnail';
 
@@ -25,16 +29,49 @@ const statusLabels = {
   hidden: 'Hidden',
 };
 
+function getStatus(
+  reportedFile: SelectFileWithAuthorPreviewAndReports,
+): keyof typeof statusLabels {
+  // if there are ANY pending reports, then the file's reports status is pending
+  if (reportedFile.reports.some((report) => report.status === 'PENDING'))
+    return 'pending';
+
+  if (reportedFile.moderationStatus === 'HIDDEN') return 'hidden';
+
+  return 'dismissed';
+}
+
+function formatCreatedAt(
+  createdAt: SelectFileWithAuthorPreviewAndReports['reports'][number]['createdAt'],
+) {
+  // if date is invalid, return unknown
+  if (createdAt === null) {
+    console.log(
+      'This report does not have a valid date. Something went wrong.',
+    );
+    return '';
+  }
+
+  return new Intl.DateTimeFormat('en-US', {
+    month: 'short',
+    day: 'numeric',
+    year: 'numeric',
+  }).format(createdAt);
+}
+
 export default function ReportCard({ reportedFile }: ReportCardProps) {
   // TEMP: until status column is given, will just hardcode status
   //const status = reportedFile.status;
-  const status = 'dismissed';
+  const status = getStatus(reportedFile);
 
   // populate array of categories for Categories component
   const categories: string[] = [];
   reportedFile.reports.map((report) => {
     categories.push(report.category);
   });
+
+  // store admin actions button state
+  const [anchorElement, setAnchorElement] = useState<HTMLElement | null>(null);
 
   return (
     <BaseCard variant="interactive" className="flew grow flex-col">
@@ -98,25 +135,64 @@ export default function ReportCard({ reportedFile }: ReportCardProps) {
 
         {/* REPORT DETAILS */}
         <div>
-          <div className="flex-cols flex items-center">
+          <div className="flex flex-row items-center">
             <h4 className="mr-2 text-lg whitespace-nowrap">Report Details: </h4>
             <CategoriesScroll categories={categories} />
           </div>
 
           <section className="aspect-5/2 overflow-y-scroll">
-            {/*reportedFile.description && (
-                <p className="line-clamp-2 text-sm text-slate-800 dark:text-slate-200">
-                  {reportedFile.description}
-                </p>
-              )*/}
-
             {reportedFile.reports.map((report) => (
-              <div key={report.id}>
-                <h1 className="text-base">{report.reporter.username}</h1>
+              <div key={report.id} className="m-1 flex flex-col rounded-lg">
+                <div className="flex items-center justify-between">
+                  <div className="flex items-center">
+                    <Link
+                      href={`/profile/${report.reporter.username}`}
+                      className="underline hover:text-slate-900 dark:hover:text-slate-200"
+                      target="blank"
+                    >
+                      <h1 className="mr-2 text-base">
+                        {report.reporter.username}
+                      </h1>
+                    </Link>
+                    <time
+                      dateTime={`${formatCreatedAt(report.createdAt)}`}
+                      className="text-sm text-slate-600 dark:text-slate-400"
+                    >
+                      {formatCreatedAt(report.createdAt)}
+                    </time>
+                  </div>
+                  <div
+                    key={report.category}
+                    className="my-1 ml-2 w-fit rounded-full bg-[#f6f5ff] px-4 py-1 text-xs text-[#adabd2]"
+                  >
+                    {report.category}
+                  </div>
+                </div>
                 <p className="text-sm">{report.details}</p>
               </div>
             ))}
           </section>
+        </div>
+
+        {/* ADMIN ACTIONS */}
+        <div className="flex justify-end">
+          <Button
+            className="m-1 h-9 w-9 min-w-0 border border-[#e4e3f9] bg-[#f6f5ff]"
+            style={{ borderRadius: '50%' }}
+            onMouseDown={(event) => {
+              setAnchorElement(event.currentTarget);
+            }}
+          >
+            <KeyboardDoubleArrowUpRoundedIcon
+              className={`text-[#7c78a4] transition-transform duration-250 ease-in-out ${anchorElement ? 'rotate-180' : 'rotate-0'}`}
+            />
+          </Button>
+          <AdminActionsPopover
+            reportedFile={reportedFile}
+            anchorElement={anchorElement}
+            setAnchorElement={setAnchorElement}
+            buttonStyles="bg-[#f6f5ff] text-[#7c78a4] border border-[#e4e3f9] h-8"
+          />
         </div>
       </div>
     </BaseCard>
