@@ -2,13 +2,11 @@ import GroupsIcon from '@mui/icons-material/Groups';
 import PersonIcon from '@mui/icons-material/Person';
 import { Button } from '@mui/material';
 import { api } from '@src/lib/trpc/server';
-import type { SelectFileWithAuthorPreviewAndReports } from '@src/server/db/models';
 import AdminHeader from '@src/systems/moderation/components/AdminHeader';
-import ReportsGrid from '../components/ReportsGrid';
+import ModerationDashboard from '../components/ModerationDashboard';
 
 export default async function Page() {
-  const reportedFiles: SelectFileWithAuthorPreviewAndReports[] =
-    await api.report.getReportsByFile({ sortOrder: 'asc' });
+  const reportedFiles = await api.report.getReportsByFile({ sortOrder: 'asc' });
 
   return (
     <>
@@ -38,7 +36,7 @@ export default async function Page() {
           {/*</Link>*/}
         </div>
       </AdminHeader>
-      <ReportsGrid reportedFiles={reportedFiles} />
+      <ModerationDashboard reportedFiles={reportedFiles} />
     </>
   );
 }
