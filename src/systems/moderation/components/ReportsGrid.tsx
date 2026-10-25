@@ -26,19 +26,27 @@ export default function ReportsGrid({
   filter,
   noFilesMessage,
 }: ReportsGridProps) {
-  if (reportedFiles.length === 0) {
+  const filteredFiles = filterReports(filter, reportedFiles);
+
+  if (filteredFiles.length === 0) {
     if (noFilesMessage) {
       return noFilesMessage;
     }
 
     return (
       <BaseCard className="px-6 py-5 text-center">
-        <h3 className="text-lg font-semibold">No reports yet</h3>
+        <h3 className="text-lg font-semibold">
+          {filter === 'ALL'
+            ? 'No reports yet'
+            : filter === 'PENDING'
+              ? 'No pending reports'
+              : filter === 'DISMISSED'
+                ? 'No dismissed reports'
+                : 'No file hidden reports'}
+        </h3>
       </BaseCard>
     );
   }
-
-  const filteredFiles = filterReports(filter, reportedFiles);
 
   return (
     <>
