@@ -46,7 +46,7 @@ export default function ReportCard({ reportedFile }: ReportCardProps) {
       </div>
 
       {/* PDF THUMBNAIL */}
-      <Link href={`/notes/${reportedFile.id}`}>
+      <Link href={`/notes/${reportedFile.id}`} target="blank">
         <PdfThumbnail
           files={[{ file: reportedFile.publicUrl, name: reportedFile.name }]}
           className="aspect-2/1"
@@ -55,7 +55,7 @@ export default function ReportCard({ reportedFile }: ReportCardProps) {
       {/* NOTES HEADER: title, uploader, and reporter */}
       <div className="m-3">
         <div className="mb-4 flex flex-col gap-2">
-          <Link href={`/notes/${reportedFile.id}`}>
+          <Link href={`/notes/${reportedFile.id}`} target="blank">
             <h3
               className="line-clamp-1 text-xl font-semibold"
               title={reportedFile.name}
@@ -70,6 +70,7 @@ export default function ReportCard({ reportedFile }: ReportCardProps) {
                 <Link
                   href={`/profile/${reportedFile.author.username}`}
                   className="underline hover:text-slate-900 dark:hover:text-slate-200"
+                  target="blank"
                 >
                   {reportedFile.author.username}
                 </Link>
@@ -82,6 +83,7 @@ export default function ReportCard({ reportedFile }: ReportCardProps) {
               <Link
                 href={`/profile/${reportedFile.reports[0]?.reporter.username}`}
                 className="underline hover:text-slate-900 dark:hover:text-slate-200"
+                target="blank"
               >
                 {reportedFile.reports[0]?.reporter.username}
               </Link>
