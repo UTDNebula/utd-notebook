@@ -11,7 +11,7 @@ export const CategoriesScroll = ({ categories }: CategoriesScrollProps) => {
       {categories.map((category) => (
         <div
           key={category}
-          className="w-fit rounded-full bg-blue-100 px-4 py-1 text-xs text-blue-500"
+          className="w-fit rounded-full bg-[#f6f5ff] px-4 py-1 text-xs text-[#adabd2]"
         >
           {category}
         </div>

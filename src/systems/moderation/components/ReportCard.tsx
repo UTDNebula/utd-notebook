@@ -12,9 +12,10 @@ type ReportCardProps = {
   reportedFile: SelectFileWithAuthorPreviewAndReports;
 };
 
+// define styles for the different file report statuses
 const statusStyles = {
-  pending: 'bg-amber-100 text-amber-500',
-  dismissed: 'bg-green-100 text-green-500',
+  pending: 'bg-[#f5e9cd] text-[#dd9700]',
+  dismissed: 'bg-[#e7f8cd] text-[#a6ba87]',
   hidden: 'bg-gray-100 text-gray-600',
 };
 
