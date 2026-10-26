@@ -2,6 +2,7 @@ import { relations } from 'drizzle-orm';
 import { date, pgEnum, pgTable, text, uniqueIndex } from 'drizzle-orm/pg-core';
 import { user } from './auth';
 import { file } from './file';
+import { report } from './reports';
 
 export const studentClassificationEnum = pgEnum('student_classification', [
   'Student',
@@ -32,6 +33,7 @@ export const userMetadata = pgTable(
 
 export const userMetadataRelations = relations(userMetadata, ({ many }) => ({
   files: many(file),
+  reports: many(report),
 }));
 
 export const userMetadataRelation = relations(userMetadata, ({ one }) => ({
