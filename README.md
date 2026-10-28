@@ -1,6 +1,6 @@
 # UTD Notebook
 
-_What am I_
+What am I
 
 ## Contributing
 
