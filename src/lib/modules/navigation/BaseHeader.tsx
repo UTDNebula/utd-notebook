@@ -3,7 +3,7 @@
 import ArrowBackIcon from '@mui/icons-material/ArrowBack';
 import SearchIcon from '@mui/icons-material/Search';
 import { IconButton } from '@mui/material';
-import gradientBG from '@public/background.png';
+import gradientBG from '@public/navbar-gradient.png';
 import Image from 'next/image';
 import Link from 'next/link';
 import { createContext, useContext, useState, type ReactNode } from 'react';
