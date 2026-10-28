@@ -93,9 +93,9 @@ export function FormSectionAutocomplete({
         <StyledTextField
           {...params}
           label={label}
-          error={field.state.meta.isTouched && !field.state.meta.isValid}
+          error={!field.state.meta.isValid}
           helperText={
-            field.state.meta.isTouched && !field.state.meta.isValid
+            !field.state.meta.isValid
               ? (
                   field.state.meta.errors as unknown as {
                     message: string;
