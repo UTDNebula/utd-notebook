@@ -31,6 +31,7 @@ export default function NoteDeleteButton({ fileId }: { fileId: string }) {
           sx={{
             backgroundColor: 'error.main',
             color: 'common.white',
+            minWidth: 0,
             '&:hover': {
               backgroundColor: 'error.dark',
             },
