@@ -86,7 +86,11 @@ const FormFile = ({
 
   return (
     <div className={className}>
-      <div className="bg-cornflower-50 dark:bg-cornflower-950 has-[:hover]:bg-cornflower-100 dark:has-[:hover]:bg-cornflower-900 relative flex w-full flex-col items-center justify-center gap-2 rounded-md p-8 transition-colors max-lg:h-48 lg:h-96">
+      <div
+        className={`bg-cornflower-50 dark:bg-cornflower-950 has-[:hover]:bg-cornflower-100 dark:has-[:hover]:bg-cornflower-900 relative flex w-full flex-col items-center justify-center gap-2 rounded-md border p-8 transition-colors max-lg:h-48 lg:h-96 ${
+          isError ? 'border-persimmon-500' : 'border-transparent'
+        }`}
+      >
         {label && (
           <label
             htmlFor="pdf-file-input"
