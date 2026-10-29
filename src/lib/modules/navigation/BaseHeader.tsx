@@ -150,7 +150,7 @@ export const BaseHeader = ({
               sizes="120vw"
               loading="eager"
             />
-            <div className="bg-lighten dark:bg-darken absolute inset-0"></div>
+            <div className="dark:bg-darken absolute inset-0"></div>
           </div>
         )}
         {!openCompactSearchBar ? (
