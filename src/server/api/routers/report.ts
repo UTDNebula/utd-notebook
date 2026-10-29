@@ -1,5 +1,5 @@
 import { TRPCError } from '@trpc/server';
-import { eq } from 'drizzle-orm';
+import { and, eq } from 'drizzle-orm';
 import { createReportSchema } from '@src/lib/schemas/moderation';
 import { report as reports } from '@src/server/db/schema/reports';
 import { createTRPCRouter, protectedProcedure } from '../trpc';
@@ -10,8 +10,14 @@ export const reportRouter = createTRPCRouter({
     .mutation(async ({ input, ctx }) => {
       const userId = ctx.session.user.id;
       const hasReportedPrior =
-        (await ctx.db.select().from(reports).where(eq(reports.userId, userId)))
-          .length > 0;
+        (
+          await ctx.db
+            .select()
+            .from(reports)
+            .where(
+              and(eq(reports.userId, userId), eq(reports.fileId, input.fileId)),
+            )
+        ).length > 0;
 
       if (hasReportedPrior) {
         throw new TRPCError({
