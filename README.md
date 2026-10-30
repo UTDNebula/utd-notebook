@@ -1,6 +1,6 @@
 # UTD Notebook
 
-_What am I_
+_Browse and save your classmates' notes to study later, and give back to your campus community by sharing your notes._
 
 ## Developer documentation
 
