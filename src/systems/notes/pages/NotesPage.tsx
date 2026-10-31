@@ -17,6 +17,29 @@ type NotesPageProps = {
   searchParams: Promise<{ [key: string]: string }>;
 };
 
+type Semester = {
+  term: 'Fall' | 'Spring' | 'Summer';
+  year: number;
+  noteGroups: NoteGroup[];
+};
+
+/**
+ * A group of notes to be displayed under a header together.
+ */
+type NoteGroup = {
+  prefix: string | undefined; /* eg. CS */
+  number: string | undefined; /* eg. 2340, like CS 2340 */
+  sectionCode: string | undefined; /* eg. .007, like CS 2340.007 */
+  profFirst: string | undefined;
+  profLast: string | undefined;
+
+  files: SectionWithFilesWithUserMetadata['files'];
+};
+
+/**
+ * Obtain a list of sections that matches a query from the database
+ * @param query specifies what sections to get from database
+ */
 async function fetchSections(
   query: NoteQuery,
 ): Promise<SectionWithFilesWithUserMetadata[]> {
@@ -128,6 +151,12 @@ function getCourseLinks(
     }));
 }
 
+/**
+ * Given a list of sections, apply the handwritten filter if relevant
+ * Probably, this will also apply other filters when they're added.
+ * @param sections sections to filter
+ * @param handwritten 'true' or 'false' to filter, anything else to not
+ */
 function filterSections(
   sections: SectionWithFilesWithUserMetadata[],
   handwritten: string | undefined,
@@ -138,6 +167,123 @@ function filterSections(
     ...s,
     files: s.files.filter((f) => f.handwritten === isHandwritten),
   }));
+}
+
+/**
+ * Given a list of sections and a query type, group notes in those sections to
+ * match how they'll be displayed.
+ *
+ * Notes are grouped by semester no matter the query.
+ * Notes in each semester are further grouped depending on the queryType
+ *  course --> by professor name
+ *  professor --> by course prefix and number
+ *  courseAndProfessor --> by section number
+ *
+ * @param sections sections to group. IMPORTANT: must already be sorted by
+ * semester, then by secondary grouping (eg. by professor name for course query)
+ * @param queryType
+ */
+function groupSections(
+  sections: SectionWithFilesWithUserMetadata[],
+  queryType: 'course' | 'professor' | 'courseAndProfessor',
+) {
+  const semesters: Semester[] = [];
+
+  for (const section of sections) {
+    const lastSemester =
+      semesters.length > 0 ? semesters[semesters.length - 1] : undefined;
+
+    // can't add section to last added semester --> create new semester
+    // (can't add to prev semesters because sections are sorted)
+    if (
+      !lastSemester ||
+      section.year != lastSemester.year ||
+      section.term != lastSemester.term
+    ) {
+      semesters.push({
+        term: section.term,
+        year: section.year,
+        noteGroups: [createGroup(section)],
+      });
+    }
+    // can add this section to last added semester --> add to semester
+    else {
+      const lastGroup =
+        lastSemester.noteGroups.length > 0
+          ? lastSemester.noteGroups[lastSemester.noteGroups.length - 1]
+          : undefined;
+
+      // can add these notes to last added note group --> add to note group
+      if (sectionFitsGroup(section, lastGroup, queryType)) {
+        lastGroup?.files.push(...section.files);
+      }
+      // can't add to last added note group --> create new note group
+      // (can't add to prev note groups because sections are sorted)
+      else {
+        lastSemester.noteGroups.push(createGroup(section));
+      }
+    }
+  }
+
+  // sort individual notes in each group by recency
+  for (const semester of semesters) {
+    for (const group of semester.noteGroups) {
+      group.files.sort((a, b) => {
+        return a.updatedAt < b.updatedAt ? 1 : -1;
+      });
+    }
+  }
+
+  // move groups with no files to bottom of each semester
+  for (const semester of semesters) {
+    const emptyGroups = semester.noteGroups.filter(
+      (group) => group.files.length === 0,
+    );
+    semester.noteGroups = semester.noteGroups.filter(
+      (group) => group.files.length > 0,
+    );
+    semester.noteGroups.push(...emptyGroups);
+  }
+
+  return semesters;
+}
+
+/**
+ * Return whether notes from the given section can be added to notes in the group.
+ * @param section
+ * @param group
+ * @param queryType
+ */
+function sectionFitsGroup(
+  section: SectionWithFilesWithUserMetadata,
+  group: NoteGroup | undefined,
+  queryType: 'course' | 'professor' | 'courseAndProfessor',
+): boolean {
+  if (!group) {
+    return false;
+  }
+  switch (queryType) {
+    case 'course':
+      return (
+        section.profFirst == group.profFirst &&
+        section.profLast == group.profLast
+      );
+    case 'professor':
+      return section.prefix == group.prefix && section.number == group.number;
+    case 'courseAndProfessor':
+      return section.sectionCode == group.sectionCode;
+  }
+}
+
+function createGroup(section: SectionWithFilesWithUserMetadata): NoteGroup {
+  return {
+    prefix: section.prefix,
+    number: section.number,
+    sectionCode: section.sectionCode,
+    profFirst: section.profFirst,
+    profLast: section.profLast,
+    files: section.files,
+  };
 }
 
 export default async function NotesPage({
@@ -165,6 +311,7 @@ export default async function NotesPage({
     sections,
     resolvedSearchParams.handwritten,
   );
+  const semesters = groupSections(filteredSections, displayQuery.type);
   const fileCount = totalFileCount(filteredSections);
 
   return (
@@ -218,16 +365,28 @@ export default async function NotesPage({
             </>
           )}
 
-          {/* Notes grouped by section */}
-          {filteredSections.map((s) => (
-            <div key={s.id} className="col-span-full">
-              <h2 className="mb-3 text-lg font-semibold">
-                {s.prefix} {s.number}.{s.sectionCode} — {s.term} {s.year}
-                <span className="ml-2 text-sm font-normal text-slate-600 dark:text-slate-400">
-                  {s.profFirst} {s.profLast}
-                </span>
+          {/*Notes grouped by semester, then grouped again depending on query*/}
+          {semesters.map((s) => (
+            <div key={`${s.term} ${s.year}`} className="col-span-full grid gap-4">
+              <h2 className="text-xl font-semibold text-neutral-500">
+                {s.term} {s.year}
               </h2>
-              <FilesGrid files={s.files} />
+              {s.noteGroups.map((n) => (
+                <div
+                  key={`${n.prefix}${n.number}${n.sectionCode}${n.profFirst}${n.profLast}`}
+                  className="col-span-full"
+                >
+                  <h3 className="mb-3 text-lg font-semibold">
+                    {displayQuery.type === 'course' &&
+                      `${n.profFirst} ${n.profLast}`}
+                    {displayQuery.type === 'professor' &&
+                      `${n.prefix} ${n.number}`}
+                    {displayQuery.type === 'courseAndProfessor' &&
+                      `${n.prefix} ${n.number}.${n.sectionCode}`}
+                  </h3>
+                  <FilesGrid files={n.files} />
+                </div>
+              ))}
             </div>
           ))}
         </div>
