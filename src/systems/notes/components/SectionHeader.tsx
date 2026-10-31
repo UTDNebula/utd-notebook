@@ -1,4 +1,5 @@
 import { BaseCard } from '@nebula-library/components/BaseCard';
+import Link from 'next/link';
 import Breadcrumbs, {
   type BreadcrumbItem,
 } from '@src/lib/components/Breadcrumbs';
@@ -33,9 +34,17 @@ export default function SectionHeader({
           </span>
         )}
 
-        <h1 className="font-display text-4xl font-extrabold md:text-5xl">
-          {title}
-        </h1>
+        <div className="flex flex-wrap items-center gap-4">
+          <h1 className="font-display text-4xl font-extrabold md:text-5xl">
+            {title}
+          </h1>
+          {metaLabel && (
+            <div className="flex items-center gap-2 rounded-full border border-slate-200 bg-white px-3 py-1 text-xs font-semibold shadow-sm dark:border-slate-800 dark:bg-slate-900">
+              <span className="bg-royal dark:bg-cornflower-300 h-2 w-2 rounded-full" />
+              <span>{metaLabel}</span>
+            </div>
+          )}
+        </div>
         {description && (
           <p className="max-w-2xl text-sm text-slate-800 md:text-base dark:text-slate-200">
             {description}
@@ -44,14 +53,12 @@ export default function SectionHeader({
         {detailItems.length > 0 && <Breadcrumbs items={detailItems} />}
       </div>
 
-      {metaLabel && (
-        <BaseCard className="w-fit px-4 py-2">
-          <div className="flex items-center gap-2 text-sm font-semibold">
-            <span className="bg-royal dark:bg-cornflower-300 h-2 w-2 rounded-full" />
-            <span>{metaLabel}</span>
-          </div>
-        </BaseCard>
-      )}
+      <Link
+        href="/notes/create"
+        className="bg-royal hover:bg-royal/90 text-white flex items-center gap-2 rounded-lg px-4 py-2.5 text-sm font-semibold shadow transition-colors shrink-0"
+      >
+        <span>+ Add Note</span>
+      </Link>
     </div>
   );
 }

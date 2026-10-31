@@ -32,8 +32,9 @@ export const userMetadataRouter = createTRPCRouter({
   byUsername: publicProcedure
     .input(byUsernameSchema)
     .query(async ({ input, ctx }) => {
+      const normalizedUsername = input.username.toLowerCase().trim();
       const profile = await ctx.db.query.userMetadata.findFirst({
-        where: eq(userMetadata.username, input.username),
+        where: eq(userMetadata.username, normalizedUsername),
       });
 
       if (!profile) {
@@ -71,9 +72,12 @@ export const userMetadataRouter = createTRPCRouter({
 
       // Check username uniqueness if username is being changed
       if (updateUser.username) {
+        const normalizedUsername = updateUser.username.toLowerCase().trim();
+        updateUser.username = normalizedUsername; 
+
         const existingUser = await ctx.db.query.userMetadata.findFirst({
           where: and(
-            eq(userMetadata.username, updateUser.username),
+            eq(userMetadata.username, normalizedUsername),
             ne(userMetadata.id, user.id),
           ),
         });
@@ -136,8 +140,9 @@ export const userMetadataRouter = createTRPCRouter({
   usernameExists: publicProcedure
     .input(z.object({ username: z.string() }))
     .query(async ({ input, ctx }) => {
+      const normalizedUsername = input.username.toLowerCase().trim();
       const existing = await ctx.db.query.userMetadata.findFirst({
-        where: eq(userMetadata.username, input.username),
+        where: eq(userMetadata.username, normalizedUsername),
       });
       return !!existing;
     }),
