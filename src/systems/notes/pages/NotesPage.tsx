@@ -367,7 +367,10 @@ export default async function NotesPage({
 
           {/*Notes grouped by semester, then grouped again depending on query*/}
           {semesters.map((s) => (
-            <div key={`${s.term} ${s.year}`} className="col-span-full grid gap-4">
+            <div
+              key={`${s.term} ${s.year}`}
+              className="col-span-full grid gap-4"
+            >
               <h2 className="text-xl font-semibold text-neutral-500">
                 {s.term} {s.year}
               </h2>
