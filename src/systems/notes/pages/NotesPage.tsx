@@ -4,6 +4,7 @@ import type { SectionWithFilesWithUserMetadata } from '@src/server/db/models';
 import FilesGrid from '@src/systems/notes/components/FilesGrid';
 import HandwrittenFilter from '@src/systems/notes/components/Filters';
 import LinkCard from '@src/systems/notes/components/LinkCard';
+import NoteCountLabel from '@src/systems/notes/components/NoteCountLabel';
 import SectionHeader from '@src/systems/notes/components/SectionHeader';
 import {
   noteQueryToDescription,
@@ -172,11 +173,13 @@ export default async function NotesPage({
       <SectionHeader
         title={noteQueryToTitle(displayQuery)}
         description={noteQueryToDescription(displayQuery)}
-        metaLabel={`${fileCount} note${fileCount === 1 ? '' : 's'}`}
         breadcrumbs={buildBreadcrumbs(displayQuery)}
       />
 
-      <HandwrittenFilter />
+      <div className="flex flex-wrap items-center justify-between gap-4">
+        <HandwrittenFilter />
+        <NoteCountLabel count={fileCount} />
+      </div>
 
       {fileCount === 0 ? (
         <EmptyStateCard

@@ -1,4 +1,3 @@
-import { BaseCard } from '@nebula-library/components/BaseCard';
 import Breadcrumbs, {
   type BreadcrumbItem,
 } from '@src/lib/components/Breadcrumbs';
@@ -8,7 +7,6 @@ type SectionHeaderProps = {
   eyebrow?: string;
   description?: string;
   detailBreadcrumbs?: BreadcrumbItem[];
-  metaLabel?: string;
   breadcrumbs?: BreadcrumbItem[];
 };
 
@@ -17,7 +15,6 @@ export default function SectionHeader({
   eyebrow,
   description,
   detailBreadcrumbs,
-  metaLabel,
   breadcrumbs = [],
 }: SectionHeaderProps) {
   const detailItems = (detailBreadcrumbs ?? []).filter(Boolean);
@@ -44,14 +41,6 @@ export default function SectionHeader({
         {detailItems.length > 0 && <Breadcrumbs items={detailItems} />}
       </div>
 
-      {metaLabel && (
-        <BaseCard className="w-fit px-4 py-2">
-          <div className="flex items-center gap-2 text-sm font-semibold">
-            <span className="bg-royal dark:bg-cornflower-300 h-2 w-2 rounded-full" />
-            <span>{metaLabel}</span>
-          </div>
-        </BaseCard>
-      )}
     </div>
   );
 }
