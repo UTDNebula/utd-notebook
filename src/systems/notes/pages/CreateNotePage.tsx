@@ -16,9 +16,20 @@ export const metadata: Metadata = {
   },
 };
 
-export default async function Page() {
+export default async function Page(props: {
+  searchParams: Promise<{ q?: string | string[] }>;
+}) {
   const session = await auth.api.getSession({ headers: await headers() });
-  if (!session) redirect(await signInRoute('notes/create'));
+
+  if (!session) {
+    const { q } = await props.searchParams;
+    const selectedCourse = Array.isArray(q) ? q[0] : q;
+    const query = selectedCourse
+      ? `?${new URLSearchParams({ q: selectedCourse }).toString()}`
+      : '';
+
+    redirect(await signInRoute(`notes/create${query}`));
+  }
 
   return (
     <>
