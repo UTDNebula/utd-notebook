@@ -11,7 +11,7 @@
     "lint": "eslint --fix .",
     "lint:check": "eslint .",
     "type:check": "next typegen && tsc --noEmit",
-    "test": "NODE_OPTIONS=--experimental-vm-modules dotenv jest --detectOpenHandles --forceExit",
+    "test": "cross-env NODE_OPTIONS=--experimental-vm-modules dotenv jest --detectOpenHandles --forceExit",
     "auth-schema:generate": "dotenv -- npx @better-auth/cli@latest generate --output src/server/db/schema/auth.ts --config src/server/auth.ts",
     "drizzle:generate": "dotenv drizzle-kit generate",
     "drizzle:push": "dotenv drizzle-kit push",
