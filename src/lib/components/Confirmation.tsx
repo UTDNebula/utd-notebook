@@ -38,10 +38,10 @@ export default function Confirmation({
       open={open}
       aria-labelledby="alert-dialog-title"
       aria-describedby="alert-dialog-description"
-      slotProps ={{
+      slotProps={{
         paper: {
-          className: 'rounded-lg'
-        }
+          className: 'rounded-lg',
+        },
       }}
     >
       <DialogTitle>{title}</DialogTitle>
