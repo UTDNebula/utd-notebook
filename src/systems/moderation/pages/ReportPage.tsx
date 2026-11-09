@@ -23,7 +23,7 @@ export default async function ReportPage({ searchParams }: ReportPageProps) {
     auth.api.getSession({ headers: await headers() }),
   ]);
 
-  const search = new URLSearchParams([["fileId", fileId ?? ""]]);
+  const search = new URLSearchParams([['fileId', fileId ?? '']]);
   if (!session) redirect(await signInRoute(`report?${search.toString()}`));
 
   if (!fileId) {
