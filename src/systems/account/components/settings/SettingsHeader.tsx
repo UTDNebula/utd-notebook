@@ -4,7 +4,7 @@ import { HOME_PAGE_GRADIENT_CLASS } from '@src/lib/styles/gradients';
 import { SelectUser } from '@src/server/db/models';
 
 type SettingsHeaderProps = {
-  user?: Omit<SelectUser, 'image'> & Partial<Pick<SelectUser, 'image'>>;
+  user?: Pick<SelectUser, 'name'> & Partial<Pick<SelectUser, 'image'>>;
 };
 
 export default function SettingsHeader({ user }: SettingsHeaderProps) {

@@ -1,5 +1,6 @@
 import { betterAuth } from 'better-auth';
 import { drizzleAdapter } from 'better-auth/adapters/drizzle';
+import { anonymous } from 'better-auth/plugins';
 import { eq } from 'drizzle-orm';
 import { env } from '@src/env.mjs';
 import { db } from './db';
@@ -12,6 +13,7 @@ import { userMetadata } from './db/schema/user';
  * @see https://www.better-auth.com/docs/introduction
  */
 export const auth = betterAuth({
+  plugins: env.NODE_ENV === 'development' ? [anonymous()] : [],
   database: drizzleAdapter(db, {
     provider: 'pg', // or "pg" or "mysql"
   }),
