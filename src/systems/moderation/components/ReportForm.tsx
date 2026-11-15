@@ -1,7 +1,7 @@
 'use client';
 
 import { MenuItem } from '@mui/material';
-import { useMutation } from '@tanstack/react-query';
+import { useMutation, useQueryClient } from '@tanstack/react-query';
 import { useRouter } from 'next/navigation';
 import { useMemo } from 'react';
 import Panel from '@nebula-library/components/Panel';
@@ -30,11 +30,15 @@ interface ReportDetails {
 
 export default function ReportForm({ fileId, fileName }: ReportFormProps) {
   const api = useTRPC();
+  const queryClient = useQueryClient();
   const router = useRouter();
 
   const createMutation = useMutation(
     api.report.create.mutationOptions({
       onSuccess: () => {
+        queryClient.setQueryData(api.report.isReported.queryKey({ fileId }), {
+          reported: true,
+        });
         setSnackbar({
           message: 'Report submitted successfully',
           type: 'success',

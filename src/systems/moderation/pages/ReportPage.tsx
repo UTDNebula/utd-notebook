@@ -56,6 +56,9 @@ export default async function ReportPage({ searchParams }: ReportPageProps) {
     );
   }
 
+  const { reported } = await api.report.isReported({ fileId });
+  if (reported) redirect(`/notes/${encodeURIComponent(fileId)}`);
+
   return (
     <>
       <Header />
