@@ -2,9 +2,28 @@ import { TRPCError } from '@trpc/server';
 import { and, eq } from 'drizzle-orm';
 import { createReportSchema } from '@src/lib/schemas/moderation';
 import { report as reports } from '@src/server/db/schema/reports';
-import { createTRPCRouter, protectedProcedure } from '../trpc';
+import { createTRPCRouter, protectedProcedure, publicProcedure } from '../trpc';
 
 export const reportRouter = createTRPCRouter({
+  isReported: publicProcedure
+    .input(createReportSchema.pick({ fileId: true }))
+    .query(async ({ input, ctx }) => {
+      if (!ctx.session?.user) return { reported: false };
+
+      const [report] = await ctx.db
+        .select({ id: reports.id })
+        .from(reports)
+        .where(
+          and(
+            eq(reports.userId, ctx.session.user.id),
+            eq(reports.fileId, input.fileId),
+          ),
+        )
+        .limit(1);
+
+      return { reported: Boolean(report) };
+    }),
+
   create: protectedProcedure
     .input(createReportSchema)
     .mutation(async ({ input, ctx }) => {
