@@ -3,16 +3,16 @@ import { AppRouterCacheProvider } from '@mui/material-nextjs/v15-appRouter';
 import { ThemeProvider } from '@mui/material/styles';
 import { GoogleAnalytics } from '@next/third-parties/google';
 import { type Metadata } from 'next';
-import { Bai_Jamjuree, Inter } from 'next/font/google';
+import { Albert_Sans, Bai_Jamjuree } from 'next/font/google';
 import { RegisterModalProvider } from '@src/lib/modules/registerModal/RegisterModalProvider';
 import { SnackbarProvider } from '@src/lib/modules/snackbar/Snackbar';
 import { TRPCReactProvider } from '@src/lib/trpc/react';
 import ClientLocalizationProvider from '@src/lib/utils/localization';
 import theme from '@src/lib/utils/theme';
 
-const inter = Inter({
+const albertSans = Albert_Sans({
   subsets: ['latin'],
-  variable: '--font-inter',
+  variable: '--font-albert-sans',
 });
 
 const baiJamjuree = Bai_Jamjuree({
@@ -53,7 +53,7 @@ export default function RootLayout({
   return (
     <html lang="en" data-scroll-behavior="smooth">
       <body
-        className={`bg-light dark:bg-dark ${inter.variable} font-main ${baiJamjuree.variable} text-haiti dark:text-white`}
+        className={`bg-light dark:bg-dark ${albertSans.variable} font-main ${baiJamjuree.variable} text-haiti dark:text-white`}
       >
         <AppRouterCacheProvider>
           <TRPCReactProvider>
