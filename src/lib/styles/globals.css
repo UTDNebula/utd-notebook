@@ -32,7 +32,10 @@
   --color-shade: #101828; /* drop shadow color from shipfaster ui*/
 
   --font-display: Bai Jamjuree, Roboto, sans-serif;
-  --font-main: Inter, Roboto, sans-serif;
+}
+
+@theme inline {
+  --font-main: var(--font-albert-sans, 'Albert Sans'), Roboto, sans-serif;
 }
 
 @utility bg-lighten {
