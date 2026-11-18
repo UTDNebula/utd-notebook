@@ -81,6 +81,8 @@ export const sectionRouter = createTRPCRouter({
         orderBy: (sections, { desc }) => [
           desc(sections.year),
           desc(sections.term),
+          sections.profLast,
+          sections.profFirst,
         ],
       });
     }),
@@ -103,6 +105,8 @@ export const sectionRouter = createTRPCRouter({
         orderBy: (sections, { desc }) => [
           desc(sections.year),
           desc(sections.term),
+          sections.prefix,
+          sections.number,
         ],
       });
     }),
@@ -129,6 +133,7 @@ export const sectionRouter = createTRPCRouter({
         orderBy: (sections, { desc }) => [
           desc(sections.year),
           desc(sections.term),
+          sections.sectionCode,
         ],
       });
     }),
