@@ -4,7 +4,8 @@ import Avatar from '@mui/material/Avatar';
 import Box from '@mui/material/Box';
 import Tab from '@mui/material/Tab';
 import Tabs from '@mui/material/Tabs';
-import { useState } from 'react';
+import { usePathname, useRouter, useSearchParams } from 'next/navigation';
+import { useCallback, useEffect } from 'react';
 import Panel from '@nebula-library/components/Panel';
 import { HOME_PAGE_GRADIENT_CLASS } from '@src/lib/styles/gradients';
 import type { SelectFileWithAuthorPreview } from '@src/server/db/models';
@@ -27,7 +28,35 @@ export default function ProfileNotes({
   uploadedNotes,
   savedNotes,
 }: ProfileNotesProps) {
-  const [tab, setTab] = useState<TabKey>('saved');
+  const router = useRouter();
+  const pathname = usePathname();
+  const searchParams = useSearchParams();
+
+  const tabParam = searchParams.get('tab');
+  const tab: TabKey = tabParam === 'uploaded' ? 'uploaded' : 'saved';
+
+  const updateTabParam = useCallback(
+    (value: TabKey) => {
+      const params = new URLSearchParams(searchParams.toString());
+      if (value === 'uploaded') {
+        params.set('tab', 'uploaded');
+      } else {
+        params.delete('tab');
+      }
+      const query = params.toString();
+      router.replace(query ? `${pathname}?${query}` : pathname, {
+        scroll: false,
+      });
+    },
+    [searchParams, pathname, router],
+  );
+
+  // Clean up default ("saved") and invalid tab values in the URL
+  useEffect(() => {
+    if (tabParam !== null && tabParam !== 'uploaded') {
+      updateTabParam('saved');
+    }
+  }, [tabParam, updateTabParam]);
 
   const activeNotes = tab === 'saved' ? savedNotes.toReversed() : uploadedNotes;
   const activeHeading =
@@ -71,7 +100,7 @@ export default function ProfileNotes({
         <Box className="border-b border-white/20 px-4">
           <Tabs
             value={tab}
-            onChange={(_event, value: TabKey) => setTab(value)}
+            onChange={(_event, value: TabKey) => updateTabParam(value)}
             variant="fullWidth"
             defaultValue={tab}
             indicatorColor="primary"
