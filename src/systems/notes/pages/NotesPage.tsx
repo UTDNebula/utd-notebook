@@ -369,16 +369,13 @@ export default async function NotesPage({
           {semesters.map((s) => (
             <div
               key={`${s.term} ${s.year}`}
-              className="col-span-full grid gap-2 mt-2"
+              className="col-span-full mt-2 grid gap-2"
             >
               <h2 className="text-xl font-semibold text-neutral-500">
                 {s.term} {s.year}
               </h2>
               {s.noteGroups.map((n, idx) => (
-                <div
-                  key={idx}
-                  className="col-span-full mb-2"
-                >
+                <div key={idx} className="col-span-full mb-2">
                   <h3 className="mb-3 text-lg font-semibold">
                     {displayQuery.type === 'course' &&
                       `${n.profFirst} ${n.profLast}`}
