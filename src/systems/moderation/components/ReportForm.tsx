@@ -42,7 +42,8 @@ export default function ReportForm({ fileId, fileName }: ReportFormProps) {
           fitContent: true,
           closeOn: ['timeout', 'escapeKeyDown', 'dismiss'],
         });
-        router.push('/');
+        if (window.history.length == 1) router.push('/');
+        else router.back();
       },
       onError: (error) => {
         setSnackbar({
