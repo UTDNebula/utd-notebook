@@ -5,7 +5,7 @@ import IconButton from '@mui/material/IconButton';
 import Modal, { ModalProps } from '@mui/material/Modal';
 import Typography from '@mui/material/Typography';
 import React from 'react';
-import ProviderButton from './ProviderButtons';
+import ProviderButton, { DevelopmentLoginForm } from './ProviderButtons';
 
 type RegisterModalProps = Omit<ModalProps, 'children'> & {
   open: boolean;
@@ -23,7 +23,7 @@ export const RegisterModalContents = ({
 }: Pick<RegisterModalProps, 'className' | 'onClose' | 'closeButton'>) => {
   return (
     <div
-      className={`z-20 flex w-fit flex-col items-center rounded-lg bg-white p-4 shadow-lg dark:bg-neutral-800 dark:shadow-xl ${className}`}
+      className={`z-20 flex w-full max-w-lg flex-col items-center rounded-lg bg-white p-4 shadow-lg dark:bg-neutral-800 dark:shadow-xl ${className}`}
     >
       <div className="flex h-fit w-full flex-col">
         {closeButton && (
@@ -40,10 +40,13 @@ export const RegisterModalContents = ({
           Sign In / Sign Up
         </Typography>
       </div>
-      <div className="flex w-full flex-col items-center justify-center gap-3 p-4 sm:flex-row">
-        {providers.map((provider) => (
-          <ProviderButton key={provider} provider={provider} />
-        ))}
+      <div className="flex w-full flex-col items-center justify-center gap-3 p-4">
+        {process.env.NODE_ENV === 'development' && <DevelopmentLoginForm />}
+        <div className="flex w-full flex-col items-center justify-center gap-3 sm:flex-row">
+          {providers.map((provider) => (
+            <ProviderButton key={provider} provider={provider} />
+          ))}
+        </div>
       </div>
     </div>
   );

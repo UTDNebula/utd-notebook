@@ -12,6 +12,9 @@ import { userMetadata } from './db/schema/user';
  * @see https://www.better-auth.com/docs/introduction
  */
 export const auth = betterAuth({
+  emailAndPassword: {
+    enabled: env.NODE_ENV === 'development',
+  },
   database: drizzleAdapter(db, {
     provider: 'pg', // or "pg" or "mysql"
   }),
